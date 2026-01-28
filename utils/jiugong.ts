@@ -18,35 +18,55 @@ export const ENERGIES: Record<number, EnergyInfo> = {
   9: { number: 9, name: "Fogo (LI)", element: "Fogo", essence: "Clareza, consciência e propósito.", shadow: "Esgotamento mental e busca por aprovação." },
 };
 
-export function calculateEssentialEnergy(date: Date, sex: string): EnergyInfo {
+export function calculateMap(date: Date, sex: string) {
   let year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
 
-  // No Jiu Gong Ming Li, o ano muda em 4 de Fevereiro (Ano Novo Solar)
+  // Ajuste do Ano Novo Solar (4 de Fev)
   if (month < 2 || (month === 2 && day < 4)) {
     year -= 1;
   }
 
-  // Soma dos dígitos do ano até chegar em um único dígito
   const sumDigits = (n: number): number => {
     const s = n.toString().split("").reduce((acc, d) => acc + parseInt(d), 0);
     return s > 9 ? sumDigits(s) : s;
   };
 
   const yearDigit = sumDigits(year);
-  let resultNumber: number;
+  
+  // 1. FORÇA ESSENCIAL (Número Anual)
+  let essentialNum = sex === "masculino" ? 11 - yearDigit : yearDigit + 4;
+  if (essentialNum > 9) essentialNum -= 9;
+  if (essentialNum < 1) essentialNum += 9;
 
-  if (sex === "masculino") {
-    resultNumber = 11 - yearDigit;
-  } else {
-    // Feminino e outros (padrão feminino no cálculo tradicional)
-    resultNumber = yearDigit + 4;
-  }
+  // 2. FORÇA DE EXPRESSÃO (Número Mensal)
+  // O mês solar começa por volta do dia 7 ou 8
+  let solarMonth = month;
+  if (day < 7) solarMonth -= 1;
+  if (solarMonth < 1) solarMonth = 12;
 
-  // Ajuste para o ciclo de 9
-  if (resultNumber > 9) resultNumber -= 9;
-  if (resultNumber < 1) resultNumber += 9;
+  // O número base do ano para o cálculo mensal é sempre o do Masculino
+  const baseYearNum = 11 - yearDigit;
+  let startMonthNum = 0;
+  if ([3, 6, 9].includes(baseYearNum > 9 ? baseYearNum - 9 : baseYearNum)) startMonthNum = 5;
+  else if ([1, 4, 7].includes(baseYearNum > 9 ? baseYearNum - 9 : baseYearNum)) startMonthNum = 8;
+  else startMonthNum = 2;
 
-  return ENERGIES[resultNumber];
+  // Ciclo mensal (Fev=1, Mar=2...)
+  const monthOffset = solarMonth >= 2 ? solarMonth - 2 : 10;
+  let expressionNum = startMonthNum - monthOffset;
+  while (expressionNum < 1) expressionNum += 9;
+
+  // 3. ENERGIA PESSOAL / DESAFIO (Qi)
+  // Fórmula da Geometria do SER: Posição da Essência no Quadrado do Mês
+  let qiNum = 5 + (essentialNum - expressionNum);
+  while (qiNum > 9) qiNum -= 9;
+  while (qiNum < 1) qiNum += 9;
+
+  return {
+    essential: ENERGIES[essentialNum],
+    expression: ENERGIES[expressionNum],
+    personal: ENERGIES[qiNum]
+  };
 }
