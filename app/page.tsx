@@ -46,9 +46,11 @@ export default function Page() {
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
-  const openCalendly = () => {
-    window.open(CALENDLY_URL, "_blank", "noopener,noreferrer");
-  };
+  const openSchedule = () => {
+  const msg = `Oi, Claudia. Quero agendar a conversa gratuita de 20 min. Minha data de nascimento é ${birthDate || "[TO BE COMPLETED]"} e meu sexo é ${sex || "[TO BE COMPLETED]"}.`;
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  window.open(url, "_blank", "noopener,noreferrer");
+};
 
   const goBack = () => {
     if (step === "form") setStep("start");
@@ -158,7 +160,7 @@ export default function Page() {
 
               <div className="space-y-3">
                 <Button onClick={openWhatsApp}>Falar comigo no WhatsApp</Button>
-                <Button variant="ghost" onClick={openCalendly}>
+                <Button variant="ghost" onClick={openSchedule}>
                   Agendar conversa gratuita (20 min)
                 </Button>
                 <Button variant="ghost" onClick={goBack}>
