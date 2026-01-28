@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { StepHeader } from "@/components/StepHeader";
@@ -40,6 +41,11 @@ export default function Page() {
             <div className="space-y-6 text-center">
               <StepHeader title="Mapa das Forças do SER" subtitle="Descubra sua Energia Pessoal (Qi)." />
               <Button onClick={() => setStep("form")}>Começar</Button>
+              <div>
+                <Link href="/energias">
+                  <Button variant="ghost">Conheça as 9 Energias</Button>
+                </Link>
+              </div>
             </div>
           </Card>
         )}
