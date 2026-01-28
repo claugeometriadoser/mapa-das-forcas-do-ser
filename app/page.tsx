@@ -153,7 +153,7 @@ export default function Page() {
             <div className="space-y-6">
               <StepHeader
                 title="Sua Energia Pessoal (Qi)"
-                subtitle="Essa é a leitura gratuita. Se quiser, você pode ver o mapa completo depois."
+                subtitle="Essa é a leitura gratuita. Se quiser, você pode ver suas 3 forças depois."
               />
 
               <div className="rounded-xl bg-zinc-100 p-4 text-sm text-zinc-800 space-y-1">
@@ -194,7 +194,7 @@ export default function Page() {
 
               <div className="space-y-3">
                 <Button onClick={() => setStep("result_full")}>
-                  Ver mapa completo (Essência + Expressão)
+                  Quero ver minhas 3 forças
                 </Button>
                 <Button variant="ghost" onClick={goBack}>
                   Voltar
@@ -209,8 +209,8 @@ export default function Page() {
           <Card>
             <div className="space-y-6">
               <StepHeader
-                title="Seu mapa completo"
-                subtitle="Aqui estão suas três forças: Essência, Expressão e Energia Pessoal (Qi)."
+                title="Suas 3 forças"
+                subtitle="Essência, Expressão e Energia Pessoal (Qi)."
               />
 
               <div className="grid grid-cols-3 gap-3 text-center">
