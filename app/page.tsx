@@ -4,66 +4,27 @@ import * as React from "react";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { StepHeader } from "@/components/StepHeader";
-import { CALENDLY_URL, WHATSAPP_NUMBER } from "@/config";
-import { calculateEssentialEnergy, type EnergyInfo } from "@/utils/jiugong";
-
-type Step = "start" | "form" | "result" | "cta";
-
-function formatDateBR(value: string) {
-  if (!value) return "";
-  const [y, m, d] = value.split("-");
-  if (!y || !m || !d) return value;
-  return `${d}/${m}/${y}`;
-}
-
-function buildWhatsAppUrl({
-  phone,
-  birthDate,
-  sex,
-}: {
-  phone: string;
-  birthDate: string;
-  sex: string;
-}) {
-  const msg = `Oi, Claudia. Quero transformar leitura em direção. Minha data de nascimento é ${birthDate} e meu sexo é ${sex}.`;
-  const text = encodeURIComponent(msg);
-  return `https://wa.me/${phone}?text=${text}`;
-}
+import { WHATSAPP_NUMBER } from "@/config";
+import { calculateMap } from "@/utils/jiugong";
 
 export default function Page() {
-  const [step, setStep] = React.useState<Step>("start");
+  const [step, setStep] = React.useState("start");
   const [birthDateRaw, setBirthDateRaw] = React.useState("");
   const [sex, setSex] = React.useState("");
-  const [result, setResult] = React.useState<EnergyInfo | null>(null);
-
-  const birthDate = formatDateBR(birthDateRaw);
-
-  const openWhatsApp = () => {
-    const url = buildWhatsAppUrl({
-      phone: WHATSAPP_NUMBER,
-      birthDate: birthDate || "[TO BE COMPLETED]",
-      sex: sex || "[TO BE COMPLETED]",
-    });
-    window.open(url, "_blank", "noopener,noreferrer");
-  };
-
-  const openSchedule = () => {
-    const msg = `Oi, Claudia. Quero agendar a conversa gratuita de 20 min. Minha data de nascimento é ${birthDate || "[TO BE COMPLETED]"} e meu sexo é ${sex || "[TO BE COMPLETED]"}.`;
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-    window.open(url, "_blank", "noopener,noreferrer");
-  };
-
-  const goBack = () => {
-    if (step === "form") setStep("start");
-    else if (step === "result") setStep("form");
-    else if (step === "cta") setStep("result");
-  };
+  const [map, setMap] = React.useState<any>(null);
 
   const handleCalculate = () => {
     const date = new Date(birthDateRaw + "T00:00:00");
-    const energy = calculateEssentialEnergy(date, sex);
-    setResult(energy);
+    const result = calculateMap(date, sex);
+    setMap(result);
     setStep("result");
+  };
+
+  const openWhatsApp = (type: "direcao" | "agendar") => {
+    const msg = type === "direcao" 
+      ? `Oi, Claudia. Vi meu Mapa das Forças. Minha Energia Pessoal é ${map.personal.name}. Quero transformar isso em direção.`
+      : `Oi, Claudia. Quero agendar a conversa gratuita de 20 min. Minha Energia Pessoal é ${map.personal.name}.`;
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
   return (
@@ -71,12 +32,9 @@ export default function Page() {
       <div className="mx-auto w-full max-w-md space-y-6">
         {step === "start" && (
           <Card>
-            <div className="space-y-6">
-              <StepHeader
-                title="Mapa das Forças do SER"
-                subtitle="Uma leitura simples para você entender onde está gastando energia — e o que te devolve coerência."
-              />
-              <Button onClick={() => setStep("form")}>Começar</Button>
+            <div className="space-y-6 text-center">
+              <StepHeader title="Mapa das Forças do SER" subtitle="Descubra sua Energia Pessoal (Qi) e entenda o que te move." />
+              <Button onClick={() => setStep("form")}>Começar Leitura</Button>
             </div>
           </Card>
         )}
@@ -84,103 +42,52 @@ export default function Page() {
         {step === "form" && (
           <Card>
             <div className="space-y-6">
-              <StepHeader
-                title="Me diga sua data e seu sexo"
-                subtitle="Isso é o suficiente para a gente iniciar a leitura."
-              />
-
+              <StepHeader title="Seus dados" subtitle="A data e o sexo definem a geometria da sua energia." />
               <div className="space-y-4">
-                <label className="block space-y-2">
-                  <span className="text-sm font-medium">Data de nascimento</span>
-                  <input
-                    type="date"
-                    value={birthDateRaw}
-                    onChange={(e) => setBirthDateRaw(e.target.value)}
-                    className="w-full rounded-xl border border-zinc-300 bg-white px-3 py-3 text-sm"
-                  />
-                </label>
-
-                <label className="block space-y-2">
-                  <span className="text-sm font-medium">Sexo</span>
-                  <select
-                    value={sex}
-                    onChange={(e) => setSex(e.target.value)}
-                    className="w-full rounded-xl border border-zinc-300 bg-white px-3 py-3 text-sm"
-                  >
-                    <option value="">Selecione…</option>
-                    <option value="feminino">Feminino</option>
-                    <option value="masculino">Masculino</option>
-                    <option value="outro">Outro</option>
-                    <option value="prefiro não dizer">Prefiro não dizer</option>
-                  </select>
-                </label>
+                <input type="date" value={birthDateRaw} onChange={(e) => setBirthDateRaw(e.target.value)} className="w-full rounded-xl border p-3" />
+                <select value={sex} onChange={(e) => setSex(e.target.value)} className="w-full rounded-xl border p-3">
+                  <option value="">Sexo...</option>
+                  <option value="feminino">Feminino</option>
+                  <option value="masculino">Masculino</option>
+                </select>
               </div>
-
-              <div className="space-y-3">
-                <Button
-                  onClick={handleCalculate}
-                  disabled={!birthDateRaw || !sex}
-                >
-                  Ver minha Energia
-                </Button>
-                <Button variant="ghost" onClick={goBack}>
-                  Voltar
-                </Button>
-              </div>
+              <Button onClick={handleCalculate} disabled={!birthDateRaw || !sex}>Ver Meu Qi</Button>
             </div>
           </Card>
         )}
 
-        {step === "result" && result && (
+        {step === "result" && map && (
           <Card>
             <div className="space-y-6">
-              <StepHeader
-                title="Sua Energia Essencial"
-                subtitle="Esta é a força que move você — seu Qi pessoal."
-              />
+              <div className="text-center space-y-2">
+                <span className="text-xs font-bold uppercase tracking-widest text-zinc-500">Sua Energia Pessoal (Qi)</span>
+                <h1 className="text-5xl font-black text-zinc-900">{map.personal.number}</h1>
+                <h2 className="text-xl font-semibold text-zinc-800">{map.personal.name}</h2>
+              </div>
 
-              <div className="space-y-4">
-                <div className="rounded-xl bg-zinc-100 p-4 text-sm text-zinc-800">
-                  <div>
-                    <span className="font-medium">Data:</span> {birthDate}
-                  </div>
-                  <div>
-                    <span className="font-medium">Sexo:</span> {sex}
-                  </div>
+              <div className="space-y-4 border-t border-zinc-100 pt-4">
+                <div>
+                  <h3 className="text-sm font-bold text-zinc-900">Como a vida te move (Essência)</h3>
+                  <p className="text-sm text-zinc-600">{map.personal.essence}</p>
                 </div>
-
-                <div className="space-y-3">
-                  <div className="text-center">
-                    <div className="text-4xl font-bold text-zinc-900">
-                      {result.number}
-                    </div>
-                    <div className="text-lg font-semibold text-zinc-800">
-                      {result.name}
-                    </div>
-                    <div className="text-sm text-zinc-600">
-                      Elemento: {result.element}
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div>
-                      <h3 className="font-medium text-zinc-900">Essência</h3>
-                      <p className="text-sm text-zinc-700">{result.essence}</p>
-                    </div>
-                    <div>
-                      <h3 className="font-medium text-zinc-900">Sombra</h3>
-                      <p className="text-sm text-zinc-700">{result.shadow}</p>
-                    </div>
-                  </div>
+                <div className="rounded-lg bg-zinc-50 p-3">
+                  <h3 className="text-sm font-bold text-zinc-900">Onde você trava (Sombra)</h3>
+                  <p className="text-sm text-zinc-600">{map.personal.shadow}</p>
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <Button onClick={() => setStep("cta")}>Próximo passo</Button>
-                <Button variant="ghost" onClick={goBack}>
-                  Voltar
-                </Button>
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <div className="rounded-xl border p-3 text-center">
+                  <span className="text-[10px] uppercase text-zinc-400">Força Essencial</span>
+                  <div className="font-bold">{map.essential.number}</div>
+                </div>
+                <div className="rounded-xl border p-3 text-center">
+                  <span className="text-[10px] uppercase text-zinc-400">Força de Expressão</span>
+                  <div className="font-bold">{map.expression.number}</div>
+                </div>
               </div>
+
+              <Button onClick={() => setStep("cta")}>Transformar em Direção</Button>
             </div>
           </Card>
         )}
@@ -188,19 +95,10 @@ export default function Page() {
         {step === "cta" && (
           <Card>
             <div className="space-y-6">
-              <StepHeader
-                title="Quer transformar leitura em direção?"
-                subtitle="Me chama no WhatsApp. A gente olha juntas: onde você está gastando energia e o que te devolve coerência."
-              />
-
+              <StepHeader title="O que fazer com isso?" subtitle="Saber seu número é o início. Entender como ele governa suas decisões é o que traz paz." />
               <div className="space-y-3">
-                <Button onClick={openWhatsApp}>Falar comigo no WhatsApp</Button>
-                <Button variant="ghost" onClick={openSchedule}>
-                  Agendar conversa gratuita (20 min)
-                </Button>
-                <Button variant="ghost" onClick={goBack}>
-                  Voltar
-                </Button>
+                <Button onClick={() => openWhatsApp("direcao")}>Falar com Claudia no WhatsApp</Button>
+                <Button variant="ghost" onClick={() => openWhatsApp("agendar")}>Agendar conversa (20 min)</Button>
               </div>
             </div>
           </Card>
