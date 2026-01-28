@@ -39,7 +39,7 @@ function buildWhatsAppUrl({
     `Energia Pessoal (Qi): ${personal.number} - ${personal.name}\n` +
     `Essência: ${essential.number} - ${essential.name}\n` +
     `Expressão: ${expression.number} - ${expression.name}\n\n` +
-    `Quero entender meu mapa com você e transformar isso em direção prática.`;
+    `O que você acha que eu preciso enxergar agora, a partir desse mapa?`;
 
   return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
 }
@@ -170,7 +170,6 @@ export default function Page() {
                   Energia Pessoal (Qi)
                 </div>
 
-                {/* Trigrama */}
                 {map.personal.trigram && (
                   <div className="text-5xl leading-none" aria-label="Trigrama">
                     {map.personal.trigram}
@@ -200,10 +199,14 @@ export default function Page() {
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <Button onClick={() => setStep("result_full")}>
                   Quero ver minhas 3 forças
                 </Button>
+                <p className="text-xs text-zinc-500 text-center">
+                  Leva 5 segundos. Sem custo.
+                </p>
+
                 <Button variant="ghost" onClick={goBack}>
                   Voltar
                 </Button>
