@@ -1,21 +1,22 @@
 export type EnergyInfo = {
   number: number;
   name: string;
+  trigram: string;
   element: string;
   essence: string;
   shadow: string;
 };
 
 export const ENERGIES: Record<number, EnergyInfo> = {
-  1: { number: 1, name: "Água (KAN)", element: "Água", essence: "Profundidade, intuição e sobrevivência.", shadow: "Medo excessivo e insegurança crônica." },
-  2: { number: 2, name: "Terra Yin (KUN)", element: "Terra", essence: "Cuidado, nutrição e suporte.", shadow: "Autoaniquilação e cansaço por servir demais." },
-  3: { number: 3, name: "Trovão (ZHEN)", element: "Madeira", essence: "Início, movimento e impulso.", shadow: "Impulsividade e agressividade." },
-  4: { number: 4, name: "Vento (XUN)", element: "Madeira", essence: "Estratégia, comunicação e adaptação.", shadow: "Indecisão e dispersão." },
-  5: { number: 5, name: "Centro (TERRA)", element: "Terra", essence: "Estabilidade e força central.", shadow: "Caos, instabilidade e colapsos repetidos." },
-  6: { number: 6, name: "Céu (QIAN)", element: "Metal", essence: "Liderança, visão e autoridade.", shadow: "Rigidez e dificuldade em relaxar." },
-  7: { number: 7, name: "Lago (DUI)", element: "Metal", essence: "Prazer, expressão e leveza.", shadow: "Superficialidade e fuga pelo prazer." },
-  8: { number: 8, name: "Montanha (GEN)", element: "Terra", essence: "Sustentação, limite e silêncio.", shadow: "Isolamento e rigidez." },
-  9: { number: 9, name: "Fogo (LI)", element: "Fogo", essence: "Clareza, consciência e propósito.", shadow: "Esgotamento mental e busca por aprovação." },
+  1: { number: 1, name: "Água (KAN)", trigram: "☵", element: "Água", essence: "Profundidade, intuição e sobrevivência.", shadow: "Medo excessivo e insegurança crônica." },
+  2: { number: 2, name: "Terra Yin (KUN)", trigram: "☷", element: "Terra", essence: "Cuidado, nutrição e suporte.", shadow: "Autoaniquilação e cansaço por servir demais." },
+  3: { number: 3, name: "Trovão (ZHEN)", trigram: "☳", element: "Madeira", essence: "Início, movimento e impulso.", shadow: "Impulsividade e agressividade." },
+  4: { number: 4, name: "Vento (XUN)", trigram: "☴", element: "Madeira", essence: "Estratégia, comunicação e adaptação.", shadow: "Indecisão e dispersão." },
+  5: { number: 5, name: "Centro (TAO)", trigram: "☯️", element: "Terra", essence: "Estabilidade e força central.", shadow: "Caos, instabilidade e colapsos repetidos." },
+  6: { number: 6, name: "Céu (QIAN)", trigram: "☰", element: "Metal", essence: "Liderança, visão e autoridade.", shadow: "Rigidez e dificuldade em relaxar." },
+  7: { number: 7, name: "Lago (DUI)", trigram: "☱", element: "Metal", essence: "Prazer, expressão e leveza.", shadow: "Superficialidade e fuga pelo prazer." },
+  8: { number: 8, name: "Montanha (GEN)", trigram: "☶", element: "Terra", essence: "Sustentação, limite e silêncio.", shadow: "Isolamento e rigidez." },
+  9: { number: 9, name: "Fogo (LI)", trigram: "☲", element: "Fogo", essence: "Clareza, consciência e propósito.", shadow: "Esgotamento mental e busca por aprovação." },
 };
 
 // Mapeamento de anos para a linha da tabela (0 a 8)
