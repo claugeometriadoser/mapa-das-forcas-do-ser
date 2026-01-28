@@ -5,11 +5,11 @@ import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { StepHeader } from "@/components/StepHeader";
 import { CALENDLY_URL, WHATSAPP_NUMBER } from "@/config";
+import { calculateEssentialEnergy, type EnergyInfo } from "@/utils/jiugong";
 
 type Step = "start" | "form" | "result" | "cta";
 
 function formatDateBR(value: string) {
-  // value esperado: YYYY-MM-DD (input type="date")
   if (!value) return "";
   const [y, m, d] = value.split("-");
   if (!y || !m || !d) return value;
@@ -32,9 +32,10 @@ function buildWhatsAppUrl({
 
 export default function Page() {
   const [step, setStep] = React.useState<Step>("start");
-
   const [birthDateRaw, setBirthDateRaw] = React.useState("");
   const [sex, setSex] = React.useState("");
+  const [result, setResult] = React.useState<EnergyInfo | null>(null);
+
   const birthDate = formatDateBR(birthDateRaw);
 
   const openWhatsApp = () => {
@@ -47,15 +48,22 @@ export default function Page() {
   };
 
   const openSchedule = () => {
-  const msg = `Oi, Claudia. Quero agendar a conversa gratuita de 20 min. Minha data de nascimento é ${birthDate || "[TO BE COMPLETED]"} e meu sexo é ${sex || "[TO BE COMPLETED]"}.`;
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-  window.open(url, "_blank", "noopener,noreferrer");
-};
+    const msg = `Oi, Claudia. Quero agendar a conversa gratuita de 20 min. Minha data de nascimento é ${birthDate || "[TO BE COMPLETED]"} e meu sexo é ${sex || "[TO BE COMPLETED]"}.`;
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
 
   const goBack = () => {
     if (step === "form") setStep("start");
     else if (step === "result") setStep("form");
     else if (step === "cta") setStep("result");
+  };
+
+  const handleCalculate = () => {
+    const date = new Date(birthDateRaw + "T00:00:00");
+    const energy = calculateEssentialEnergy(date, sex);
+    setResult(energy);
+    setStep("result");
   };
 
   return (
@@ -110,7 +118,7 @@ export default function Page() {
 
               <div className="space-y-3">
                 <Button
-                  onClick={() => setStep("result")}
+                  onClick={handleCalculate}
                   disabled={!birthDateRaw || !sex}
                 >
                   Ver minha Energia
@@ -123,20 +131,47 @@ export default function Page() {
           </Card>
         )}
 
-        {step === "result" && (
+        {step === "result" && result && (
           <Card>
             <div className="space-y-6">
               <StepHeader
-                title="Sua leitura (prévia)"
-                subtitle="Aqui entra o cálculo do Qi. Por enquanto, este é um placeholder para você já testar o fluxo e a CTA."
+                title="Sua Energia Essencial"
+                subtitle="Esta é a força que move você — seu Qi pessoal."
               />
 
-              <div className="rounded-xl bg-zinc-100 p-4 text-sm text-zinc-800">
-                <div>
-                  <span className="font-medium">Data:</span> {birthDate}
+              <div className="space-y-4">
+                <div className="rounded-xl bg-zinc-100 p-4 text-sm text-zinc-800">
+                  <div>
+                    <span className="font-medium">Data:</span> {birthDate}
+                  </div>
+                  <div>
+                    <span className="font-medium">Sexo:</span> {sex}
+                  </div>
                 </div>
-                <div>
-                  <span className="font-medium">Sexo:</span> {sex}
+
+                <div className="space-y-3">
+                  <div className="text-center">
+                    <div className="text-4xl font-bold text-zinc-900">
+                      {result.number}
+                    </div>
+                    <div className="text-lg font-semibold text-zinc-800">
+                      {result.name}
+                    </div>
+                    <div className="text-sm text-zinc-600">
+                      Elemento: {result.element}
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div>
+                      <h3 className="font-medium text-zinc-900">Essência</h3>
+                      <p className="text-sm text-zinc-700">{result.essence}</p>
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-zinc-900">Sombra</h3>
+                      <p className="text-sm text-zinc-700">{result.shadow}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
