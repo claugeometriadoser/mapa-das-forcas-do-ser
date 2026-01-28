@@ -26,7 +26,7 @@ export default function Page() {
         {step === "start" && (
           <Card>
             <div className="space-y-6 text-center">
-              <StepHeader title="Mapa das Forças do SER" subtitle="Descubra sua Energia Pessoal (Qi) e suas forças de Essência e Expressão." />
+              <StepHeader title="Mapa das Forças do SER" subtitle="Descubra sua Energia Pessoal (Qi) através da Geometria do SER." />
               <Button onClick={() => setStep("form")}>Começar</Button>
             </div>
           </Card>
@@ -35,7 +35,7 @@ export default function Page() {
         {step === "form" && (
           <Card>
             <div className="space-y-6">
-              <StepHeader title="Seus dados" subtitle="A geometria da sua energia começa aqui." />
+              <StepHeader title="Seus dados" subtitle="A leitura precisa da sua data e sexo biológico." />
               <div className="space-y-4">
                 <input type="date" value={birthDateRaw} onChange={(e) => setBirthDateRaw(e.target.value)} className="w-full rounded-xl border p-3" />
                 <select value={sex} onChange={(e) => setSex(e.target.value)} className="w-full rounded-xl border p-3">
