@@ -169,6 +169,14 @@ export default function Page() {
                 <div className="text-xs font-bold uppercase tracking-widest text-zinc-500">
                   Energia Pessoal (Qi)
                 </div>
+
+                {/* Trigrama */}
+                {map.personal.trigram && (
+                  <div className="text-5xl leading-none" aria-label="Trigrama">
+                    {map.personal.trigram}
+                  </div>
+                )}
+
                 <div className="text-6xl font-black text-zinc-900">
                   {map.personal.number}
                 </div>
@@ -218,7 +226,14 @@ export default function Page() {
                   <div className="text-[10px] font-bold uppercase text-zinc-400">
                     Essência
                   </div>
-                  <div className="text-2xl font-black text-zinc-900">
+
+                  {map.essential.trigram && (
+                    <div className="text-3xl leading-none mt-1" aria-label="Trigrama">
+                      {map.essential.trigram}
+                    </div>
+                  )}
+
+                  <div className="text-2xl font-black text-zinc-900 mt-1">
                     {map.essential.number}
                   </div>
                   <div className="text-xs text-zinc-600">{map.essential.name}</div>
@@ -228,7 +243,14 @@ export default function Page() {
                   <div className="text-[10px] font-bold uppercase text-zinc-400">
                     Expressão
                   </div>
-                  <div className="text-2xl font-black text-zinc-900">
+
+                  {map.expression.trigram && (
+                    <div className="text-3xl leading-none mt-1" aria-label="Trigrama">
+                      {map.expression.trigram}
+                    </div>
+                  )}
+
+                  <div className="text-2xl font-black text-zinc-900 mt-1">
                     {map.expression.number}
                   </div>
                   <div className="text-xs text-zinc-600">{map.expression.name}</div>
@@ -238,7 +260,14 @@ export default function Page() {
                   <div className="text-[10px] font-bold uppercase text-zinc-400">
                     Qi
                   </div>
-                  <div className="text-2xl font-black text-zinc-900">
+
+                  {map.personal.trigram && (
+                    <div className="text-3xl leading-none mt-1" aria-label="Trigrama">
+                      {map.personal.trigram}
+                    </div>
+                  )}
+
+                  <div className="text-2xl font-black text-zinc-900 mt-1">
                     {map.personal.number}
                   </div>
                   <div className="text-xs text-zinc-600">{map.personal.name}</div>
