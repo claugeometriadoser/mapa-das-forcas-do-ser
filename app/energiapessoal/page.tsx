@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { StepHeader } from "@/components/StepHeader";
@@ -28,7 +29,7 @@ function buildWhatsAppUrl({
   personal: { number: number; name: string };
 }) {
   const msg =
-    `Oi, Claudia! Fiz a leitura da minha Energia Pessoal (Qi).\n\n` +
+    `Oi, Claudia! Fiz a leitura da minha Energia Pessoal (Qi) segundo o I-Ching.\n\n` +
     `Data: ${birthDate}\n` +
     `Sexo: ${sex}\n\n` +
     `Energia Pessoal (Qi): ${personal.number} - ${personal.name}\n\n` +
@@ -78,9 +79,16 @@ export default function EnergiaPessoal() {
             <div className="space-y-6 text-center">
               <StepHeader
                 title="Energia Pessoal (Qi)"
-                subtitle="Descubra agora como sua energia funciona."
+                subtitle="Descubra agora a sua Energia Pessoal segundo o I-Ching."
               />
+
               <Button onClick={() => setStep("form")}>Começar</Button>
+
+              <div>
+                <Link href="/energias">
+                  <Button variant="ghost">Conheça as 9 Energias</Button>
+                </Link>
+              </div>
             </div>
           </Card>
         )}
@@ -137,7 +145,7 @@ export default function EnergiaPessoal() {
             <div className="space-y-6">
               <StepHeader
                 title="Sua Energia Pessoal (Qi)"
-                subtitle="Essa é a leitura gratuita da sua energia neste momento."
+                subtitle="Essa é a leitura gratuita da sua Energia Pessoal neste momento."
               />
 
               <div className="text-center space-y-2">
