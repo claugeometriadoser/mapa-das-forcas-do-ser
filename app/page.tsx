@@ -17,29 +17,24 @@ function formatDateBR(value: string) {
   return `${d}/${m}/${y}`;
 }
 
+// ALTERAÇÃO: WhatsApp agora envia SOMENTE a Energia Pessoal (Qi)
 function buildWhatsAppUrl({
   phone,
   birthDate,
   sex,
-  essential,
-  expression,
   personal,
 }: {
   phone: string;
   birthDate: string;
   sex: string;
-  essential: { number: number; name: string };
-  expression: { number: number; name: string };
   personal: { number: number; name: string };
 }) {
   const msg =
-    `Oi, Claudia! Fiz meu Mapa das Forças do SER.\n\n` +
+    `Oi, Claudia! Fiz a leitura da minha Energia Pessoal (Qi).\n\n` +
     `Data: ${birthDate}\n` +
     `Sexo: ${sex}\n\n` +
-    `Energia Pessoal (Qi): ${personal.number} - ${personal.name}\n` +
-    `Essência: ${essential.number} - ${essential.name}\n` +
-    `Expressão: ${expression.number} - ${expression.name}\n\n` +
-    `O que você acha que eu preciso enxergar agora, a partir desse mapa?`;
+    `Energia Pessoal (Qi): ${personal.number} - ${personal.name}\n\n` +
+    `Você pode me ajudar a aplicar isso na prática?`;
 
   return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
 }
@@ -49,6 +44,9 @@ export default function Page() {
   const [birthDateRaw, setBirthDateRaw] = React.useState("");
   const [sex, setSex] = React.useState("");
   const [map, setMap] = React.useState<any>(null);
+
+  // Mantém o fluxo completo no código, mas não expõe ao usuário
+  const SHOW_FULL_RESULT = false;
 
   const birthDate = formatDateBR(birthDateRaw);
 
@@ -68,14 +66,15 @@ export default function Page() {
 
   const openWhatsApp = () => {
     if (!map) return;
+
+    // ALTERAÇÃO: passa apenas a Energia Pessoal (Qi)
     const url = buildWhatsAppUrl({
       phone: WHATSAPP_NUMBER,
       birthDate: birthDate || "[TO BE COMPLETED]",
       sex: sex || "[TO BE COMPLETED]",
-      essential: map.essential,
-      expression: map.expression,
       personal: map.personal,
     });
+
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
@@ -88,7 +87,7 @@ export default function Page() {
             <div className="space-y-6 text-center">
               <StepHeader
                 title="Mapa das Forças do SER"
-                subtitle="Descubra gratuitamente sua Energia Pessoal (Qi)."
+                subtitle="Descubra agora sua Energia Pessoal (Qi)."
               />
               <Button onClick={() => setStep("form")}>Começar</Button>
 
@@ -153,7 +152,7 @@ export default function Page() {
             <div className="space-y-6">
               <StepHeader
                 title="Sua Energia Pessoal (Qi)"
-                subtitle="Essa é a leitura gratuita. Se quiser, você pode ver suas 3 forças depois."
+                subtitle="Essa é a leitura gratuita da sua Energia Pessoal neste momento."
               />
 
               <div className="rounded-xl bg-zinc-100 p-4 text-sm text-zinc-800 space-y-1">
@@ -200,11 +199,22 @@ export default function Page() {
               </div>
 
               <div className="space-y-2">
-                <Button onClick={() => setStep("result_full")}>
-                  Quero ver minhas 3 forças
+                {SHOW_FULL_RESULT && (
+                  <>
+                    <Button onClick={() => setStep("result_full")}>
+                      Quero ver minhas 3 forças
+                    </Button>
+                    <p className="text-xs text-zinc-500 text-center">
+                      Leva 5 segundos. Sem custo.
+                    </p>
+                  </>
+                )}
+
+                <Button onClick={() => setStep("cta")}>
+                  Quero entender esta força na minha vida!
                 </Button>
                 <p className="text-xs text-zinc-500 text-center">
-                  Leva 5 segundos. Sem custo.
+                  Ao clicar, você será direcionada(o) para o WhatsApp com uma mensagem pronta.
                 </p>
 
                 <Button variant="ghost" onClick={goBack}>
@@ -299,7 +309,7 @@ export default function Page() {
             <div className="space-y-6 text-center">
               <StepHeader
                 title="Vamos conversar?"
-                subtitle="Me diga em uma frase o que você está vivendo agora — e eu te ajudo a transformar esse mapa em direção."
+                subtitle="Me conte como você tem usado sua energia no dia a dia — e eu te ajudo a transformar isso em direção."
               />
 
               <div className="space-y-3">
