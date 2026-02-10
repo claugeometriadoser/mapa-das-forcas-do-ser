@@ -5,10 +5,9 @@ import Link from "next/link";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { StepHeader } from "@/components/StepHeader";
-import { WHATSAPP_NUMBER } from "@/config";
 import { calculateMap } from "@/utils/jiugong";
 
-type Step = "start" | "form" | "result" | "cta";
+type Step = "start" | "form" | "result";
 
 function formatDateBR(value: string) {
   if (!value) return "";
@@ -17,40 +16,13 @@ function formatDateBR(value: string) {
   return `${d}/${m}/${y}`;
 }
 
-function buildWhatsAppUrl({
-  phone,
-  birthDate,
-  sex,
-  personal,
-}: {
-  phone: string;
-  birthDate: string;
-  sex: string;
-  personal: { number: number; name: string };
-}) {
-  const msg =
-    `Oi, Claudia! Fiz a leitura da minha Energia Pessoal (Qi) segundo o I-Ching.\n\n` +
-    `Data: ${birthDate}\n` +
-    `Sexo: ${sex}\n\n` +
-    `Energia Pessoal (Qi): ${personal.number} - ${personal.name}\n\n` +
-    `Você pode me ajudar a aplicar isso na prática?`;
-
-  return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
-}
-
-export default function EnergiaPessoal() {
+export default function EnergiaExternaPage() {
   const [step, setStep] = React.useState<Step>("start");
   const [birthDateRaw, setBirthDateRaw] = React.useState("");
   const [sex, setSex] = React.useState("");
   const [map, setMap] = React.useState<any>(null);
 
   const birthDate = formatDateBR(birthDateRaw);
-
-  const goBack = () => {
-    if (step === "form") setStep("start");
-    else if (step === "result") setStep("form");
-    else if (step === "cta") setStep("result");
-  };
 
   const handleCalculate = () => {
     const date = new Date(birthDateRaw + "T00:00:00");
@@ -59,15 +31,9 @@ export default function EnergiaPessoal() {
     setStep("result");
   };
 
-  const openWhatsApp = () => {
-    if (!map) return;
-    const url = buildWhatsAppUrl({
-      phone: WHATSAPP_NUMBER,
-      birthDate: birthDate || "[TO BE COMPLETED]",
-      sex: sex || "[TO BE COMPLETED]",
-      personal: map.personal,
-    });
-    window.open(url, "_blank", "noopener,noreferrer");
+  const goBack = () => {
+    if (step === "form") setStep("start");
+    else if (step === "result") setStep("form");
   };
 
   return (
@@ -78,17 +44,20 @@ export default function EnergiaPessoal() {
           <Card>
             <div className="space-y-6 text-center">
               <StepHeader
-                title="Energia Pessoal (Qi)"
-                subtitle="Descubra agora a sua Energia Pessoal segundo o I-Ching."
+                title="ENERGIA EXTERNA"
+                subtitle="Descubra a ENERGIA EXTERNA que afeta sua VIDA segundo o I-Ching."
               />
+
+              <p className="text-sm text-zinc-600">
+                Identifica situações recorrentes na vida que servem como
+                oportunidades de crescimento ou superação de obstáculos.
+              </p>
 
               <Button onClick={() => setStep("form")}>Começar</Button>
 
-              <div>
-                <Link href="/energias">
-                  <Button variant="ghost">Conheça as 9 Energias</Button>
-                </Link>
-              </div>
+              <Link href="/energias">
+                <Button variant="ghost">Conheça as 9 Energias</Button>
+              </Link>
             </div>
           </Card>
         )}
@@ -99,7 +68,7 @@ export default function EnergiaPessoal() {
             <div className="space-y-6">
               <StepHeader
                 title="Seus dados"
-                subtitle="Data e sexo para gerar sua Energia Pessoal."
+                subtitle="Data e sexo para identificar sua Energia Externa."
               />
 
               <div className="space-y-4">
@@ -129,7 +98,7 @@ export default function EnergiaPessoal() {
 
               <div className="space-y-3">
                 <Button onClick={handleCalculate} disabled={!birthDateRaw || !sex}>
-                  Ver minha Energia Pessoal (Qi)
+                  Ver minha Energia Externa
                 </Button>
                 <Button variant="ghost" onClick={goBack}>
                   Voltar
@@ -144,17 +113,26 @@ export default function EnergiaPessoal() {
           <Card>
             <div className="space-y-6">
               <StepHeader
-                title="Sua Energia Pessoal (Qi)"
-                subtitle="Essa é a leitura gratuita da sua Energia Pessoal neste momento."
+                title="Sua Energia Externa"
+                subtitle="Essa é a leitura da SUA Energia Externa."
               />
+
+              <div className="rounded-xl bg-zinc-100 p-4 text-sm text-zinc-800 space-y-1">
+                <div>
+                  <span className="font-medium">Data:</span> {birthDate}
+                </div>
+                <div>
+                  <span className="font-medium">Sexo:</span> {sex}
+                </div>
+              </div>
 
               <div className="text-center space-y-2">
                 <div className="text-xs font-bold uppercase tracking-widest text-zinc-500">
-                  Energia Pessoal (Qi)
+                  Energia Externa
                 </div>
 
-                {map.personal.trigram && (
-                  <div className="text-5xl leading-none">
+                {map.personal?.trigram && (
+                  <div className="text-5xl leading-none" aria-label="Trigrama">
                     {map.personal.trigram}
                   </div>
                 )}
@@ -162,37 +140,39 @@ export default function EnergiaPessoal() {
                 <div className="text-6xl font-black text-zinc-900">
                   {map.personal.number}
                 </div>
-
                 <div className="text-xl font-semibold text-zinc-800">
                   {map.personal.name}
+                </div>
+                <div className="text-sm text-zinc-600">
+                  Elemento: {map.personal.element}
                 </div>
               </div>
 
               <div className="space-y-3">
-                <Button onClick={() => setStep("cta")}>
-                  Quero entender esta força na minha vida
-                </Button>
-                <Button variant="ghost" onClick={goBack}>
-                  Voltar
-                </Button>
-              </div>
-            </div>
-          </Card>
-        )}
+                <div>
+                  <h3 className="text-sm font-bold text-zinc-900">
+                    Movimento predominante
+                  </h3>
+                  <p className="text-sm text-zinc-700">
+                    {map.personal.essence}
+                  </p>
+                </div>
 
-        {/* CTA */}
-        {step === "cta" && map && (
-          <Card>
-            <div className="space-y-6 text-center">
-              <StepHeader
-                title="Vamos conversar?"
-                subtitle="Levo essa energia para a sua realidade."
-              />
+                <div className="rounded-lg bg-zinc-50 p-4">
+                  <h3 className="text-sm font-bold text-zinc-900">
+                    Ponto de atenção
+                  </h3>
+                  <p className="text-sm text-zinc-700">
+                    {map.personal.shadow}
+                  </p>
+                </div>
+              </div>
 
               <div className="space-y-3">
-                <Button onClick={openWhatsApp}>
-                  Abrir WhatsApp e falar com a Claudia
-                </Button>
+                <Link href="/energias">
+                  <Button variant="ghost">Conheça as 9 Energias</Button>
+                </Link>
+
                 <Button variant="ghost" onClick={goBack}>
                   Voltar
                 </Button>
