@@ -38,6 +38,8 @@ function buildWhatsAppUrl({
   return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
 }
 
+const STORAGE_KEY = "energiaexterna:last";
+
 export default function EnergiaExternaPage() {
   const [step, setStep] = React.useState<Step>("start");
   const [birthDateRaw, setBirthDateRaw] = React.useState("");
@@ -46,11 +48,40 @@ export default function EnergiaExternaPage() {
 
   const birthDate = formatDateBR(birthDateRaw);
 
+  // ✅ Restaura automaticamente o último cálculo (se existir)
+  React.useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+
+      const parsed = JSON.parse(raw) as { birthDateRaw?: string; sex?: string };
+      if (!parsed.birthDateRaw || !parsed.sex) return;
+
+      // Recalcula na hora e vai direto pro resultado
+      const date = new Date(parsed.birthDateRaw + "T00:00:00");
+      const result = calculateMap(date, parsed.sex);
+
+      setBirthDateRaw(parsed.birthDateRaw);
+      setSex(parsed.sex);
+      setMap(result);
+      setStep("result");
+    } catch {
+      // se der ruim, simplesmente não restaura
+    }
+  }, []);
+
   const handleCalculate = () => {
     const date = new Date(birthDateRaw + "T00:00:00");
     const result = calculateMap(date, sex);
     setMap(result);
     setStep("result");
+
+    // ✅ salva para não perder o lead se a pessoa sair e voltar
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ birthDateRaw, sex }));
+    } catch {
+      // ignore
+    }
   };
 
   const openWhatsApp = () => {
@@ -64,10 +95,17 @@ export default function EnergiaExternaPage() {
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
+  const clearSaved = () => {
+    try {
+      sessionStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // ignore
+    }
+  };
+
   return (
     <main className="min-h-screen bg-zinc-50 px-4 py-10">
       <div className="mx-auto w-full max-w-md space-y-6">
-
         {/* START */}
         {step === "start" && (
           <Card>
@@ -177,33 +215,40 @@ export default function EnergiaExternaPage() {
                   <h3 className="text-sm font-bold text-zinc-900">
                     Movimento predominante
                   </h3>
-                  <p className="text-sm text-zinc-700">
-                    {map.personal.essence}
-                  </p>
+                  <p className="text-sm text-zinc-700">{map.personal.essence}</p>
                 </div>
 
                 <div className="rounded-lg bg-zinc-50 p-4">
-                  <h3 className="text-sm font-bold text-zinc-900">
-                    Ponto de atenção
-                  </h3>
-                  <p className="text-sm text-zinc-700">
-                    {map.personal.shadow}
-                  </p>
+                  <h3 className="text-sm font-bold text-zinc-900">Ponto de atenção</h3>
+                  <p className="text-sm text-zinc-700">{map.personal.shadow}</p>
                 </div>
               </div>
 
-              {/* CTA */}
               <div className="space-y-3">
                 <Button onClick={openWhatsApp}>
                   Quero entender essa energia na minha vida (WhatsApp)
                 </Button>
 
+                {/* 👇 Pode navegar sem medo: ao voltar, o resultado será restaurado */}
                 <Link href="/energias">
                   <Button variant="ghost">Conheça as 9 Energias</Button>
                 </Link>
 
                 <Button variant="ghost" onClick={() => setStep("form")}>
-                  Voltar
+                  Ajustar dados
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    clearSaved();
+                    setMap(null);
+                    setBirthDateRaw("");
+                    setSex("");
+                    setStep("start");
+                  }}
+                >
+                  Recomeçar
                 </Button>
               </div>
             </div>
