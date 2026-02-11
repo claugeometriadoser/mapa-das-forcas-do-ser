@@ -1,14 +1,13 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { StepHeader } from "@/components/StepHeader";
 import { WHATSAPP_NUMBER } from "@/config";
 import { calculateMap } from "@/utils/jiugong";
 
-type Step = "start" | "form" | "result_full" | "cta";
+type Step = "form" | "result";
 
 function formatDateBR(value: string) {
   if (!value) return "";
@@ -33,44 +32,39 @@ function buildWhatsAppUrl({
   personal: { number: number; name: string };
 }) {
   const msg =
-    `Oi, Claudia! Fiz meu Mapa completo (3 forças).\n\n` +
+    `Oi, Claudia! Fiz meu Mapa Completo.\n\n` +
     `Data: ${birthDate}\n` +
     `Sexo: ${sex}\n\n` +
-    `Energia Pessoal (Qi): ${personal.number} - ${personal.name}\n` +
     `Essência: ${essential.number} - ${essential.name}\n` +
-    `Expressão: ${expression.number} - ${expression.name}\n\n` +
-    `Quero aprofundar a leitura completa com você.`;
+    `Expressão: ${expression.number} - ${expression.name}\n` +
+    `Energia Externa: ${personal.number} - ${personal.name}\n\n` +
+    `O que mais me chamou atenção foi: __________.\n\n` +
+    `Gostaria da sua leitura sobre como essas forças estão se organizando.`;
 
   return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
 }
 
-export default function Page() {
-  const [step, setStep] = React.useState<Step>("start");
+export default function MapaCompletoPage() {
+  const [step, setStep] = React.useState<Step>("form");
   const [birthDateRaw, setBirthDateRaw] = React.useState("");
   const [sex, setSex] = React.useState("");
   const [map, setMap] = React.useState<any>(null);
 
   const birthDate = formatDateBR(birthDateRaw);
 
-  const goBack = () => {
-    if (step === "form") setStep("start");
-    else if (step === "result_full") setStep("form");
-    else if (step === "cta") setStep("result_full");
-  };
-
   const handleCalculate = () => {
     const date = new Date(birthDateRaw + "T00:00:00");
     const result = calculateMap(date, sex);
     setMap(result);
-    setStep("result_full");
+    setStep("result");
   };
 
   const openWhatsApp = () => {
     if (!map) return;
     const url = buildWhatsAppUrl({
       phone: WHATSAPP_NUMBER,
-      birthDate: birthDate || "[TO BE COMPLETED]",
-      sex: sex || "[TO BE COMPLETED]",
+      birthDate: birthDate || "[não informado]",
+      sex: sex || "[não informado]",
       essential: map.essential,
       expression: map.expression,
       personal: map.personal,
@@ -81,32 +75,14 @@ export default function Page() {
   return (
     <main className="min-h-screen bg-zinc-50 px-4 py-10">
       <div className="mx-auto w-full max-w-md space-y-6">
-        {/* START */}
-        {step === "start" && (
-          <Card>
-            <div className="space-y-6 text-center">
-              <StepHeader
-                title="Mapa completo"
-                subtitle="Essência, Expressão e Energia Pessoal (Qi)."
-              />
-              <Button onClick={() => setStep("form")}>Começar</Button>
-
-              <div>
-                <Link href="/">
-                  <Button variant="ghost">Ir para leitura gratuita (Qi)</Button>
-                </Link>
-              </div>
-            </div>
-          </Card>
-        )}
 
         {/* FORM */}
         {step === "form" && (
           <Card>
             <div className="space-y-6">
               <StepHeader
-                title="Seus dados"
-                subtitle="Data e sexo para gerar seu mapa completo."
+                title="Mapa Completo — 3 forças"
+                subtitle="Como suas forças se organizam — e por que você repete certos padrões."
               />
 
               <div className="space-y-4">
@@ -136,9 +112,10 @@ export default function Page() {
 
               <div className="space-y-3">
                 <Button onClick={handleCalculate} disabled={!birthDateRaw || !sex}>
-                  Ver meu mapa completo
+                  Gerar meu Mapa Completo
                 </Button>
-                <Button variant="ghost" onClick={goBack}>
+
+                <Button variant="ghost" onClick={() => window.history.back()}>
                   Voltar
                 </Button>
               </div>
@@ -146,107 +123,80 @@ export default function Page() {
           </Card>
         )}
 
-        {/* RESULT (MAPA COMPLETO) */}
-        {step === "result_full" && map && (
+        {/* RESULT */}
+        {step === "result" && map && (
           <Card>
             <div className="space-y-6">
-              <StepHeader
-                title="Suas 3 forças"
-                subtitle="Essência, Expressão e Energia Pessoal (Qi)."
-              />
 
-              <div className="rounded-xl bg-zinc-100 p-4 text-sm text-zinc-800 space-y-1">
-                <div>
-                  <span className="font-medium">Data:</span> {birthDate}
-                </div>
-                <div>
-                  <span className="font-medium">Sexo:</span> {sex}
-                </div>
-              </div>
+              <StepHeader
+                title="Seu Mapa Completo"
+                subtitle="Três forças. Uma dinâmica."
+              />
 
               <div className="grid grid-cols-3 gap-3 text-center">
                 <div className="rounded-xl border border-zinc-200 bg-white p-3">
-                  <div className="text-[10px] font-bold uppercase text-zinc-400">
+                  <div className="text-xs font-bold uppercase text-zinc-400">
                     Essência
                   </div>
-
-                  {map.essential.trigram && (
-                    <div className="text-3xl leading-none mt-1" aria-label="Trigrama">
-                      {map.essential.trigram}
-                    </div>
-                  )}
-
-                  <div className="text-2xl font-black text-zinc-900 mt-1">
+                  <div className="text-3xl mt-1">{map.essential.trigram}</div>
+                  <div className="text-xl font-black mt-1">
                     {map.essential.number}
                   </div>
-                  <div className="text-xs text-zinc-600">{map.essential.name}</div>
+                  <div className="text-xs text-zinc-600">
+                    {map.essential.name}
+                  </div>
                 </div>
 
                 <div className="rounded-xl border border-zinc-200 bg-white p-3">
-                  <div className="text-[10px] font-bold uppercase text-zinc-400">
+                  <div className="text-xs font-bold uppercase text-zinc-400">
                     Expressão
                   </div>
-
-                  {map.expression.trigram && (
-                    <div className="text-3xl leading-none mt-1" aria-label="Trigrama">
-                      {map.expression.trigram}
-                    </div>
-                  )}
-
-                  <div className="text-2xl font-black text-zinc-900 mt-1">
+                  <div className="text-3xl mt-1">{map.expression.trigram}</div>
+                  <div className="text-xl font-black mt-1">
                     {map.expression.number}
                   </div>
-                  <div className="text-xs text-zinc-600">{map.expression.name}</div>
+                  <div className="text-xs text-zinc-600">
+                    {map.expression.name}
+                  </div>
                 </div>
 
                 <div className="rounded-xl border border-zinc-200 bg-white p-3">
-                  <div className="text-[10px] font-bold uppercase text-zinc-400">
-                    Qi
+                  <div className="text-xs font-bold uppercase text-zinc-400">
+                    Energia Externa
                   </div>
-
-                  {map.personal.trigram && (
-                    <div className="text-3xl leading-none mt-1" aria-label="Trigrama">
-                      {map.personal.trigram}
-                    </div>
-                  )}
-
-                  <div className="text-2xl font-black text-zinc-900 mt-1">
+                  <div className="text-3xl mt-1">{map.personal.trigram}</div>
+                  <div className="text-xl font-black mt-1">
                     {map.personal.number}
                   </div>
-                  <div className="text-xs text-zinc-600">{map.personal.name}</div>
+                  <div className="text-xs text-zinc-600">
+                    {map.personal.name}
+                  </div>
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <Button onClick={() => setStep("cta")}>
-                  Quero fazer a leitura completa com a Claudia (WhatsApp)
-                </Button>
-                <Button variant="ghost" onClick={goBack}>
-                  Voltar
-                </Button>
-              </div>
-
-              <p className="text-xs text-zinc-500">
-                Ao clicar, você será direcionada(o) para o WhatsApp com uma mensagem pronta.
+              <p className="text-sm text-zinc-700 text-center">
+                O Mapa das Forças do I Ching revela as energias que moldam seu
+                temperamento e seus ciclos de vida.  
+                O que flui — e o que se repete — nasce do equilíbrio ou do conflito
+                entre essas forças.
               </p>
-            </div>
-          </Card>
-        )}
 
-        {/* CTA */}
-        {step === "cta" && map && (
-          <Card>
-            <div className="space-y-6 text-center">
-              <StepHeader
-                title="Vamos conversar?"
-                subtitle="Me diga em uma frase o que você quer entender — e eu te ajudo a transformar esse mapa em direção."
-              />
+              <div className="rounded-lg bg-zinc-50 p-4 text-center space-y-2">
+                <h3 className="text-sm font-bold text-zinc-900">
+                  Vamos traduzir isso para sua vida?
+                </h3>
+                <p className="text-sm text-zinc-700">
+                  Se quiser, me diga o que mais chamou sua atenção — e eu te ajudo
+                  a ler o mapa com precisão.
+                </p>
+              </div>
 
               <div className="space-y-3">
                 <Button onClick={openWhatsApp}>
-                  Abrir WhatsApp e falar com a Claudia
+                  Quero entender esse mapa na minha vida (WhatsApp)
                 </Button>
-                <Button variant="ghost" onClick={goBack}>
+
+                <Button variant="ghost" onClick={() => setStep("form")}>
                   Voltar
                 </Button>
               </div>
