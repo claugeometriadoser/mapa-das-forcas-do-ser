@@ -91,7 +91,7 @@ export default function Page() {
   function calcular() {
     if (!data || !sexo) return;
 
-    const map = calculateMap(data, sexo);
+    const map = calculateMap(new Date(data), sexo);
 
     setResultado({
       essencia: map.essential.number,
@@ -130,7 +130,6 @@ export default function Page() {
       }}
     >
       <div style={box}>
-        {/* TELA 1 */}
         {step === 0 && (
           <>
             <h1 style={title}>
@@ -165,7 +164,6 @@ export default function Page() {
           </>
         )}
 
-        {/* TELA 2 */}
         {step === 1 && (
           <>
             <h2 style={{ marginBottom: 16 }}>Seus dados</h2>
@@ -215,7 +213,6 @@ export default function Page() {
           </>
         )}
 
-        {/* RESULTADO */}
         {step === 2 && resultado && (
           <>
             <h2 style={{ textAlign: "center", marginBottom: 20 }}>
