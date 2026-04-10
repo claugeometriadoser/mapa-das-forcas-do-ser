@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { calculateMap } from "@/utils/jiugong";
 
 export default function Page() {
   const [step, setStep] = useState(0);
@@ -11,18 +12,10 @@ export default function Page() {
   function calcular() {
     if (!data || !sexo) return;
 
-    // 👉 usa seu cálculo atual aqui depois
-    const numeros = data.replaceAll("-", "").split("").map(Number);
-    let soma = numeros.reduce((a, b) => a + b, 0);
+    const date = new Date(data + "T00:00:00");
+    const result = calculateMap(date, sexo);
 
-    if (sexo === "feminino") soma += 2;
-    if (sexo === "masculino") soma += 5;
-
-    const externa = (soma % 9) || 9;
-    const essencia = ((soma + 2) % 9) || 9;
-    const expressao = ((soma + 5) % 9) || 9;
-
-    setResultado({ essencia, expressao, externa });
+    setResultado(result);
     setStep(2);
   }
 
@@ -45,7 +38,7 @@ export default function Page() {
         boxShadow: "0 10px 30px rgba(0,0,0,0.05)"
       }}>
 
-        {/* 👉 TELA 1 */}
+        {/* TELA 1 */}
         {step === 0 && (
           <>
             <h1 style={{ fontSize: 22, marginBottom: 12 }}>
@@ -79,7 +72,7 @@ export default function Page() {
           </>
         )}
 
-        {/* 👉 TELA 2 */}
+        {/* TELA 2 */}
         {step === 1 && (
           <>
             <h2 style={{ marginBottom: 16 }}>Seus dados</h2>
@@ -125,33 +118,43 @@ export default function Page() {
                 fontWeight: "bold"
               }}
             >
-              Ver meu padrão
+              Ver meu mapa
             </button>
           </>
         )}
 
-        {/* 👉 RESULTADO */}
+        {/* RESULTADO */}
         {step === 2 && resultado && (
           <>
-            <h2 style={{ marginBottom: 16 }}>Seu padrão</h2>
+            <h2 style={{ marginBottom: 16 }}>
+              Como sua energia está organizada
+            </h2>
 
-            <p><strong>Essência:</strong> {resultado.essencia}</p>
-            <p><strong>Expressão:</strong> {resultado.expressao}</p>
-            <p><strong>Energia Externa:</strong> {resultado.externa}</p>
+            <p>
+              <strong>Essência:</strong> {resultado.essential.number} — {resultado.essential.name}
+            </p>
+
+            <p>
+              <strong>Expressão:</strong> {resultado.expression.number} — {resultado.expression.name}
+            </p>
+
+            <p>
+              <strong>Energia Externa:</strong> {resultado.personal.number} — {resultado.personal.name}
+            </p>
 
             <div style={{ marginTop: 20, color: "#444" }}>
               <p>
-                Existe um padrão claro na forma como sua energia está distribuída.
+                O que desgasta não é a quantidade de esforço.
+                É onde sua energia está sendo mal direcionada.
               </p>
 
               <p>
-                O desgaste não vem do quanto você faz —
-                mas de como você sustenta o que faz.
+                Quando essas três forças não trabalham juntas,
+                você entra em compensação — e isso cansa.
               </p>
 
               <p>
-                Quando essas três forças não estão alinhadas,
-                você compensa com esforço.
+                Esse resultado mostra onde está o desvio.
               </p>
             </div>
           </>
