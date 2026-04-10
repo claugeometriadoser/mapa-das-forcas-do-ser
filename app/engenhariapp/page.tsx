@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { calculateMap } from "@/utils/jiugong";
+import { calcularEnergia } from "@/utils/calculoEnergia";
+import { gerarLeitura } from "@/utils/interpretacao";
 
 export default function Page() {
   const [step, setStep] = useState(0);
@@ -12,10 +13,13 @@ export default function Page() {
   function calcular() {
     if (!data || !sexo) return;
 
-    const date = new Date(data + "T00:00:00");
-    const result = calculateMap(date, sexo);
+    const res = calcularEnergia(data, sexo);
 
-    setResultado(result);
+    setResultado({
+      ...res,
+      texto: gerarLeitura(res.essencia, res.expressao, res.externa),
+    });
+
     setStep(2);
   }
 
@@ -131,31 +135,19 @@ export default function Page() {
             </h2>
 
             <p>
-              <strong>Essência:</strong> {resultado.essential.number} — {resultado.essential.name}
+              <strong>Essência:</strong> {resultado.essencia.numero} — {resultado.essencia.nome}
             </p>
 
             <p>
-              <strong>Expressão:</strong> {resultado.expression.number} — {resultado.expression.name}
+              <strong>Expressão:</strong> {resultado.expressao.numero} — {resultado.expressao.nome}
             </p>
 
             <p>
-              <strong>Energia Externa:</strong> {resultado.personal.number} — {resultado.personal.name}
+              <strong>Energia Externa:</strong> {resultado.externa.numero} — {resultado.externa.nome}
             </p>
 
-            <div style={{ marginTop: 20, color: "#444" }}>
-              <p>
-                O que desgasta não é a quantidade de esforço.
-                É onde sua energia está sendo mal direcionada.
-              </p>
-
-              <p>
-                Quando essas três forças não trabalham juntas,
-                você entra em compensação — e isso cansa.
-              </p>
-
-              <p>
-                Esse resultado mostra onde está o desvio.
-              </p>
+            <div style={{ marginTop: 20, whiteSpace: "pre-line", color: "#444" }}>
+              {resultado.texto}
             </div>
           </>
         )}
