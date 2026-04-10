@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { calculateMap } from "@/utils/jiugong";
 
-function getTipo(n: number) {
+/* ---------- CLASSIFICAÇÃO ---------- */
+
+function tipo(n: number) {
   if ([1, 3, 9].includes(n)) return "ativa";
   if ([2, 6, 8].includes(n)) return "estrutural";
   return "relacional";
@@ -24,20 +26,22 @@ function desc(n: number) {
   return d[n];
 }
 
+/* ---------- LEITURA REAL (AGORA CORRETA) ---------- */
+
 function gerarLeitura(map: any) {
   const e = map.essential.number;
   const ex = map.expression.number;
   const ext = map.personal.number;
 
-  const tipoE = getTipo(e);
-  const tipoEx = getTipo(ex);
-  const tipoExt = getTipo(ext);
+  const tipoE = tipo(e);
+  const tipoEx = tipo(ex);
+  const tipoExt = tipo(ext);
 
   let conflito = "";
-  let coerencia = "";
+  let incoerencia = "";
   let compensacao = "";
 
-  // conflito externo
+  // 🔥 CONFLITO EXTERNO (principal)
   if (tipoE === "ativa" && tipoExt === "estrutural") {
     conflito = "Você tenta avançar, mas a vida exige contenção.";
   }
@@ -46,13 +50,13 @@ function gerarLeitura(map: any) {
     conflito = "Você busca estabilidade, mas a vida exige movimento.";
   }
 
-  // coerência interna
+  // 🔥 EXPRESSÃO vs ESSÊNCIA
   if (e !== ex) {
-    coerencia =
+    incoerencia =
       "Você não está agindo de forma coerente com o que sustenta por dentro.";
   }
 
-  // compensação
+  // 🔥 COMPENSAÇÃO (o ponto mais forte)
   if (tipoExt === "estrutural" && tipoEx === "ativa") {
     compensacao =
       "Você tenta compensar o bloqueio com mais ação — e isso te desgasta.";
@@ -68,7 +72,7 @@ Mas a vida está te colocando em um cenário de ${desc(ext)}.
 
 ${conflito}
 
-${coerencia}
+${incoerencia}
 
 ${compensacao}
 
@@ -76,6 +80,8 @@ O desgaste não vem da falta de capacidade.
 Vem da forma como sua energia está sendo aplicada.
 `;
 }
+
+/* ---------- COMPONENTE ---------- */
 
 export default function Page() {
   const [step, setStep] = useState(0);
@@ -101,14 +107,17 @@ export default function Page() {
     <main style={main}>
       <div style={container}>
 
+        {/* ---------- TELA 1 ---------- */}
         {step === 0 && (
           <>
             <h1 style={title}>
-              ENGENHARIA DOS PADRÕES PESSOAIS
+              ENGENHARIA <br />
+              DOS PADRÕES PESSOAIS
             </h1>
 
             <p style={text}>
-              Três energias organizam como você decide, se relaciona e sustenta sua vida.
+              Três energias organizam como você decide,
+              se relaciona e sustenta sua vida.
             </p>
 
             <p style={subtext}>
@@ -122,6 +131,7 @@ export default function Page() {
           </>
         )}
 
+        {/* ---------- TELA 2 ---------- */}
         {step === 1 && (
           <>
             <h2 style={subtitle}>Seus dados</h2>
@@ -144,11 +154,12 @@ export default function Page() {
             </select>
 
             <button style={btn} onClick={calcular}>
-              Ver meu mapa
+              Ver meu padrão
             </button>
           </>
         )}
 
+        {/* ---------- RESULTADO ---------- */}
         {step === 2 && resultado && (
           <>
             <h2 style={subtitleCenter}>
@@ -180,7 +191,7 @@ export default function Page() {
               style={cta}
               onClick={() =>
                 window.open(
-                  "https://wa.me/5511987545477?text=Quero%20entender%20meu%20padr%C3%A3o%20energ%C3%A9tico",
+                  "https://wa.me/5511987545477?text=Quero%20entender%20meu%20padr%C3%A3o%20e%20onde%20estou%20desperdi%C3%A7ando%20energia",
                   "_blank"
                 )
               }
@@ -195,7 +206,7 @@ export default function Page() {
   );
 }
 
-/* estilos */
+/* ---------- ESTILO ---------- */
 
 const main = {
   minHeight: "100vh",
@@ -216,11 +227,26 @@ const container = {
   boxShadow: "0 20px 40px rgba(0,0,0,0.08)"
 };
 
-const title = { fontSize: 22, marginBottom: 12 };
+const title = {
+  fontSize: 24,
+  lineHeight: 1.2,
+  marginBottom: 16,
+  textAlign: "left"
+};
+
 const subtitle = { marginBottom: 12 };
 const subtitleCenter = { textAlign: "center", marginBottom: 16 };
-const text = { marginBottom: 8 };
-const subtext = { color: "#666", marginBottom: 20 };
+
+const text = {
+  marginBottom: 8,
+  lineHeight: 1.4
+};
+
+const subtext = {
+  color: "#666",
+  marginBottom: 20,
+  lineHeight: 1.4
+};
 
 const btn = {
   width: "100%",
@@ -263,7 +289,7 @@ const label = {
   marginBottom: 6
 };
 
-const trigram = { fontSize: 24, marginBottom: 4 };
+const trigram = { fontSize: 24 };
 const numero = { fontWeight: "bold", fontSize: 16 };
 const nome = { fontSize: 11, color: "#666" };
 
