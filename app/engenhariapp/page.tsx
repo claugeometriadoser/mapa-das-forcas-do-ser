@@ -3,7 +3,26 @@
 import { useState } from "react";
 import { calculateMap } from "@/utils/jiugong";
 
-/* ---------- CLASSIFICAÇÃO ---------- */
+type Resultado = {
+  essencia: number;
+  expressao: number;
+  externa: number;
+};
+
+function nome(n: number) {
+  const nomes: any = {
+    1: "Água",
+    2: "Terra",
+    3: "Trovão",
+    4: "Vento",
+    5: "Centro",
+    6: "Céu",
+    7: "Lago",
+    8: "Montanha",
+    9: "Fogo",
+  };
+  return nomes[n];
+}
 
 function tipo(n: number) {
   if ([1, 3, 9].includes(n)) return "ativa";
@@ -15,7 +34,7 @@ function desc(n: number) {
   const d: any = {
     1: "fluxo e adaptação",
     2: "nutrir e sustentar",
-    3: "impulso e início",
+    3: "início e impulso",
     4: "influência e penetração",
     5: "equilíbrio e eixo",
     6: "direção e comando",
@@ -26,40 +45,26 @@ function desc(n: number) {
   return d[n];
 }
 
-/* ---------- LEITURA REAL (AGORA CORRETA) ---------- */
-
-function gerarLeitura(map: any) {
-  const e = map.essential.number;
-  const ex = map.expression.number;
-  const ext = map.personal.number;
-
+function gerarLeitura(e: number, ex: number, ext: number) {
   const tipoE = tipo(e);
-  const tipoEx = tipo(ex);
   const tipoExt = tipo(ext);
 
   let conflito = "";
-  let incoerencia = "";
-  let compensacao = "";
 
-  // 🔥 CONFLITO EXTERNO (principal)
   if (tipoE === "ativa" && tipoExt === "estrutural") {
-    conflito = "Você tenta avançar, mas a vida exige contenção.";
+    conflito =
+      "Você tenta avançar, mas a vida exige contenção.\nQuanto mais força movimento, mais encontra bloqueio.";
+  } else if (tipoE === "estrutural" && tipoExt === "ativa") {
+    conflito =
+      "Você busca estabilidade, mas a vida exige movimento.\nIsso gera tensão e desgaste.";
+  } else {
+    conflito =
+      "Existe um desalinhamento entre como você opera e o que o momento exige.";
   }
 
-  if (tipoE === "estrutural" && tipoExt === "ativa") {
-    conflito = "Você busca estabilidade, mas a vida exige movimento.";
-  }
-
-  // 🔥 EXPRESSÃO vs ESSÊNCIA
   if (e !== ex) {
-    incoerencia =
-      "Você não está agindo de forma coerente com o que sustenta por dentro.";
-  }
-
-  // 🔥 COMPENSAÇÃO (o ponto mais forte)
-  if (tipoExt === "estrutural" && tipoEx === "ativa") {
-    compensacao =
-      "Você tenta compensar o bloqueio com mais ação — e isso te desgasta.";
+    conflito +=
+      "\n\nVocê não está agindo de forma coerente com o que sustenta por dentro.";
   }
 
   return `
@@ -72,42 +77,60 @@ Mas a vida está te colocando em um cenário de ${desc(ext)}.
 
 ${conflito}
 
-${incoerencia}
-
-${compensacao}
-
 O desgaste não vem da falta de capacidade.
 Vem da forma como sua energia está sendo aplicada.
 `;
 }
 
-/* ---------- COMPONENTE ---------- */
-
 export default function Page() {
   const [step, setStep] = useState(0);
   const [data, setData] = useState("");
   const [sexo, setSexo] = useState("");
-  const [resultado, setResultado] = useState<any>(null);
+  const [resultado, setResultado] = useState<Resultado | null>(null);
 
   function calcular() {
     if (!data || !sexo) return;
 
-    const date = new Date(data + "T00:00:00");
-    const map = calculateMap(date, sexo);
+    const map = calculateMap(data, sexo);
 
     setResultado({
-      ...map,
-      leitura: gerarLeitura(map),
+      essencia: map.essential.number,
+      expressao: map.expression.number,
+      externa: map.personal.number,
     });
 
     setStep(2);
   }
 
-  return (
-    <main style={main}>
-      <div style={container}>
+  const box: React.CSSProperties = {
+    background: "white",
+    padding: 32,
+    borderRadius: 16,
+    maxWidth: 520,
+    width: "100%",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
+  };
 
-        {/* ---------- TELA 1 ---------- */}
+  const title: React.CSSProperties = {
+    fontSize: 28,
+    lineHeight: "34px",
+    marginBottom: 16,
+    textAlign: "center",
+  };
+
+  return (
+    <main
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 24,
+        background: "#f7f7f7",
+      }}
+    >
+      <div style={box}>
+        {/* TELA 1 */}
         {step === 0 && (
           <>
             <h1 style={title}>
@@ -115,205 +138,141 @@ export default function Page() {
               DOS PADRÕES PESSOAIS
             </h1>
 
-            <p style={text}>
-              Três energias organizam como você decide,
-              se relaciona e sustenta sua vida.
+            <p style={{ marginBottom: 8 }}>
+              Três energias organizam como você decide, se relaciona e sustenta
+              sua vida.
             </p>
 
-            <p style={subtext}>
-              Esse mapa revela como elas estão distribuídas —
-              e onde está o desalinhamento que está te desgastando.
+            <p style={{ color: "#555", marginBottom: 24 }}>
+              Esse mapa revela como elas estão distribuídas — e onde está o
+              desalinhamento que está te desgastando.
             </p>
 
-            <button style={btn} onClick={() => setStep(1)}>
+            <button
+              onClick={() => setStep(1)}
+              style={{
+                width: "100%",
+                padding: 16,
+                borderRadius: 12,
+                background: "black",
+                color: "white",
+                fontWeight: "bold",
+                fontSize: 16,
+              }}
+            >
               Começar
             </button>
           </>
         )}
 
-        {/* ---------- TELA 2 ---------- */}
+        {/* TELA 2 */}
         {step === 1 && (
           <>
-            <h2 style={subtitle}>Seus dados</h2>
+            <h2 style={{ marginBottom: 16 }}>Seus dados</h2>
 
             <input
               type="date"
               value={data}
               onChange={(e) => setData(e.target.value)}
-              style={input}
+              style={{
+                width: "100%",
+                padding: 12,
+                marginBottom: 16,
+                borderRadius: 8,
+                border: "1px solid #ddd",
+              }}
             />
 
             <select
               value={sexo}
               onChange={(e) => setSexo(e.target.value)}
-              style={input}
+              style={{
+                width: "100%",
+                padding: 12,
+                marginBottom: 20,
+                borderRadius: 8,
+                border: "1px solid #ddd",
+              }}
             >
               <option value="">Sexo</option>
               <option value="feminino">Feminino</option>
               <option value="masculino">Masculino</option>
             </select>
 
-            <button style={btn} onClick={calcular}>
+            <button
+              onClick={calcular}
+              style={{
+                width: "100%",
+                padding: 16,
+                borderRadius: 12,
+                background: "black",
+                color: "white",
+                fontWeight: "bold",
+              }}
+            >
               Ver meu padrão
             </button>
           </>
         )}
 
-        {/* ---------- RESULTADO ---------- */}
+        {/* RESULTADO */}
         {step === 2 && resultado && (
           <>
-            <h2 style={subtitleCenter}>
+            <h2 style={{ textAlign: "center", marginBottom: 20 }}>
               Como sua energia está organizada
             </h2>
 
-            <div style={grid}>
-              {[
-                { label: "Essência", data: resultado.essential },
-                { label: "Expressão", data: resultado.expression },
-                { label: "Energia Externa", data: resultado.personal }
-              ].map((item, i) => (
-                <div key={i} style={card}>
-                  <div style={label}>{item.label}</div>
-                  <div style={trigram}>{item.data.trigram}</div>
-                  <div style={numero}>{item.data.number}</div>
-                  <div style={nome}>{item.data.name}</div>
-                </div>
-              ))}
+            <div style={{ marginBottom: 20 }}>
+              <p>
+                <strong>Essência:</strong> {resultado.essencia} —{" "}
+                {nome(resultado.essencia)}
+              </p>
+              <p>
+                <strong>Expressão:</strong> {resultado.expressao} —{" "}
+                {nome(resultado.expressao)}
+              </p>
+              <p>
+                <strong>Energia Externa:</strong> {resultado.externa} —{" "}
+                {nome(resultado.externa)}
+              </p>
             </div>
 
-            <div style={leituraBox}>
-              <pre style={leituraText}>
-                {resultado.leitura}
-              </pre>
+            <div
+              style={{
+                background: "#f1f1f1",
+                padding: 20,
+                borderRadius: 12,
+                whiteSpace: "pre-line",
+                lineHeight: 1.5,
+              }}
+            >
+              {gerarLeitura(
+                resultado.essencia,
+                resultado.expressao,
+                resultado.externa
+              )}
             </div>
 
-            <button
-              style={cta}
-              onClick={() =>
-                window.open(
-                  "https://wa.me/5511987545477?text=Quero%20entender%20meu%20padr%C3%A3o%20e%20onde%20estou%20desperdi%C3%A7ando%20energia",
-                  "_blank"
-                )
-              }
+            <a
+              href="https://wa.me/5511987545477"
+              target="_blank"
+              style={{
+                display: "block",
+                marginTop: 20,
+                textAlign: "center",
+                background: "black",
+                color: "white",
+                padding: 16,
+                borderRadius: 12,
+                fontWeight: "bold",
+                textDecoration: "none",
+              }}
             >
               Quero entender esse padrão na minha vida
-            </button>
+            </a>
           </>
         )}
-
       </div>
     </main>
   );
 }
-
-/* ---------- ESTILO ---------- */
-
-const main = {
-  minHeight: "100vh",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  padding: 24,
-  background: "#f4f4f4",
-  fontFamily: "system-ui"
-};
-
-const container = {
-  background: "white",
-  padding: 28,
-  borderRadius: 16,
-  maxWidth: 420,
-  width: "100%",
-  boxShadow: "0 20px 40px rgba(0,0,0,0.08)"
-};
-
-const title = {
-  fontSize: 24,
-  lineHeight: 1.2,
-  marginBottom: 16,
-  textAlign: "left"
-};
-
-const subtitle = { marginBottom: 12 };
-const subtitleCenter = { textAlign: "center", marginBottom: 16 };
-
-const text = {
-  marginBottom: 8,
-  lineHeight: 1.4
-};
-
-const subtext = {
-  color: "#666",
-  marginBottom: 20,
-  lineHeight: 1.4
-};
-
-const btn = {
-  width: "100%",
-  padding: 14,
-  borderRadius: 10,
-  border: "none",
-  background: "#111",
-  color: "white",
-  fontWeight: "bold",
-  cursor: "pointer"
-};
-
-const input = {
-  width: "100%",
-  padding: 12,
-  marginBottom: 14,
-  borderRadius: 8,
-  border: "1px solid #ddd"
-};
-
-const grid = {
-  display: "grid",
-  gridTemplateColumns: "1fr 1fr 1fr",
-  gap: 10,
-  marginBottom: 18
-};
-
-const card = {
-  border: "1px solid #eee",
-  borderRadius: 12,
-  padding: 14,
-  textAlign: "center",
-  background: "#fafafa"
-};
-
-const label = {
-  fontSize: 10,
-  textTransform: "uppercase",
-  color: "#999",
-  marginBottom: 6
-};
-
-const trigram = { fontSize: 24 };
-const numero = { fontWeight: "bold", fontSize: 16 };
-const nome = { fontSize: 11, color: "#666" };
-
-const leituraBox = {
-  background: "#f5f5f5",
-  padding: 16,
-  borderRadius: 12,
-  marginBottom: 16
-};
-
-const leituraText = {
-  whiteSpace: "pre-line",
-  fontSize: 14,
-  lineHeight: 1.5,
-  color: "#333"
-};
-
-const cta = {
-  width: "100%",
-  padding: 14,
-  borderRadius: 10,
-  border: "none",
-  background: "black",
-  color: "white",
-  fontWeight: "bold",
-  cursor: "pointer"
-};
