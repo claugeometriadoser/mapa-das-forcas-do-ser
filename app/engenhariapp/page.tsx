@@ -3,25 +3,85 @@
 import { useState } from "react";
 import { calculateMap } from "@/utils/jiugong";
 
+function getTipo(n: number) {
+  if ([1, 3, 9].includes(n)) return "ativa";
+  if ([2, 6, 8].includes(n)) return "estrutural";
+  return "relacional";
+}
+
+function desc(n: number) {
+  const d: any = {
+    1: "fluxo e adaptação",
+    2: "nutrir e sustentar",
+    3: "impulso e início",
+    4: "influência e penetração",
+    5: "equilíbrio e eixo",
+    6: "direção e comando",
+    7: "troca e expressão",
+    8: "limite e contenção",
+    9: "expansão e visibilidade",
+  };
+  return d[n];
+}
+
+function gerarLeitura(map: any) {
+  const e = map.essential.number;
+  const ex = map.expression.number;
+  const ext = map.personal.number;
+
+  const tipoE = getTipo(e);
+  const tipoEx = getTipo(ex);
+  const tipoExt = getTipo(ext);
+
+  let conflito = "";
+  let coerencia = "";
+  let compensacao = "";
+
+  // conflito externo
+  if (tipoE === "ativa" && tipoExt === "estrutural") {
+    conflito = "Você tenta avançar, mas a vida exige contenção.";
+  }
+
+  if (tipoE === "estrutural" && tipoExt === "ativa") {
+    conflito = "Você busca estabilidade, mas a vida exige movimento.";
+  }
+
+  // coerência interna
+  if (e !== ex) {
+    coerencia =
+      "Você não está agindo de forma coerente com o que sustenta por dentro.";
+  }
+
+  // compensação
+  if (tipoExt === "estrutural" && tipoEx === "ativa") {
+    compensacao =
+      "Você tenta compensar o bloqueio com mais ação — e isso te desgasta.";
+  }
+
+  return `
+Existe um desalinhamento na forma como sua energia está operando.
+
+Por dentro, você funciona com ${desc(e)}.
+Na prática, você se move com ${desc(ex)}.
+
+Mas a vida está te colocando em um cenário de ${desc(ext)}.
+
+${conflito}
+
+${coerencia}
+
+${compensacao}
+
+O desgaste não vem da falta de capacidade.
+Vem da forma como sua energia está sendo aplicada.
+`;
+}
+
 export default function Page() {
   const [step, setStep] = useState(0);
   const [data, setData] = useState("");
   const [sexo, setSexo] = useState("");
   const [resultado, setResultado] = useState<any>(null);
-
-  function gerarLeitura(res: any) {
-    const e = res.essential;
-    const ex = res.expression;
-    const ext = res.personal;
-
-    return {
-      essencia: `${e.name} representa sua base. É de onde você parte.`,
-      expressao: `${ex.name} mostra como você age e se movimenta.`,
-      externa: `${ext.name} é o tipo de cenário que a vida está te colocando.`,
-      conflito: `Você funciona de um jeito, se expressa de outro, mas a vida exige uma terceira direção.`,
-      desgaste: `O desgaste não vem da quantidade de esforço. Vem da forma como sua energia está sendo aplicada.`
-    };
-  }
 
   function calcular() {
     if (!data || !sexo) return;
@@ -41,7 +101,6 @@ export default function Page() {
     <main style={main}>
       <div style={container}>
 
-        {/* TELA 1 */}
         {step === 0 && (
           <>
             <h1 style={title}>
@@ -63,7 +122,6 @@ export default function Page() {
           </>
         )}
 
-        {/* TELA 2 */}
         {step === 1 && (
           <>
             <h2 style={subtitle}>Seus dados</h2>
@@ -86,12 +144,11 @@ export default function Page() {
             </select>
 
             <button style={btn} onClick={calcular}>
-             Ver meu mapa
+              Ver meu mapa
             </button>
           </>
         )}
 
-        {/* RESULTADO */}
         {step === 2 && resultado && (
           <>
             <h2 style={subtitleCenter}>
@@ -114,21 +171,18 @@ export default function Page() {
             </div>
 
             <div style={leituraBox}>
-              <p><strong>Existe um desalinhamento na forma como sua energia está operando.</strong></p>
-
-              <p><strong>Essência:</strong> {resultado.leitura.essencia}</p>
-              <p><strong>Expressão:</strong> {resultado.leitura.expressao}</p>
-              <p><strong>Energia Externa:</strong> {resultado.leitura.externa}</p>
-
-              <p>{resultado.leitura.conflito}</p>
-
-              <p>{resultado.leitura.desgaste}</p>
+              <pre style={leituraText}>
+                {resultado.leitura}
+              </pre>
             </div>
 
             <button
               style={cta}
               onClick={() =>
-                window.open("https://wa.me/SEUNUMEROAQUI", "_blank")
+                window.open(
+                  "https://wa.me/5511987545477?text=Quero%20entender%20meu%20padr%C3%A3o%20energ%C3%A9tico",
+                  "_blank"
+                )
               }
             >
               Quero entender esse padrão na minha vida
@@ -141,7 +195,7 @@ export default function Page() {
   );
 }
 
-/* 🎨 ESTILO */
+/* estilos */
 
 const main = {
   minHeight: "100vh",
@@ -162,28 +216,11 @@ const container = {
   boxShadow: "0 20px 40px rgba(0,0,0,0.08)"
 };
 
-const title = {
-  fontSize: 22,
-  marginBottom: 12
-};
-
-const subtitle = {
-  marginBottom: 12
-};
-
-const subtitleCenter = {
-  textAlign: "center" as const,
-  marginBottom: 16
-};
-
-const text = {
-  marginBottom: 8
-};
-
-const subtext = {
-  color: "#666",
-  marginBottom: 20
-};
+const title = { fontSize: 22, marginBottom: 12 };
+const subtitle = { marginBottom: 12 };
+const subtitleCenter = { textAlign: "center", marginBottom: 16 };
+const text = { marginBottom: 8 };
+const subtext = { color: "#666", marginBottom: 20 };
 
 const btn = {
   width: "100%",
@@ -215,39 +252,33 @@ const card = {
   border: "1px solid #eee",
   borderRadius: 12,
   padding: 14,
-  textAlign: "center" as const,
+  textAlign: "center",
   background: "#fafafa"
 };
 
 const label = {
   fontSize: 10,
-  textTransform: "uppercase" as const,
+  textTransform: "uppercase",
   color: "#999",
   marginBottom: 6
 };
 
-const trigram = {
-  fontSize: 24,
-  marginBottom: 4
-};
-
-const numero = {
-  fontWeight: "bold",
-  fontSize: 16
-};
-
-const nome = {
-  fontSize: 11,
-  color: "#666"
-};
+const trigram = { fontSize: 24, marginBottom: 4 };
+const numero = { fontWeight: "bold", fontSize: 16 };
+const nome = { fontSize: 11, color: "#666" };
 
 const leituraBox = {
   background: "#f5f5f5",
   padding: 16,
   borderRadius: 12,
+  marginBottom: 16
+};
+
+const leituraText = {
+  whiteSpace: "pre-line",
   fontSize: 14,
   lineHeight: 1.5,
-  marginBottom: 16
+  color: "#333"
 };
 
 const cta = {
