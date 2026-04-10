@@ -14,25 +14,13 @@ export default function Page() {
     const ex = res.expression;
     const ext = res.personal;
 
-    return `
-Existe um desalinhamento na forma como sua energia está operando.
-
-Por dentro, você funciona com ${e.name.toLowerCase()}.
-Na forma como se expressa, você se move com ${ex.name.toLowerCase()}.
-
-Mas o ambiente que te cerca é de ${ext.name.toLowerCase()}.
-
-Isso cria um conflito entre o que você tenta fazer
-e o que a vida está exigindo de você.
-
-Você aplica energia em uma direção,
-mas encontra resposta em outra.
-
-E é isso que gera desgaste.
-
-Não é falta de capacidade.
-É desalinhamento na forma como sua energia está sendo aplicada.
-`;
+    return {
+      essencia: `${e.name} representa sua base. É de onde você parte.`,
+      expressao: `${ex.name} mostra como você age e se movimenta.`,
+      externa: `${ext.name} é o tipo de cenário que a vida está te colocando.`,
+      conflito: `Você funciona de um jeito, se expressa de outro, mas a vida exige uma terceira direção.`,
+      desgaste: `O desgaste não vem da quantidade de esforço. Vem da forma como sua energia está sendo aplicada.`
+    };
   }
 
   function calcular() {
@@ -98,7 +86,7 @@ Não é falta de capacidade.
             </select>
 
             <button style={btn} onClick={calcular}>
-              Ver meu mapa
+             Ver meu mapa
             </button>
           </>
         )}
@@ -126,10 +114,25 @@ Não é falta de capacidade.
             </div>
 
             <div style={leituraBox}>
-              <pre style={leituraText}>
-                {resultado.leitura}
-              </pre>
+              <p><strong>Existe um desalinhamento na forma como sua energia está operando.</strong></p>
+
+              <p><strong>Essência:</strong> {resultado.leitura.essencia}</p>
+              <p><strong>Expressão:</strong> {resultado.leitura.expressao}</p>
+              <p><strong>Energia Externa:</strong> {resultado.leitura.externa}</p>
+
+              <p>{resultado.leitura.conflito}</p>
+
+              <p>{resultado.leitura.desgaste}</p>
             </div>
+
+            <button
+              style={cta}
+              onClick={() =>
+                window.open("https://wa.me/SEUNUMEROAQUI", "_blank")
+              }
+            >
+              Quero entender esse padrão na minha vida
+            </button>
           </>
         )}
 
@@ -138,7 +141,7 @@ Não é falta de capacidade.
   );
 }
 
-/* 🎨 ESTILOS */
+/* 🎨 ESTILO */
 
 const main = {
   minHeight: "100vh",
@@ -152,7 +155,7 @@ const main = {
 
 const container = {
   background: "white",
-  padding: 32,
+  padding: 28,
   borderRadius: 16,
   maxWidth: 420,
   width: "100%",
@@ -161,25 +164,25 @@ const container = {
 
 const title = {
   fontSize: 22,
-  marginBottom: 16
+  marginBottom: 12
 };
 
 const subtitle = {
-  marginBottom: 16
+  marginBottom: 12
 };
 
 const subtitleCenter = {
   textAlign: "center" as const,
-  marginBottom: 20
+  marginBottom: 16
 };
 
 const text = {
-  marginBottom: 10
+  marginBottom: 8
 };
 
 const subtext = {
   color: "#666",
-  marginBottom: 24
+  marginBottom: 20
 };
 
 const btn = {
@@ -196,7 +199,7 @@ const btn = {
 const input = {
   width: "100%",
   padding: 12,
-  marginBottom: 16,
+  marginBottom: 14,
   borderRadius: 8,
   border: "1px solid #ddd"
 };
@@ -204,49 +207,56 @@ const input = {
 const grid = {
   display: "grid",
   gridTemplateColumns: "1fr 1fr 1fr",
-  gap: 12,
-  marginBottom: 24
+  gap: 10,
+  marginBottom: 18
 };
 
 const card = {
   border: "1px solid #eee",
   borderRadius: 12,
-  padding: 16,
+  padding: 14,
   textAlign: "center" as const,
   background: "#fafafa"
 };
 
 const label = {
-  fontSize: 11,
+  fontSize: 10,
   textTransform: "uppercase" as const,
   color: "#999",
-  marginBottom: 8
+  marginBottom: 6
 };
 
 const trigram = {
-  fontSize: 28,
-  marginBottom: 6
+  fontSize: 24,
+  marginBottom: 4
 };
 
 const numero = {
   fontWeight: "bold",
-  fontSize: 18
+  fontSize: 16
 };
 
 const nome = {
-  fontSize: 12,
+  fontSize: 11,
   color: "#666"
 };
 
 const leituraBox = {
-  padding: 20,
+  background: "#f5f5f5",
+  padding: 16,
   borderRadius: 12,
-  background: "#f5f5f5"
+  fontSize: 14,
+  lineHeight: 1.5,
+  marginBottom: 16
 };
 
-const leituraText = {
-  whiteSpace: "pre-line" as const,
-  fontSize: 14,
-  lineHeight: 1.6,
-  color: "#333"
+const cta = {
+  width: "100%",
+  padding: 14,
+  borderRadius: 10,
+  border: "none",
+  background: "black",
+  color: "white",
+  fontWeight: "bold",
+  cursor: "pointer"
 };
