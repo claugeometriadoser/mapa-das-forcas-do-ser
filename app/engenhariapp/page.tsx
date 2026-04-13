@@ -25,29 +25,29 @@ function nome(n: number) {
 
 function caracteristicas(n: number) {
   return {
-    1: "Fluxo, adaptação, sensibilidade ao ambiente.",
-    2: "Nutrir, sustentar, cuidar, absorver.",
-    3: "Início, impulso, ação rápida.",
-    4: "Influência, penetração, estratégia sutil.",
-    5: "Centro, equilíbrio, organização interna.",
-    6: "Direção, comando, clareza e liderança.",
-    7: "Troca, expressão, leveza e comunicação.",
-    8: "Limite, contenção, estabilidade.",
-    9: "Expansão, visibilidade, intensidade.",
+    1: "Fluxo, adaptação e sensibilidade ao ambiente.",
+    2: "Nutrir, sustentar, cuidar.",
+    3: "Impulso, início e ação.",
+    4: "Influência e estratégia.",
+    5: "Equilíbrio e eixo.",
+    6: "Direção e comando.",
+    7: "Troca e expressão.",
+    8: "Limite e contenção.",
+    9: "Expansão e visibilidade.",
   }[n];
 }
 
 function desc(n: number) {
   return {
-    1: "fluxo e adaptação",
-    2: "nutrir e sustentar",
-    3: "início e impulso",
-    4: "influência e estratégia",
-    5: "equilíbrio e eixo",
-    6: "direção e comando",
-    7: "troca e expressão",
-    8: "limite e contenção",
-    9: "expansão e visibilidade",
+    1: "fluxo",
+    2: "sustentação",
+    3: "movimento",
+    4: "influência",
+    5: "equilíbrio",
+    6: "direção",
+    7: "expressão",
+    8: "contenção",
+    9: "expansão",
   }[n];
 }
 
@@ -60,12 +60,10 @@ function tipo(n: number) {
 function gerarLeitura(e: number, ex: number, ext: number) {
   let texto = "";
 
-  // BLOCO INTERPRETAÇÃO (SEM VENDER)
-  texto += `Por dentro, você tende a operar com ${desc(e)}.\n`;
-  texto += `Na forma como age, aparece ${desc(ex)}.\n`;
-  texto += `E o momento da sua vida traz um cenário de ${desc(ext)}.\n\n`;
+  texto += `Por dentro, você funciona com ${desc(e)}.\n`;
+  texto += `Na prática, você se move com ${desc(ex)}.\n`;
+  texto += `E o momento traz um cenário de ${desc(ext)}.\n\n`;
 
-  // CONFLITO
   const tipoE = tipo(e);
   const tipoExt = tipo(ext);
 
@@ -75,17 +73,15 @@ function gerarLeitura(e: number, ex: number, ext: number) {
   }
 
   if (tipoE === "estrutural" && tipoExt === "ativa") {
-    texto += `Você busca estabilidade, mas o momento exige movimento.\n`;
-    texto += `Isso gera tensão e desgaste.\n\n`;
+    texto += `Você busca estabilidade, mas a vida exige movimento.\n\n`;
   }
 
   if (e !== ex) {
-    texto += `Existe uma diferença entre o que sustenta por dentro e a forma como você age.\n\n`;
+    texto += `Existe uma diferença entre o que sustenta e como você age.\n\n`;
   }
 
-  // FECHAMENTO
-  texto += `O desgaste não vem da quantidade de esforço.\n`;
-  texto += `Vem da forma como sua energia está sendo aplicada.`;
+  texto += `O desgaste não vem do quanto você faz.\n`;
+  texto += `Vem de como sua energia está sendo aplicada.`;
 
   return texto;
 }
@@ -120,50 +116,123 @@ export default function Page() {
       alignItems: "center",
       justifyContent: "center",
       padding: 24,
-      background: "#f7f7f7"
+      background: "#f5f5f5"
     }}>
       <div style={{
         background: "white",
         padding: 32,
-        borderRadius: 16,
+        borderRadius: 20,
         maxWidth: 520,
-        width: "100%"
+        width: "100%",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.05)"
       }}>
 
+        {/* CAPA */}
         {step === 0 && (
           <>
-            <h1 style={{ textAlign: "center" }}>
-              ENGENHARIA <br /> DOS PADRÕES PESSOAIS
+            <h1 style={{
+              fontSize: 32,
+              fontWeight: 600,
+              textAlign: "center",
+              lineHeight: "36px",
+              marginBottom: 20
+            }}>
+              ENGENHARIA <br />
+              DOS PADRÕES PESSOAIS
             </h1>
 
-            <p>
+            <p style={{
+              textAlign: "center",
+              fontSize: 16,
+              marginBottom: 12
+            }}>
               Três energias organizam como você decide, se relaciona e sustenta sua vida.
             </p>
 
-            <button onClick={() => setStep(1)}>Começar</button>
+            <p style={{
+              textAlign: "center",
+              fontSize: 14,
+              color: "#666",
+              marginBottom: 28
+            }}>
+              Esse mapa revela como elas estão distribuídas — e onde sua energia está sendo mal direcionada.
+            </p>
+
+            <button
+              onClick={() => setStep(1)}
+              style={{
+                width: "100%",
+                padding: 16,
+                borderRadius: 14,
+                background: "black",
+                color: "white",
+                fontWeight: 600,
+                fontSize: 16
+              }}
+            >
+              Começar
+            </button>
           </>
         )}
 
+        {/* FORM */}
         {step === 1 && (
           <>
-            <input type="date" onChange={(e) => setData(e.target.value)} />
-            <select onChange={(e) => setSexo(e.target.value)}>
+            <h2 style={{ marginBottom: 16 }}>Seus dados</h2>
+
+            <input
+              type="date"
+              value={data}
+              onChange={(e) => setData(e.target.value)}
+              style={{
+                width: "100%",
+                padding: 12,
+                marginBottom: 16,
+                borderRadius: 10,
+                border: "1px solid #ddd"
+              }}
+            />
+
+            <select
+              value={sexo}
+              onChange={(e) => setSexo(e.target.value)}
+              style={{
+                width: "100%",
+                padding: 12,
+                marginBottom: 20,
+                borderRadius: 10,
+                border: "1px solid #ddd"
+              }}
+            >
               <option value="">Sexo</option>
               <option value="feminino">Feminino</option>
               <option value="masculino">Masculino</option>
             </select>
-            <button onClick={calcular}>Ver meu padrão</button>
+
+            <button
+              onClick={calcular}
+              style={{
+                width: "100%",
+                padding: 16,
+                borderRadius: 14,
+                background: "black",
+                color: "white",
+                fontWeight: 600
+              }}
+            >
+              Ver minha engenharia
+            </button>
           </>
         )}
 
+        {/* RESULTADO */}
         {step === 2 && resultado && (
           <>
-            <h2 style={{ textAlign: "center" }}>
+            <h2 style={{ textAlign: "center", marginBottom: 20 }}>
               Como suas energias estão organizadas
             </h2>
 
-            {/* CARACTERÍSTICAS */}
-            <div>
+            <div style={{ marginBottom: 20 }}>
               <p><strong>Essência — {nome(resultado.essencia)}</strong><br />
               {caracteristicas(resultado.essencia)}</p>
 
@@ -174,13 +243,12 @@ export default function Page() {
               {caracteristicas(resultado.externa)}</p>
             </div>
 
-            {/* LEITURA */}
             <div style={{
-              marginTop: 20,
-              padding: 16,
               background: "#f1f1f1",
-              borderRadius: 10,
-              whiteSpace: "pre-line"
+              padding: 20,
+              borderRadius: 14,
+              whiteSpace: "pre-line",
+              lineHeight: 1.6
             }}>
               {gerarLeitura(
                 resultado.essencia,
@@ -189,9 +257,23 @@ export default function Page() {
               )}
             </div>
 
-            <button style={{ marginTop: 20 }}>
+            <a
+              href="https://wa.me/5511987545477"
+              target="_blank"
+              style={{
+                display: "block",
+                marginTop: 20,
+                textAlign: "center",
+                background: "black",
+                color: "white",
+                padding: 16,
+                borderRadius: 14,
+                fontWeight: 600,
+                textDecoration: "none"
+              }}
+            >
               Quero entender esse padrão na minha vida
-            </button>
+            </a>
           </>
         )}
 
