@@ -51,6 +51,7 @@ function gerarLeitura(e: number, ex: number, ext: number) {
 
   let conflito = "";
 
+  // 🔥 CONFLITO PRINCIPAL (EXTERNO)
   if (tipoE === "ativa" && tipoExt === "estrutural") {
     conflito =
       "Você tenta avançar, mas a vida exige contenção.\nQuanto mais força movimento, mais encontra bloqueio.";
@@ -62,13 +63,14 @@ function gerarLeitura(e: number, ex: number, ext: number) {
       "Existe um desalinhamento entre como você opera e o que o momento exige.";
   }
 
+  // 🔥 CONFLITO INTERNO (ESSÊNCIA vs EXPRESSÃO)
   if (e !== ex) {
     conflito +=
       "\n\nVocê não está agindo de forma coerente com o que sustenta por dentro.";
   }
 
   return `
-Existe um desalinhamento na forma como sua energia está operando.
+Existe um desalinhamento na forma como suas energias estão operando.
 
 Por dentro, você funciona com ${desc(e)}.
 Na prática, você se move com ${desc(ex)}.
@@ -91,7 +93,10 @@ export default function Page() {
   function calcular() {
     if (!data || !sexo) return;
 
-    const map = calculateMap(new Date(data), sexo);
+    const [ano, mes, dia] = data.split("-");
+    const dataCorreta = new Date(Number(ano), Number(mes) - 1, Number(dia));
+
+    const map = calculateMap(dataCorreta, sexo);
 
     setResultado({
       essencia: map.essential.number,
@@ -130,6 +135,7 @@ export default function Page() {
       }}
     >
       <div style={box}>
+        {/* TELA 1 */}
         {step === 0 && (
           <>
             <h1 style={title}>
@@ -138,13 +144,11 @@ export default function Page() {
             </h1>
 
             <p style={{ marginBottom: 8 }}>
-              Três energias organizam como você decide, se relaciona e sustenta
-              sua vida.
+              Três energias organizam como você decide, se relaciona e sustenta sua vida.
             </p>
 
             <p style={{ color: "#555", marginBottom: 24 }}>
-              Esse mapa revela como elas estão distribuídas — e onde está o
-              desalinhamento que está te desgastando.
+              Esse mapa revela como elas estão distribuídas — e onde está o desalinhamento que está te desgastando.
             </p>
 
             <button
@@ -164,6 +168,7 @@ export default function Page() {
           </>
         )}
 
+        {/* TELA 2 */}
         {step === 1 && (
           <>
             <h2 style={{ marginBottom: 16 }}>Seus dados</h2>
@@ -213,24 +218,22 @@ export default function Page() {
           </>
         )}
 
+        {/* RESULTADO */}
         {step === 2 && resultado && (
           <>
             <h2 style={{ textAlign: "center", marginBottom: 20 }}>
-              Como sua energia está organizada
+              Como suas energias estão organizadas
             </h2>
 
             <div style={{ marginBottom: 20 }}>
               <p>
-                <strong>Essência:</strong> {resultado.essencia} —{" "}
-                {nome(resultado.essencia)}
+                <strong>Essência:</strong> {resultado.essencia} — {nome(resultado.essencia)}
               </p>
               <p>
-                <strong>Expressão:</strong> {resultado.expressao} —{" "}
-                {nome(resultado.expressao)}
+                <strong>Expressão:</strong> {resultado.expressao} — {nome(resultado.expressao)}
               </p>
               <p>
-                <strong>Energia Externa:</strong> {resultado.externa} —{" "}
-                {nome(resultado.externa)}
+                <strong>Energia Externa:</strong> {resultado.externa} — {nome(resultado.externa)}
               </p>
             </div>
 
