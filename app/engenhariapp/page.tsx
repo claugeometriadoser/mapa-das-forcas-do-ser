@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { calculateMap } from "@/utils/jiugong";
 
 type Energia = {
   nome: string;
+  trigrama: string;
   arquétipo: string;
   luz: string;
   sombra: string;
@@ -13,29 +13,49 @@ type Energia = {
 };
 
 const energias: Record<number, Energia> = {
-  1: { nome: "Água", arquétipo: "A Sensitiva", luz: "percebe profundamente", sombra: "se retrai", missao: "confiar na própria percepção", comportamento: "sente antes de agir" },
-  2: { nome: "Terra", arquétipo: "A Sustentadora", luz: "acolhe e sustenta", sombra: "se sobrecarrega", missao: "cuidar sem se anular", comportamento: "assume responsabilidades" },
-  3: { nome: "Trovão", arquétipo: "A Iniciadora", luz: "começa e movimenta", sombra: "se precipita", missao: "sustentar o que começa", comportamento: "age rápido" },
-  4: { nome: "Vento", arquétipo: "A Influenciadora", luz: "comunica e conecta", sombra: "se dispersa", missao: "alinhar comunicação com direção", comportamento: "ajusta antes de se posicionar" },
-  5: { nome: "Centro", arquétipo: "A Integradora", luz: "equilibra", sombra: "se perde", missao: "organizar o centro", comportamento: "oscila entre controle e caos" },
-  6: { nome: "Céu", arquétipo: "A Estrategista", luz: "direciona com clareza", sombra: "trava na execução", missao: "agir com consistência", comportamento: "sabe o que precisa ser feito" },
-  7: { nome: "Lago", arquétipo: "A Comunicadora", luz: "expressa e conecta", sombra: "busca aprovação", missao: "se expressar com verdade", comportamento: "agrada antes de se posicionar" },
-  8: { nome: "Montanha", arquétipo: "A Guardiã", luz: "sustenta e estrutura", sombra: "bloqueia movimento", missao: "liberar no tempo certo", comportamento: "contém e segura" },
-  9: { nome: "Fogo", arquétipo: "A Visionária", luz: "expande e ilumina", sombra: "se dispersa", missao: "focar para realizar", comportamento: "se empolga e perde continuidade" },
+  1: { nome: "Água", trigrama: "☵", arquétipo: "A Sensível", luz: "profundidade", sombra: "medo", missao: "confiar", comportamento: "se retrai diante de pressão" },
+  2: { nome: "Terra", trigrama: "☷", arquétipo: "A Sustentadora", luz: "apoia", sombra: "se sobrecarrega", missao: "se priorizar", comportamento: "assume mais do que deveria" },
+  3: { nome: "Trovão", trigrama: "☳", arquétipo: "A Iniciadora", luz: "começa", sombra: "se precipita", missao: "sustentar", comportamento: "age rápido e depois ajusta" },
+  4: { nome: "Vento", trigrama: "☴", arquétipo: "A Influenciadora", luz: "comunica", sombra: "se dispersa", missao: "direcionar", comportamento: "ajusta antes de se posicionar" },
+  5: { nome: "Centro", trigrama: "✚", arquétipo: "A Integradora", luz: "equilibra", sombra: "se perde", missao: "organizar", comportamento: "oscila entre controle e caos" },
+  6: { nome: "Céu", trigrama: "☰", arquétipo: "A Estrategista", luz: "direciona", sombra: "trava", missao: "executar", comportamento: "sabe o que fazer, mas trava na execução" },
+  7: { nome: "Lago", trigrama: "☱", arquétipo: "A Comunicadora", luz: "expressa", sombra: "busca aprovação", missao: "ser verdadeira", comportamento: "agrada antes de se posicionar" },
+  8: { nome: "Montanha", trigrama: "☶", arquétipo: "A Guardiã", luz: "sustenta", sombra: "bloqueia", missao: "liberar", comportamento: "contém e segura movimento" },
+  9: { nome: "Fogo", trigrama: "☲", arquétipo: "A Visionária", luz: "expande", sombra: "se dispersa", missao: "focar", comportamento: "se empolga e não conclui" },
 };
 
-const trigramas: Record<number, string> = {
-  1: "☵", 2: "☷", 3: "☳", 4: "☴", 5: "✚", 6: "☰", 7: "☱", 8: "☶", 9: "☲"
-};
+function reduzir(numero: number) {
+  while (numero > 9) {
+    numero = numero.toString().split("").reduce((a, b) => a + Number(b), 0);
+  }
+  return numero;
+}
+
+function calcularNumeroBase(data: Date) {
+  const soma =
+    data.getFullYear() +
+    (data.getMonth() + 1) +
+    data.getDate();
+
+  return reduzir(soma);
+}
+
+function calcularEnergia(data: Date, genero: string) {
+  let base = calcularNumeroBase(data);
+
+  let numero =
+    genero === "masculino"
+      ? 11 - base
+      : base + 4;
+
+  if (numero > 9) numero -= 9;
+  if (numero === 5) numero = genero === "masculino" ? 2 : 8;
+
+  return numero;
+}
 
 function gerarHeadline(e: number, ex: number, ext: number) {
-  const frases = [
-    "Existe um padrão silencioso na forma como você está vivendo.",
-    "Você faz, mas sente que não sai do lugar.",
-    "Você começa com clareza, mas não sustenta o tempo necessário.",
-    "Você sabe o que precisa fazer — mas algo trava no caminho.",
-  ];
-  return frases[(e + ex + ext) % frases.length];
+  return `Você sente um atrito interno entre o que sabe, o que faz e o que a vida permite.`;
 }
 
 function gerarLeitura(e: number, ex: number, ext: number) {
@@ -44,14 +64,14 @@ function gerarLeitura(e: number, ex: number, ext: number) {
   const EXT = energias[ext];
 
   return `
-Por dentro, você tende a ${E.comportamento}.
-Na prática, você tende a ${EX.comportamento}.
-O ambiente tende a ${EXT.comportamento}.
+Por dentro, você ${E.comportamento}.
+Na prática, você ${EX.comportamento}.
+O ambiente ${EXT.comportamento}.
 
 Isso cria um padrão:
 
-Você começa com uma lógica clara.
-Mas precisa ajustar no meio do caminho.
+Você começa com uma lógica clara,
+mas precisa ajustar no meio do caminho.
 
 E quanto mais tenta resolver,
 mais esforço precisa fazer.
@@ -63,19 +83,18 @@ Mas em como você está tentando fazer.
 }
 
 export default function Page() {
-  const [step, setStep] = useState(0);
   const [data, setData] = useState("");
-  const [sexo, setSexo] = useState("");
+  const [genero, setGenero] = useState("feminino");
   const [resultado, setResultado] = useState<any>(null);
 
   function calcular() {
-    if (!data || !sexo) return;
+    if (!data) return;
 
-    const map = calculateMap(new Date(data + "T00:00:00"), sexo);
+    const date = new Date(data);
 
-    const e = map.essential.number;
-    const ex = map.expression.number;
-    const ext = map.personal.number;
+    const e = calcularEnergia(date, genero);
+    const ex = reduzir(e + 2);
+    const ext = reduzir(e + 4);
 
     setResultado({
       e,
@@ -84,85 +103,104 @@ export default function Page() {
       headline: gerarHeadline(e, ex, ext),
       leitura: gerarLeitura(e, ex, ext),
     });
-
-    setStep(2);
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f5f5f5] p-6">
-      <div className="w-full max-w-2xl bg-white rounded-3xl p-8 shadow">
+    <div className="p-6 max-w-4xl mx-auto">
 
-        {step === 0 && (
-          <>
-            <h1 className="text-3xl font-bold text-center">
-              ENGENHARIA<br />DOS PADRÕES PESSOAIS
-            </h1>
-            <p className="text-center mt-4 text-gray-500">
-              O problema não é esforço.<br />
-              É como sua energia está sendo aplicada.
-            </p>
-            <button onClick={() => setStep(1)} className="mt-6 w-full bg-black text-white py-3 rounded-xl">
-              Começar
-            </button>
-          </>
-        )}
+      {/* CAPA */}
+      {!resultado && (
+        <div className="bg-gray-100 p-10 rounded-3xl text-center">
+          <h1 className="text-3xl font-bold">ENGENHARIA DOS PADRÕES PESSOAIS</h1>
+          <p className="text-gray-500 mt-2">
+            O problema não é esforço. É como sua energia está sendo aplicada.
+          </p>
+          <button
+            onClick={() => setResultado({})}
+            className="mt-6 bg-black text-white px-8 py-3 rounded-xl"
+          >
+            Começar
+          </button>
+        </div>
+      )}
 
-        {step === 1 && (
-          <>
-            <input type="date" value={data} onChange={(e) => setData(e.target.value)} className="w-full border p-3 rounded mb-4" />
-            <select value={sexo} onChange={(e) => setSexo(e.target.value)} className="w-full border p-3 rounded mb-4">
-              <option value="">Sexo</option>
-              <option value="female">Feminino</option>
-              <option value="male">Masculino</option>
-            </select>
-            <button onClick={calcular} className="w-full bg-black text-white py-3 rounded-xl">
-              Ver minha engenharia
-            </button>
-          </>
-        )}
+      {/* FORM */}
+      {resultado && !resultado.e && (
+        <div className="bg-gray-100 p-6 rounded-2xl mt-6">
+          <input
+            type="date"
+            className="w-full p-3 rounded mb-4"
+            onChange={(e) => setData(e.target.value)}
+          />
+          <select
+            className="w-full p-3 rounded mb-4"
+            onChange={(e) => setGenero(e.target.value)}
+          >
+            <option value="feminino">Feminino</option>
+            <option value="masculino">Masculino</option>
+          </select>
 
-        {step === 2 && resultado && (
-          <>
-            <h2 className="text-lg font-semibold mb-6">{resultado.headline}</h2>
+          <button
+            onClick={calcular}
+            className="w-full bg-black text-white py-3 rounded-xl"
+          >
+            Ver minha engenharia
+          </button>
+        </div>
+      )}
 
-            {/* CARDS */}
-            <div className="grid grid-cols-3 gap-4 mb-6">
-              {[resultado.e, resultado.ex, resultado.ext].map((n, i) => (
-                <div key={i} className="bg-gray-100 rounded-xl p-4 text-center">
-                  <div className="text-xs text-gray-500 mb-1">
+      {/* RESULTADO */}
+      {resultado?.e && (
+        <div className="mt-6">
+
+          <h2 className="text-xl font-semibold mb-4">
+            {resultado.headline}
+          </h2>
+
+          {/* RESUMO */}
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            {[resultado.e, resultado.ex, resultado.ext].map((n, i) => {
+              const en = energias[n];
+              return (
+                <div key={i} className="bg-gray-100 p-4 rounded-xl text-center">
+                  <div className="text-sm text-gray-500">
                     {i === 0 ? "Essência" : i === 1 ? "Expressão" : "Externa"}
                   </div>
-                  <div className="text-xl">{trigramas[n]}</div>
+                  <div className="text-2xl">{en.trigrama}</div>
                   <div className="text-3xl font-bold">{n}</div>
-                  <div className="text-sm">{energias[n].nome}</div>
-                  <div className="text-xs text-gray-400">{energias[n].arquétipo}</div>
+                  <div>{en.nome}</div>
+                  <div className="text-xs text-gray-400">{en.arquétipo}</div>
                 </div>
-              ))}
-            </div>
+              );
+            })}
+          </div>
 
-            {/* LUZ SOMBRA MISSÃO */}
-            <div className="grid grid-cols-3 gap-6 mb-6 text-sm">
-              {[resultado.e, resultado.ex, resultado.ext].map((n, i) => (
+          {/* LUZ SOMBRA MISSÃO */}
+          <div className="grid grid-cols-3 gap-4 mb-6 text-sm">
+            {[resultado.e, resultado.ex, resultado.ext].map((n, i) => {
+              const en = energias[n];
+              return (
                 <div key={i}>
-                  <p><strong>Luz:</strong> {energias[n].luz}</p>
-                  <p><strong>Sombra:</strong> {energias[n].sombra}</p>
-                  <p><strong>Missão:</strong> {energias[n].missao}</p>
+                  <div><b>Luz:</b> {en.luz}</div>
+                  <div><b>Sombra:</b> {en.sombra}</div>
+                  <div><b>Missão:</b> {en.missao}</div>
                 </div>
-              ))}
-            </div>
+              );
+            })}
+          </div>
 
-            {/* LEITURA */}
-            <div className="bg-gray-100 p-5 rounded-xl whitespace-pre-line mb-6">
-              {resultado.leitura}
-            </div>
+          {/* LEITURA */}
+          <div className="bg-gray-100 p-5 rounded-xl whitespace-pre-line mb-6">
+            {resultado.leitura}
+          </div>
 
-            <button className="w-full bg-black text-white py-4 rounded-xl">
-              Quero entender meu padrão com clareza
-            </button>
-          </>
-        )}
+          {/* CTA */}
+          <button className="w-full bg-black text-white py-4 rounded-xl">
+            Quero entender meu padrão com clareza
+          </button>
 
-      </div>
+        </div>
+      )}
     </div>
   );
 }
