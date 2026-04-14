@@ -34,20 +34,20 @@ function leituraEnergia(n: number) {
     1: {
       luz: "capacidade de se adaptar e fluir com o que a vida traz",
       sombra: "evitar confronto e se perder no ambiente",
-      missao: "aprender a se posicionar sem perder a sensibilidade",
+      missao: "se posicionar sem perder a sensibilidade",
     },
     2: {
-      luz: "nutrir, sustentar e dar suporte",
+      luz: "nutrir e sustentar",
       sombra: "se sobrecarregar cuidando de tudo",
       missao: "sustentar sem se anular",
     },
     3: {
-      luz: "iniciar movimentos e agir",
-      sombra: "agir por impulso sem direção",
-      missao: "canalizar ação com consciência",
+      luz: "agir e iniciar",
+      sombra: "agir por impulso",
+      missao: "direcionar a ação",
     },
     4: {
-      luz: "influenciar e construir com estratégia",
+      luz: "influenciar e construir",
       sombra: "controlar ou manipular",
       missao: "usar influência com clareza",
     },
@@ -57,23 +57,23 @@ function leituraEnergia(n: number) {
       missao: "agir mesmo sem garantia",
     },
     6: {
-      luz: "direcionar e liderar",
-      sombra: "controlar tudo rigidamente",
+      luz: "direção e comando",
+      sombra: "rigidez e controle excessivo",
       missao: "liderar com flexibilidade",
     },
     7: {
       luz: "expressar e conectar",
-      sombra: "buscar validação externa",
+      sombra: "buscar validação",
       missao: "se expressar com verdade",
     },
     8: {
-      luz: "criar limites e estabilidade",
-      sombra: "se fechar e resistir",
-      missao: "sustentar sem bloquear",
+      luz: "limite e estabilidade",
+      sombra: "isolamento e bloqueio",
+      missao: "sustentar sem travar",
     },
     9: {
-      luz: "expandir e dar visibilidade",
-      sombra: "exagerar ou se perder na intensidade",
+      luz: "expansão e visibilidade",
+      sombra: "excesso e dispersão",
       missao: "expandir com direção",
     },
   }[n];
@@ -86,44 +86,37 @@ function gerarLeitura(e: number, ex: number, ext: number) {
 
   let texto = "";
 
-  // ESSÊNCIA
   texto += `ESSÊNCIA — ${nome(e)}\n`;
   texto += `Luz: ${le.luz}.\n`;
   texto += `Sombra: ${le.sombra}.\n`;
   texto += `Missão: ${le.missao}.\n\n`;
 
-  // EXPRESSÃO
   texto += `EXPRESSÃO — ${nome(ex)}\n`;
   texto += `Luz: ${lx.luz}.\n`;
   texto += `Sombra: ${lx.sombra}.\n`;
   texto += `Missão: ${lx.missao}.\n\n`;
 
-  // EXTERNA
   texto += `ENERGIA EXTERNA — ${nome(ext)}\n`;
   texto += `Luz: ${lxt.luz}.\n`;
   texto += `Sombra: ${lxt.sombra}.\n`;
   texto += `Missão: ${lxt.missao}.\n\n`;
 
-  // INTEGRAÇÃO
   texto += `INTEGRAÇÃO\n`;
 
-  const tipoE = tipo(e);
-  const tipoExt = tipo(ext);
-
-  if (tipoE === "ativa" && tipoExt === "estrutural") {
+  if (tipo(e) === "ativa" && tipo(ext) === "estrutural") {
     texto += `Você tenta avançar, mas o momento pede contenção.\n`;
   }
 
-  if (tipoE === "estrutural" && tipoExt === "ativa") {
+  if (tipo(e) === "estrutural" && tipo(ext) === "ativa") {
     texto += `Você busca estabilidade, mas a vida exige movimento.\n`;
   }
 
   if (e !== ex) {
-    texto += `Existe um desalinhamento entre o que te sustenta e como você age.\n`;
+    texto += `Existe um desalinhamento entre o que você sustenta e como você age.\n`;
   }
 
   texto += `\nO desgaste não vem da falta de capacidade.\n`;
-  texto += `Vem da forma como suas energias estão sendo aplicadas.`;
+  texto += `Vem da forma como sua energia está sendo aplicada.`;
 
   return texto;
 }
@@ -169,13 +162,12 @@ export default function Page() {
         boxShadow: "0 10px 30px rgba(0,0,0,0.05)"
       }}>
 
-        {/* CAPA */}
         {step === 0 && (
           <>
             <h1 style={{
               fontSize: 32,
               fontWeight: 600,
-              textAlign: "center",
+              textAlign: "center" as const,
               lineHeight: "36px",
               marginBottom: 20
             }}>
@@ -183,16 +175,12 @@ export default function Page() {
               DOS PADRÕES PESSOAIS
             </h1>
 
-            <p style={{
-              textAlign: "center",
-              fontSize: 16,
-              marginBottom: 12
-            }}>
+            <p style={{ textAlign: "center" as const, marginBottom: 12 }}>
               Três energias organizam como você decide, se relaciona e sustenta sua vida.
             </p>
 
             <p style={{
-              textAlign: "center",
+              textAlign: "center" as const,
               fontSize: 14,
               color: "#666",
               marginBottom: 28
@@ -208,8 +196,7 @@ export default function Page() {
                 borderRadius: 14,
                 background: "black",
                 color: "white",
-                fontWeight: 600,
-                fontSize: 16
+                fontWeight: 600
               }}
             >
               Começar
@@ -217,7 +204,6 @@ export default function Page() {
           </>
         )}
 
-        {/* FORM */}
         {step === 1 && (
           <>
             <h2 style={{ marginBottom: 16 }}>Seus dados</h2>
@@ -267,10 +253,9 @@ export default function Page() {
           </>
         )}
 
-        {/* RESULTADO */}
         {step === 2 && resultado && (
           <>
-            <h2 style={{ textAlign: "center", marginBottom: 20 }}>
+            <h2 style={{ textAlign: "center" as const, marginBottom: 20 }}>
               Como suas energias estão organizadas
             </h2>
 
@@ -294,7 +279,7 @@ export default function Page() {
               style={{
                 display: "block",
                 marginTop: 20,
-                textAlign: "center",
+                textAlign: "center" as const,
                 background: "black",
                 color: "white",
                 padding: 16,
