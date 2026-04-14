@@ -3,19 +3,72 @@
 import { useState } from "react";
 import { calculateMap } from "@/utils/jiugong";
 
-function nome(n: number) {
-  return {
-    1: "Água",
-    2: "Terra",
-    3: "Trovão",
-    4: "Vento",
-    5: "Centro",
-    6: "Céu",
-    7: "Lago",
-    8: "Montanha",
-    9: "Fogo",
-  }[n] || "";
-}
+/* 🔷 BASE DE ARQUÉTIPOS */
+const energias: any = {
+  1: {
+    nome: "Água",
+    arquetipo: "A Adaptadora",
+    luz: "se adapta com facilidade ao ambiente",
+    sombra: "se perde evitando confronto",
+    missao: "sustentar direção mesmo em movimento",
+  },
+  2: {
+    nome: "Terra",
+    arquetipo: "A Sustentadora",
+    luz: "nutre e sustenta estruturas",
+    sombra: "assume mais do que deveria",
+    missao: "sustentar sem se anular",
+  },
+  3: {
+    nome: "Trovão",
+    arquetipo: "A Iniciadora",
+    luz: "ativa e coloca energia em movimento",
+    sombra: "impulsividade sem direção",
+    missao: "transformar impulso em consistência",
+  },
+  4: {
+    nome: "Vento",
+    arquetipo: "A Influenciadora",
+    luz: "comunica e influencia",
+    sombra: "se dispersa e não sustenta posição",
+    missao: "alinhar comunicação com intenção",
+  },
+  5: {
+    nome: "Centro",
+    arquetipo: "O Eixo",
+    luz: "organiza e equilibra",
+    sombra: "controla e paralisa",
+    missao: "agir sem precisar controlar tudo",
+  },
+  6: {
+    nome: "Céu",
+    arquetipo: "A Estrategista",
+    luz: "direciona e lidera",
+    sombra: "rigidez e controle excessivo",
+    missao: "liderar com flexibilidade",
+  },
+  7: {
+    nome: "Lago",
+    arquetipo: "A Expressiva",
+    luz: "conecta e se expressa",
+    sombra: "busca validação externa",
+    missao: "se expressar com verdade",
+  },
+  8: {
+    nome: "Montanha",
+    arquetipo: "A Guardiã",
+    luz: "sustenta e cria limites",
+    sombra: "bloqueia e resiste",
+    missao: "discernir quando parar e quando avançar",
+  },
+  9: {
+    nome: "Fogo",
+    arquetipo: "A Reveladora",
+    luz: "expande e ilumina",
+    sombra: "exagera e dispersa",
+    missao: "expandir com direção",
+  },
+};
 
 function tipo(n: number) {
   if ([1, 3, 9].includes(n)) return "ativa";
@@ -23,63 +76,59 @@ function tipo(n: number) {
   return "relacional";
 }
 
-/* 🔥 LEITURA POR COMBINAÇÃO (NÍVEL REAL) */
+/* 🔥 MOTOR DE LEITURA */
 function gerarLeitura(e: number, ex: number, ext: number) {
+  const ess = energias[e];
+  const exp = energias[ex];
+  const externa = energias[ext];
 
-  // 💣 CASOS ESPECÍFICOS (aqui começa o jogo de verdade)
-  if (e === 6 && ex === 3 && ext === 8) {
-    return `
-Você não é perdida.
-Mas a forma como você está se movendo te faz parecer.
-
-Por dentro, você tem direção.
-Você sabe o que quer.
-
-Mas na prática,
-você entra em ação rápido demais.
-
-E a vida, agora,
-não está pedindo velocidade.
-
-Está pedindo contenção.
-
-Você tenta avançar,
-mas encontra limite.
-
-E quanto mais força,
-mais trava.
-
-Isso não é falta de capacidade.
-
-É desalinhamento de timing.
-
-Você está tentando crescer
-no momento em que deveria sustentar.
-`;
-  }
-
-  // 🔧 BASE INTELIGENTE (fallback)
   let texto = "";
 
-  texto += `Existe um padrão claro na forma como suas energias estão organizadas.\n\n`;
+  // 🔷 IDENTIDADE
+  texto += `${ess.arquetipo} por dentro.\n`;
+  texto += `${exp.arquetipo} na forma como você se move.\n\n`;
 
-  if (tipo(e) === "ativa" && tipo(ext) === "estrutural") {
-    texto += `Você tenta avançar, mas o momento pede contenção.\n\n`;
-  }
+  // 🔷 LUZ / SOMBRA / MISSÃO
+  texto += `Essência (${ess.nome})\n`;
+  texto += `Luz: ${ess.luz}.\n`;
+  texto += `Sombra: ${ess.sombra}.\n`;
+  texto += `Missão: ${ess.missao}.\n\n`;
 
-  if (tipo(e) === "estrutural" && tipo(ext) === "ativa") {
-    texto += `Você busca estabilidade, mas a vida exige movimento.\n\n`;
-  }
+  texto += `Expressão (${exp.nome})\n`;
+  texto += `Luz: ${exp.luz}.\n`;
+  texto += `Sombra: ${exp.sombra}.\n`;
+  texto += `Missão: ${exp.missao}.\n\n`;
 
+  texto += `Energia Externa (${externa.nome})\n`;
+  texto += `Luz: ${externa.luz}.\n`;
+  texto += `Sombra: ${externa.sombra}.\n`;
+  texto += `Missão: ${externa.missao}.\n\n`;
+
+  // 🔥 TENSÃO
   if (e !== ex) {
-    texto += `Existe um desalinhamento entre o que você sustenta e como você age.\n\n`;
+    texto += `Existe um descompasso entre o que sustenta você por dentro e a forma como você age.\n\n`;
   }
 
-  texto += `Você faz mais esforço do que deveria.\n`;
-  texto += `E isso está te desgastando.\n\n`;
+  const interno = tipo(e);
+  const externo = tipo(ext);
 
-  texto += `Não é falta de capacidade.\n`;
-  texto += `É energia aplicada na direção errada.`;
+  if (interno === "ativa" && externo === "estrutural") {
+    texto += `O impulso é avançar.\n`;
+    texto += `A resposta do cenário é contenção.\n\n`;
+  }
+
+  if (interno === "estrutural" && externo === "ativa") {
+    texto += `A tendência é sustentar.\n`;
+    texto += `O contexto exige movimento.\n\n`;
+  }
+
+  if (interno === "relacional") {
+    texto += `Você tende a ajustar antes de se posicionar.\n\n`;
+  }
+
+  // 🔷 FECHAMENTO (SEM FRASE DE COACH)
+  texto += `O ponto não está na quantidade de energia.\n`;
+  texto += `Mas na forma como ela está sendo distribuída.`;
 
   return texto;
 }
@@ -125,6 +174,7 @@ export default function Page() {
         boxShadow: "0 10px 30px rgba(0,0,0,0.05)"
       }}>
 
+        {/* CAPA */}
         {step === 0 && (
           <>
             <h1 style={{
@@ -141,7 +191,7 @@ export default function Page() {
             </p>
 
             <p style={{ textAlign: "center", color: "#666", marginBottom: 28 }}>
-              Esse mapa revela onde sua energia está sendo mal direcionada.
+              Esse mapa revela como sua energia está sendo aplicada.
             </p>
 
             <button
@@ -160,6 +210,7 @@ export default function Page() {
           </>
         )}
 
+        {/* FORM */}
         {step === 1 && (
           <>
             <h2 style={{ marginBottom: 16 }}>Seus dados</h2>
@@ -209,20 +260,12 @@ export default function Page() {
           </>
         )}
 
+        {/* RESULTADO */}
         {step === 2 && resultado && (
           <>
             <h2 style={{ textAlign: "center", marginBottom: 20 }}>
               Como suas energias estão organizadas
             </h2>
-
-            <div style={{
-              marginBottom: 20,
-              fontWeight: 500
-            }}>
-              Essência: {resultado.essencia} — {nome(resultado.essencia)} <br />
-              Expressão: {resultado.expressao} — {nome(resultado.expressao)} <br />
-              Energia Externa: {resultado.externa} — {nome(resultado.externa)}
-            </div>
 
             <div style={{
               background: "#f1f1f1",
