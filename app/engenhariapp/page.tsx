@@ -3,206 +3,244 @@
 import { useState } from "react";
 import { calculateMap } from "@/utils/jiugong";
 
-const energias: any = {
-  1: { nome: "Água", arquetipo: "A Adaptadora", luz: "flui", sombra: "evita confronto", missao: "confiar no fluxo", comportamento: "se adapta demais" },
-  2: { nome: "Terra", arquetipo: "A Sustentadora", luz: "cuida", sombra: "se sobrecarrega", missao: "nutrir sem se anular", comportamento: "assume demais" },
-  3: { nome: "Trovão", arquetipo: "A Iniciadora", luz: "inicia", sombra: "se precipita", missao: "sustentar", comportamento: "age rápido" },
-  4: { nome: "Vento", arquetipo: "A Influenciadora", luz: "comunica", sombra: "se dispersa", missao: "alinhar comunicação", comportamento: "ajusta antes de agir" },
-  5: { nome: "Centro", arquetipo: "A Integradora", luz: "equilibra", sombra: "se perde", missao: "decidir", comportamento: "analisa demais" },
-  6: { nome: "Céu", arquetipo: "A Estrategista", luz: "direciona", sombra: "trava execução", missao: "agir com consistência", comportamento: "sabe mas não executa" },
-  7: { nome: "Lago", arquetipo: "A Comunicadora", luz: "expressa", sombra: "busca aprovação", missao: "verdade", comportamento: "agrada antes de se posicionar" },
-  8: { nome: "Montanha", arquetipo: "A Guardiã", luz: "estrutura", sombra: "bloqueia", missao: "liberar", comportamento: "segura movimento" },
-  9: { nome: "Fogo", arquetipo: "A Visionária", luz: "expande", sombra: "se dispersa", missao: "focar", comportamento: "empolga e não conclui" },
+type Energia = {
+  nome: string;
+  arquétipo: string;
+  luz: string;
+  sombra: string;
+  missao: string;
+  comportamento: string;
 };
 
-/* 🔥 HEADLINE INTELIGENTE (gera 729 combinações) */
+const energias: Record<number, Energia> = {
+  1: {
+    nome: "Água",
+    arquétipo: "A Sensitiva",
+    luz: "percebe profundamente",
+    sombra: "se retrai",
+    missao: "confiar na própria percepção",
+    comportamento: "sente antes de agir",
+  },
+  2: {
+    nome: "Terra",
+    arquétipo: "A Sustentadora",
+    luz: "acolhe e sustenta",
+    sombra: "se sobrecarrega",
+    missao: "cuidar sem se anular",
+    comportamento: "assume responsabilidades",
+  },
+  3: {
+    nome: "Trovão",
+    arquétipo: "A Iniciadora",
+    luz: "começa e movimenta",
+    sombra: "se precipita",
+    missao: "sustentar o que começa",
+    comportamento: "age rápido",
+  },
+  4: {
+    nome: "Vento",
+    arquétipo: "A Influenciadora",
+    luz: "comunica e conecta",
+    sombra: "se dispersa",
+    missao: "alinhar comunicação com direção",
+    comportamento: "ajusta antes de se posicionar",
+  },
+  5: {
+    nome: "Centro",
+    arquétipo: "A Integradora",
+    luz: "equilibra",
+    sombra: "se perde no caos",
+    missao: "organizar o centro",
+    comportamento: "oscila entre controle e confusão",
+  },
+  6: {
+    nome: "Céu",
+    arquétipo: "A Estrategista",
+    luz: "direciona com clareza",
+    sombra: "trava na execução",
+    missao: "agir com consistência",
+    comportamento: "sabe o que precisa ser feito",
+  },
+  7: {
+    nome: "Lago",
+    arquétipo: "A Comunicadora",
+    luz: "expressa e conecta",
+    sombra: "busca aprovação",
+    missao: "se expressar com verdade",
+    comportamento: "agrada antes de se posicionar",
+  },
+  8: {
+    nome: "Montanha",
+    arquétipo: "A Guardiã",
+    luz: "sustenta e estrutura",
+    sombra: "bloqueia movimento",
+    missao: "liberar no tempo certo",
+    comportamento: "contém e segura",
+  },
+  9: {
+    nome: "Fogo",
+    arquétipo: "A Visionária",
+    luz: "expande e ilumina",
+    sombra: "se dispersa",
+    missao: "focar para realizar",
+    comportamento: "se empolga e perde continuidade",
+  },
+};
+
 function gerarHeadline(e: number, ex: number, ext: number) {
-  const ess = energias[e];
-  const exp = energias[ex];
-  const amb = energias[ext];
-
-  const blocosInicio = [
-    "Você sabe o que fazer",
-    "Você tem clareza",
-    "Você começa com intenção",
+  const base = [
+    "Você faz, mas sente que não sai do lugar.",
+    "Existe um padrão silencioso na forma como você vive.",
+    "Você sabe o que precisa fazer — mas algo não sustenta.",
+    "Você começa com clareza, mas perde força no caminho.",
   ];
-
-  const blocosMeio = [
-    "mas não sustenta",
-    "mas se perde no meio",
-    "mas muda no caminho",
-  ];
-
-  const blocosFim = [
-    "porque o ambiente segura",
-    "porque algo trava",
-    "porque o ritmo não acompanha",
-  ];
-
-  const i = (e + ex) % blocosInicio.length;
-  const m = (ex + ext) % blocosMeio.length;
-  const f = (e + ext) % blocosFim.length;
-
-  return `${blocosInicio[i]} — ${blocosMeio[m]} ${blocosFim[f]}.`;
+  return base[(e + ex + ext) % base.length];
 }
 
-/* 🔍 LEITURA */
 function gerarLeitura(e: number, ex: number, ext: number) {
-  const ess = energias[e];
-  const exp = energias[ex];
-  const amb = energias[ext];
+  const E = energias[e];
+  const EX = energias[ex];
+  const EXT = energias[ext];
 
   return `
-Por dentro, você tende a ${ess.comportamento}.
-Na prática, você tende a ${exp.comportamento}.
-E o ambiente tende a ${amb.comportamento}.
+Por dentro, você ${E.comportamento}.
+Na prática, você ${EX.comportamento}.
+E o ambiente tende a ${EXT.comportamento}.
 
 Isso cria um padrão:
 
-Você começa com intenção.
-Mas ajusta no caminho.
+Você começa com uma lógica interna clara.
+Mas precisa ajustar no meio do caminho.
 
 E quanto mais tenta resolver,
-mais força precisa fazer.
+mais esforço precisa fazer.
 
 O desgaste não está no quanto você faz.
 
-Está em como está tentando fazer.
+Mas em como você está tentando fazer.
 `;
 }
 
 export default function Page() {
+  const [step, setStep] = useState(0);
   const [data, setData] = useState("");
   const [sexo, setSexo] = useState("");
-  const [step, setStep] = useState(0);
-  const [res, setRes]: any = useState(null);
+  const [resultado, setResultado] = useState<any>(null);
 
   function calcular() {
     if (!data || !sexo) return;
 
-    const map = calculateMap(data, sexo);
+    const map = calculateMap(new Date(data + "T00:00:00"), sexo);
 
     const e = map.essential.number;
     const ex = map.expression.number;
     const ext = map.personal.number;
 
-    setRes({
+    setResultado({
       e,
       ex,
       ext,
-      texto: gerarLeitura(e, ex, ext),
-      headline: gerarHeadline(e, ex, ext)
+      leitura: gerarLeitura(e, ex, ext),
+      headline: gerarHeadline(e, ex, ext),
     });
+
+    setStep(2);
   }
 
-  /* TELA INICIAL */
-  if (step === 0) {
-    return (
-      <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ textAlign: "center", maxWidth: 400 }}>
-          <h1>ENGENHARIA<br />DOS PADRÕES PESSOAIS</h1>
-
-          <p style={{ opacity: 0.6 }}>
-            O problema não é esforço.<br />
-            É como sua energia está sendo aplicada.
-          </p>
-
-          <button onClick={() => setStep(1)} style={{
-            marginTop: 30,
-            width: "100%",
-            padding: 16,
-            background: "#000",
-            color: "#fff",
-            borderRadius: 14
-          }}>
-            Começar
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  /* INPUT */
-  if (!res) {
-    return (
-      <div style={{ padding: 24 }}>
-        <input type="date" onChange={(e) => setData(e.target.value)} />
-        <select onChange={(e) => setSexo(e.target.value)}>
-          <option>Sexo</option>
-          <option value="female">Feminino</option>
-          <option value="male">Masculino</option>
-        </select>
-
-        <button onClick={calcular}>
-          Ver minha engenharia
-        </button>
-      </div>
-    );
-  }
-
-  /* RESULTADO */
   return (
-    <div style={{ padding: 24 }}>
+    <div className="min-h-screen flex items-center justify-center bg-[#f5f5f5] p-6">
+      <div className="w-full max-w-xl bg-white rounded-3xl p-8 shadow">
 
-      <h2>{res.headline}</h2>
+        {/* CAPA */}
+        {step === 0 && (
+          <>
+            <h1 className="text-3xl font-bold text-center">
+              ENGENHARIA<br />DOS PADRÕES PESSOAIS
+            </h1>
+            <p className="text-center mt-4 text-gray-500">
+              O problema não é esforço.<br />
+              É como sua energia está sendo aplicada.
+            </p>
 
-      {/* RESUMO */}
-      <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
-        {[res.e, res.ex, res.ext].map((n, i) => {
-          const en = energias[n];
-          const labels = ["Essência", "Expressão", "Externa"];
+            <button
+              onClick={() => setStep(1)}
+              className="mt-6 w-full bg-black text-white py-3 rounded-xl"
+            >
+              Começar
+            </button>
+          </>
+        )}
 
-          return (
-            <div key={i} style={{ flex: 1, background: "#f5f5f5", padding: 14, borderRadius: 12, textAlign: "center" }}>
-              <div>{labels[i]}</div>
-              <strong>{n}</strong>
-              <div>{en.nome}</div>
-              <small>{en.arquetipo}</small>
+        {/* INPUT */}
+        {step === 1 && (
+          <>
+            <input
+              type="date"
+              value={data}
+              onChange={(e) => setData(e.target.value)}
+              className="w-full border p-3 rounded mb-4"
+            />
+
+            <select
+              value={sexo}
+              onChange={(e) => setSexo(e.target.value)}
+              className="w-full border p-3 rounded mb-4"
+            >
+              <option value="">Sexo</option>
+              <option value="female">Feminino</option>
+              <option value="male">Masculino</option>
+            </select>
+
+            <button
+              onClick={calcular}
+              className="w-full bg-black text-white py-3 rounded-xl"
+            >
+              Ver minha engenharia
+            </button>
+          </>
+        )}
+
+        {/* RESULTADO */}
+        {step === 2 && resultado && (
+          <>
+            <h2 className="text-xl font-semibold mb-6">
+              {resultado.headline}
+            </h2>
+
+            {/* RESUMO */}
+            <div className="grid grid-cols-3 gap-4 text-center mb-6">
+              {[resultado.e, resultado.ex, resultado.ext].map((n, i) => (
+                <div key={i}>
+                  <div className="text-2xl font-bold">{n}</div>
+                  <div>{energias[n].nome}</div>
+                </div>
+              ))}
             </div>
-          );
-        })}
-      </div>
 
-      {/* LUZ SOMBRA MISSÃO */}
-      <div style={{ display: "flex", gap: 20, marginTop: 30 }}>
-        {[res.e, res.ex, res.ext].map((n, i) => {
-          const en = energias[n];
-          const labels = ["Essência", "Expressão", "Externa"];
+            {/* LUZ / SOMBRA / MISSÃO */}
+            {[resultado.e, resultado.ex, resultado.ext].map((n, i) => (
+              <div key={i} className="mb-4">
+                <h3 className="font-semibold">
+                  {energias[n].nome} — {energias[n].arquétipo}
+                </h3>
+                <p>Luz: {energias[n].luz}</p>
+                <p>Sombra: {energias[n].sombra}</p>
+                <p>Missão: {energias[n].missao}</p>
+              </div>
+            ))}
 
-          return (
-            <div key={i} style={{ flex: 1 }}>
-              <strong>{labels[i]} — {en.nome}</strong><br />
-              Luz: {en.luz}<br />
-              Sombra: {en.sombra}<br />
-              Missão: {en.missao}
+            {/* LEITURA */}
+            <div className="bg-gray-100 p-4 rounded-xl whitespace-pre-line mb-6">
+              {resultado.leitura}
             </div>
-          );
-        })}
+
+            <button className="w-full bg-black text-white py-3 rounded-xl">
+              Quero entender meu padrão com clareza
+            </button>
+          </>
+        )}
+
       </div>
-
-      {/* LEITURA */}
-      <div style={{
-        marginTop: 30,
-        background: "#eee",
-        padding: 20,
-        borderRadius: 14,
-        whiteSpace: "pre-line"
-      }}>
-        {res.texto}
-      </div>
-
-      {/* CTA */}
-      <button style={{
-        marginTop: 30,
-        width: "100%",
-        padding: 16,
-        background: "#000",
-        color: "#fff",
-        borderRadius: 14
-      }}>
-        Quero entender meu padrão com clareza
-      </button>
-
     </div>
   );
 }
