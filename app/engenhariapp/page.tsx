@@ -90,9 +90,8 @@ export default function Page() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f5f5f5] p-6">
-      <div className="w-full max-w-xl bg-white rounded-3xl p-8 shadow">
+      <div className="w-full max-w-2xl bg-white rounded-3xl p-8 shadow">
 
-        {/* CAPA */}
         {step === 0 && (
           <>
             <h1 className="text-3xl font-bold text-center">
@@ -102,87 +101,62 @@ export default function Page() {
               O problema não é esforço.<br />
               É como sua energia está sendo aplicada.
             </p>
-
-            <button
-              onClick={() => setStep(1)}
-              className="mt-6 w-full bg-black text-white py-3 rounded-xl"
-            >
+            <button onClick={() => setStep(1)} className="mt-6 w-full bg-black text-white py-3 rounded-xl">
               Começar
             </button>
           </>
         )}
 
-        {/* INPUT */}
         {step === 1 && (
           <>
-            <input
-              type="date"
-              value={data}
-              onChange={(e) => setData(e.target.value)}
-              className="w-full border p-3 rounded mb-4"
-            />
-
-            <select
-              value={sexo}
-              onChange={(e) => setSexo(e.target.value)}
-              className="w-full border p-3 rounded mb-4"
-            >
+            <input type="date" value={data} onChange={(e) => setData(e.target.value)} className="w-full border p-3 rounded mb-4" />
+            <select value={sexo} onChange={(e) => setSexo(e.target.value)} className="w-full border p-3 rounded mb-4">
               <option value="">Sexo</option>
               <option value="female">Feminino</option>
               <option value="male">Masculino</option>
             </select>
-
-            <button
-              onClick={calcular}
-              className="w-full bg-black text-white py-3 rounded-xl"
-            >
+            <button onClick={calcular} className="w-full bg-black text-white py-3 rounded-xl">
               Ver minha engenharia
             </button>
           </>
         )}
 
-        {/* RESULTADO */}
         {step === 2 && resultado && (
           <>
-            <h2 className="text-lg font-semibold mb-6">
-              {resultado.headline}
-            </h2>
+            <h2 className="text-lg font-semibold mb-6">{resultado.headline}</h2>
 
-            {/* RESUMO COM TRIGRAMAS */}
-            <div className="grid grid-cols-3 gap-4 text-center mb-6">
+            {/* CARDS */}
+            <div className="grid grid-cols-3 gap-4 mb-6">
               {[resultado.e, resultado.ex, resultado.ext].map((n, i) => (
-                <div key={i} className="bg-gray-100 rounded-xl p-4">
-                  <div className="text-xs text-gray-500">
+                <div key={i} className="bg-gray-100 rounded-xl p-4 text-center">
+                  <div className="text-xs text-gray-500 mb-1">
                     {i === 0 ? "Essência" : i === 1 ? "Expressão" : "Externa"}
                   </div>
                   <div className="text-xl">{trigramas[n]}</div>
-                  <div className="text-2xl font-bold">{n}</div>
+                  <div className="text-3xl font-bold">{n}</div>
                   <div className="text-sm">{energias[n].nome}</div>
-                  <div className="text-xs text-gray-400">
-                    {energias[n].arquétipo}
-                  </div>
+                  <div className="text-xs text-gray-400">{energias[n].arquétipo}</div>
                 </div>
               ))}
             </div>
 
             {/* LUZ SOMBRA MISSÃO */}
-            {[resultado.e, resultado.ex, resultado.ext].map((n, i) => (
-              <div key={i} className="mb-4">
-                <h3 className="font-semibold">
-                  {energias[n].nome}
-                </h3>
-                <p>Luz: {energias[n].luz}</p>
-                <p>Sombra: {energias[n].sombra}</p>
-                <p>Missão: {energias[n].missao}</p>
-              </div>
-            ))}
+            <div className="grid grid-cols-3 gap-6 mb-6 text-sm">
+              {[resultado.e, resultado.ex, resultado.ext].map((n, i) => (
+                <div key={i}>
+                  <p><strong>Luz:</strong> {energias[n].luz}</p>
+                  <p><strong>Sombra:</strong> {energias[n].sombra}</p>
+                  <p><strong>Missão:</strong> {energias[n].missao}</p>
+                </div>
+              ))}
+            </div>
 
             {/* LEITURA */}
-            <div className="bg-gray-100 p-4 rounded-xl whitespace-pre-line mb-6">
+            <div className="bg-gray-100 p-5 rounded-xl whitespace-pre-line mb-6">
               {resultado.leitura}
             </div>
 
-            <button className="w-full bg-black text-white py-3 rounded-xl">
+            <button className="w-full bg-black text-white py-4 rounded-xl">
               Quero entender meu padrão com clareza
             </button>
           </>
