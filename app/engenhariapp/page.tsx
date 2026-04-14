@@ -4,45 +4,46 @@ import { useState } from "react";
 import { calculateMap } from "@/utils/jiugong";
 
 const energias: any = {
-  1: { nome: "Água", arquetipo: "A Adaptadora", luz: "flui e se ajusta", sombra: "evita confronto", missao: "confiar no fluxo com direção", comportamento: "tende a se adaptar demais e evitar confronto" },
-  2: { nome: "Terra", arquetipo: "A Sustentadora", luz: "cuida e suporta", sombra: "se sobrecarrega", missao: "nutrir sem se anular", comportamento: "tende a assumir responsabilidades demais" },
-  3: { nome: "Trovão", arquetipo: "A Iniciadora", luz: "age e inicia", sombra: "se precipita", missao: "sustentar o que começa", comportamento: "tende a agir rápido e ajustar depois" },
-  4: { nome: "Vento", arquetipo: "A Influenciadora", luz: "comunica e influencia", sombra: "se dispersa", missao: "alinhar comunicação com intenção", comportamento: "tende a ajustar antes de se posicionar" },
-  5: { nome: "Centro", arquetipo: "A Integradora", luz: "equilibra", sombra: "se perde na dúvida", missao: "agir com clareza interna", comportamento: "tende a analisar demais antes de agir" },
-  6: { nome: "Céu", arquetipo: "A Estrategista", luz: "direciona e lidera", sombra: "trava na execução", missao: "agir com consistência", comportamento: "tende a saber o que precisa, mas não sustenta execução" },
-  7: { nome: "Lago", arquetipo: "A Comunicadora", luz: "expressa e conecta", sombra: "busca aprovação", missao: "se expressar com verdade", comportamento: "tende a agradar antes de se posicionar" },
-  8: { nome: "Montanha", arquetipo: "A Guardiã", luz: "estrutura e protege", sombra: "bloqueia avanço", missao: "liberar no tempo certo", comportamento: "tende a conter e evitar movimento" },
-  9: { nome: "Fogo", arquetipo: "A Visionária", luz: "expande e ilumina", sombra: "se dispersa", missao: "focar para realizar", comportamento: "tende a se empolgar e não concluir" },
+  1: { nome: "Água", arquetipo: "A Adaptadora", luz: "flui", sombra: "evita confronto", missao: "confiar no fluxo", comportamento: "se adapta demais" },
+  2: { nome: "Terra", arquetipo: "A Sustentadora", luz: "cuida", sombra: "se sobrecarrega", missao: "nutrir sem se anular", comportamento: "assume demais" },
+  3: { nome: "Trovão", arquetipo: "A Iniciadora", luz: "inicia", sombra: "se precipita", missao: "sustentar", comportamento: "age rápido" },
+  4: { nome: "Vento", arquetipo: "A Influenciadora", luz: "comunica", sombra: "se dispersa", missao: "alinhar comunicação", comportamento: "ajusta antes de agir" },
+  5: { nome: "Centro", arquetipo: "A Integradora", luz: "equilibra", sombra: "se perde", missao: "decidir", comportamento: "analisa demais" },
+  6: { nome: "Céu", arquetipo: "A Estrategista", luz: "direciona", sombra: "trava execução", missao: "agir com consistência", comportamento: "sabe mas não executa" },
+  7: { nome: "Lago", arquetipo: "A Comunicadora", luz: "expressa", sombra: "busca aprovação", missao: "verdade", comportamento: "agrada antes de se posicionar" },
+  8: { nome: "Montanha", arquetipo: "A Guardiã", luz: "estrutura", sombra: "bloqueia", missao: "liberar", comportamento: "segura movimento" },
+  9: { nome: "Fogo", arquetipo: "A Visionária", luz: "expande", sombra: "se dispersa", missao: "focar", comportamento: "empolga e não conclui" },
 };
 
-function tipo(n: number) {
-  if ([1,3,9].includes(n)) return "ativa";
-  if ([2,6,8].includes(n)) return "estrutural";
-  return "relacional";
-}
-
-/* 🔥 HEADLINE DINÂMICA */
+/* 🔥 HEADLINE INTELIGENTE (gera 729 combinações) */
 function gerarHeadline(e: number, ex: number, ext: number) {
-  const tE = tipo(e);
-  const tExt = tipo(ext);
+  const ess = energias[e];
+  const exp = energias[ex];
+  const amb = energias[ext];
 
-  if (tE === "ativa" && tExt === "estrutural") {
-    return "Você tenta avançar — mas algo sempre trava."
-  }
+  const blocosInicio = [
+    "Você sabe o que fazer",
+    "Você tem clareza",
+    "Você começa com intenção",
+  ];
 
-  if (tE === "estrutural" && tExt === "ativa") {
-    return "Você tenta manter controle — mas a vida pede movimento."
-  }
+  const blocosMeio = [
+    "mas não sustenta",
+    "mas se perde no meio",
+    "mas muda no caminho",
+  ];
 
-  if (e === ex) {
-    return "Você faz — mas repete o mesmo padrão."
-  }
+  const blocosFim = [
+    "porque o ambiente segura",
+    "porque algo trava",
+    "porque o ritmo não acompanha",
+  ];
 
-  if (ex === ext) {
-    return "Você se move — mas não sente que está no controle."
-  }
+  const i = (e + ex) % blocosInicio.length;
+  const m = (ex + ext) % blocosMeio.length;
+  const f = (e + ext) % blocosFim.length;
 
-  return "Existe um padrão silencioso na forma como você está vivendo."
+  return `${blocosInicio[i]} — ${blocosMeio[m]} ${blocosFim[f]}.`;
 }
 
 /* 🔍 LEITURA */
@@ -52,9 +53,9 @@ function gerarLeitura(e: number, ex: number, ext: number) {
   const amb = energias[ext];
 
   return `
-Por dentro, você ${ess.comportamento}.
-Na prática, você ${exp.comportamento}.
-E o ambiente ${amb.comportamento}.
+Por dentro, você tende a ${ess.comportamento}.
+Na prática, você tende a ${exp.comportamento}.
+E o ambiente tende a ${amb.comportamento}.
 
 Isso cria um padrão:
 
@@ -79,7 +80,7 @@ export default function Page() {
   function calcular() {
     if (!data || !sexo) return;
 
-    const map = calculateMap(new Date(data), sexo);
+    const map = calculateMap(data, sexo);
 
     const e = map.essential.number;
     const ex = map.expression.number;
@@ -94,36 +95,26 @@ export default function Page() {
     });
   }
 
-  /* 🔥 TELA INICIAL */
+  /* TELA INICIAL */
   if (step === 0) {
     return (
-      <div style={{
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center"
-      }}>
-        <div>
-          <h1 style={{ fontSize: 32 }}>
-            ENGENHARIA<br />DOS PADRÕES PESSOAIS
-          </h1>
+      <div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ textAlign: "center", maxWidth: 400 }}>
+          <h1>ENGENHARIA<br />DOS PADRÕES PESSOAIS</h1>
 
-          <p style={{ marginTop: 16, opacity: 0.6 }}>
+          <p style={{ opacity: 0.6 }}>
             O problema não é esforço.<br />
             É como sua energia está sendo aplicada.
           </p>
 
-          <button
-            onClick={() => setStep(1)}
-            style={{
-              marginTop: 30,
-              padding: "16px 40px",
-              background: "#000",
-              color: "#fff",
-              borderRadius: 14
-            }}
-          >
+          <button onClick={() => setStep(1)} style={{
+            marginTop: 30,
+            width: "100%",
+            padding: 16,
+            background: "#000",
+            color: "#fff",
+            borderRadius: 14
+          }}>
             Começar
           </button>
         </div>
@@ -131,15 +122,11 @@ export default function Page() {
     );
   }
 
-  /* 📥 INPUT */
+  /* INPUT */
   if (!res) {
     return (
       <div style={{ padding: 24 }}>
-        <input
-          type="date"
-          onChange={(e) => setData(e.target.value)}
-        />
-
+        <input type="date" onChange={(e) => setData(e.target.value)} />
         <select onChange={(e) => setSexo(e.target.value)}>
           <option>Sexo</option>
           <option value="female">Feminino</option>
@@ -153,29 +140,20 @@ export default function Page() {
     );
   }
 
-  /* 📊 RESULTADO */
+  /* RESULTADO */
   return (
     <div style={{ padding: 24 }}>
 
-      {/* 🔥 HEADLINE */}
-      <h2 style={{ marginBottom: 24 }}>
-        {res.headline}
-      </h2>
+      <h2>{res.headline}</h2>
 
-      {/* 🔢 RESUMO */}
-      <div style={{ display: "flex", gap: 10 }}>
+      {/* RESUMO */}
+      <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
         {[res.e, res.ex, res.ext].map((n, i) => {
           const en = energias[n];
           const labels = ["Essência", "Expressão", "Externa"];
 
           return (
-            <div key={i} style={{
-              flex: 1,
-              background: "#f5f5f5",
-              padding: 14,
-              borderRadius: 12,
-              textAlign: "center"
-            }}>
+            <div key={i} style={{ flex: 1, background: "#f5f5f5", padding: 14, borderRadius: 12, textAlign: "center" }}>
               <div>{labels[i]}</div>
               <strong>{n}</strong>
               <div>{en.nome}</div>
@@ -185,14 +163,14 @@ export default function Page() {
         })}
       </div>
 
-      {/* 🌗 LUZ SOMBRA MISSÃO */}
-      <div style={{ marginTop: 30 }}>
+      {/* LUZ SOMBRA MISSÃO */}
+      <div style={{ display: "flex", gap: 20, marginTop: 30 }}>
         {[res.e, res.ex, res.ext].map((n, i) => {
           const en = energias[n];
           const labels = ["Essência", "Expressão", "Externa"];
 
           return (
-            <div key={i} style={{ marginBottom: 18 }}>
+            <div key={i} style={{ flex: 1 }}>
               <strong>{labels[i]} — {en.nome}</strong><br />
               Luz: {en.luz}<br />
               Sombra: {en.sombra}<br />
@@ -202,18 +180,18 @@ export default function Page() {
         })}
       </div>
 
-      {/* 🧠 COMPORTAMENTO + LEITURA */}
+      {/* LEITURA */}
       <div style={{
-        marginTop: 20,
-        padding: 20,
+        marginTop: 30,
         background: "#eee",
+        padding: 20,
         borderRadius: 14,
         whiteSpace: "pre-line"
       }}>
         {res.texto}
       </div>
 
-      {/* 🎯 CTA */}
+      {/* CTA */}
       <button style={{
         marginTop: 30,
         width: "100%",
