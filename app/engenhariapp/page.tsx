@@ -13,88 +13,29 @@ type Energia = {
 };
 
 const energias: Record<number, Energia> = {
-  1: {
-    nome: "Água",
-    arquétipo: "A Sensitiva",
-    luz: "percebe profundamente",
-    sombra: "se retrai",
-    missao: "confiar na própria percepção",
-    comportamento: "sente antes de agir",
-  },
-  2: {
-    nome: "Terra",
-    arquétipo: "A Sustentadora",
-    luz: "acolhe e sustenta",
-    sombra: "se sobrecarrega",
-    missao: "cuidar sem se anular",
-    comportamento: "assume responsabilidades",
-  },
-  3: {
-    nome: "Trovão",
-    arquétipo: "A Iniciadora",
-    luz: "começa e movimenta",
-    sombra: "se precipita",
-    missao: "sustentar o que começa",
-    comportamento: "age rápido",
-  },
-  4: {
-    nome: "Vento",
-    arquétipo: "A Influenciadora",
-    luz: "comunica e conecta",
-    sombra: "se dispersa",
-    missao: "alinhar comunicação com direção",
-    comportamento: "ajusta antes de se posicionar",
-  },
-  5: {
-    nome: "Centro",
-    arquétipo: "A Integradora",
-    luz: "equilibra",
-    sombra: "se perde no caos",
-    missao: "organizar o centro",
-    comportamento: "oscila entre controle e confusão",
-  },
-  6: {
-    nome: "Céu",
-    arquétipo: "A Estrategista",
-    luz: "direciona com clareza",
-    sombra: "trava na execução",
-    missao: "agir com consistência",
-    comportamento: "sabe o que precisa ser feito",
-  },
-  7: {
-    nome: "Lago",
-    arquétipo: "A Comunicadora",
-    luz: "expressa e conecta",
-    sombra: "busca aprovação",
-    missao: "se expressar com verdade",
-    comportamento: "agrada antes de se posicionar",
-  },
-  8: {
-    nome: "Montanha",
-    arquétipo: "A Guardiã",
-    luz: "sustenta e estrutura",
-    sombra: "bloqueia movimento",
-    missao: "liberar no tempo certo",
-    comportamento: "contém e segura",
-  },
-  9: {
-    nome: "Fogo",
-    arquétipo: "A Visionária",
-    luz: "expande e ilumina",
-    sombra: "se dispersa",
-    missao: "focar para realizar",
-    comportamento: "se empolga e perde continuidade",
-  },
+  1: { nome: "Água", arquétipo: "A Sensitiva", luz: "percebe profundamente", sombra: "se retrai", missao: "confiar na própria percepção", comportamento: "sente antes de agir" },
+  2: { nome: "Terra", arquétipo: "A Sustentadora", luz: "acolhe e sustenta", sombra: "se sobrecarrega", missao: "cuidar sem se anular", comportamento: "assume responsabilidades" },
+  3: { nome: "Trovão", arquétipo: "A Iniciadora", luz: "começa e movimenta", sombra: "se precipita", missao: "sustentar o que começa", comportamento: "age rápido" },
+  4: { nome: "Vento", arquétipo: "A Influenciadora", luz: "comunica e conecta", sombra: "se dispersa", missao: "alinhar comunicação com direção", comportamento: "ajusta antes de se posicionar" },
+  5: { nome: "Centro", arquétipo: "A Integradora", luz: "equilibra", sombra: "se perde", missao: "organizar o centro", comportamento: "oscila entre controle e caos" },
+  6: { nome: "Céu", arquétipo: "A Estrategista", luz: "direciona com clareza", sombra: "trava na execução", missao: "agir com consistência", comportamento: "sabe o que precisa ser feito" },
+  7: { nome: "Lago", arquétipo: "A Comunicadora", luz: "expressa e conecta", sombra: "busca aprovação", missao: "se expressar com verdade", comportamento: "agrada antes de se posicionar" },
+  8: { nome: "Montanha", arquétipo: "A Guardiã", luz: "sustenta e estrutura", sombra: "bloqueia movimento", missao: "liberar no tempo certo", comportamento: "contém e segura" },
+  9: { nome: "Fogo", arquétipo: "A Visionária", luz: "expande e ilumina", sombra: "se dispersa", missao: "focar para realizar", comportamento: "se empolga e perde continuidade" },
+};
+
+const trigramas: Record<number, string> = {
+  1: "☵", 2: "☷", 3: "☳", 4: "☴", 5: "✚", 6: "☰", 7: "☱", 8: "☶", 9: "☲"
 };
 
 function gerarHeadline(e: number, ex: number, ext: number) {
-  const base = [
+  const frases = [
+    "Existe um padrão silencioso na forma como você está vivendo.",
     "Você faz, mas sente que não sai do lugar.",
-    "Existe um padrão silencioso na forma como você vive.",
-    "Você sabe o que precisa fazer — mas algo não sustenta.",
-    "Você começa com clareza, mas perde força no caminho.",
+    "Você começa com clareza, mas não sustenta o tempo necessário.",
+    "Você sabe o que precisa fazer — mas algo trava no caminho.",
   ];
-  return base[(e + ex + ext) % base.length];
+  return frases[(e + ex + ext) % frases.length];
 }
 
 function gerarLeitura(e: number, ex: number, ext: number) {
@@ -103,13 +44,13 @@ function gerarLeitura(e: number, ex: number, ext: number) {
   const EXT = energias[ext];
 
   return `
-Por dentro, você ${E.comportamento}.
-Na prática, você ${EX.comportamento}.
-E o ambiente tende a ${EXT.comportamento}.
+Por dentro, você tende a ${E.comportamento}.
+Na prática, você tende a ${EX.comportamento}.
+O ambiente tende a ${EXT.comportamento}.
 
 Isso cria um padrão:
 
-Você começa com uma lógica interna clara.
+Você começa com uma lógica clara.
 Mas precisa ajustar no meio do caminho.
 
 E quanto mais tenta resolver,
@@ -140,8 +81,8 @@ export default function Page() {
       e,
       ex,
       ext,
-      leitura: gerarLeitura(e, ex, ext),
       headline: gerarHeadline(e, ex, ext),
+      leitura: gerarLeitura(e, ex, ext),
     });
 
     setStep(2);
@@ -203,25 +144,32 @@ export default function Page() {
         {/* RESULTADO */}
         {step === 2 && resultado && (
           <>
-            <h2 className="text-xl font-semibold mb-6">
+            <h2 className="text-lg font-semibold mb-6">
               {resultado.headline}
             </h2>
 
-            {/* RESUMO */}
+            {/* RESUMO COM TRIGRAMAS */}
             <div className="grid grid-cols-3 gap-4 text-center mb-6">
               {[resultado.e, resultado.ex, resultado.ext].map((n, i) => (
-                <div key={i}>
+                <div key={i} className="bg-gray-100 rounded-xl p-4">
+                  <div className="text-xs text-gray-500">
+                    {i === 0 ? "Essência" : i === 1 ? "Expressão" : "Externa"}
+                  </div>
+                  <div className="text-xl">{trigramas[n]}</div>
                   <div className="text-2xl font-bold">{n}</div>
-                  <div>{energias[n].nome}</div>
+                  <div className="text-sm">{energias[n].nome}</div>
+                  <div className="text-xs text-gray-400">
+                    {energias[n].arquétipo}
+                  </div>
                 </div>
               ))}
             </div>
 
-            {/* LUZ / SOMBRA / MISSÃO */}
+            {/* LUZ SOMBRA MISSÃO */}
             {[resultado.e, resultado.ex, resultado.ext].map((n, i) => (
               <div key={i} className="mb-4">
                 <h3 className="font-semibold">
-                  {energias[n].nome} — {energias[n].arquétipo}
+                  {energias[n].nome}
                 </h3>
                 <p>Luz: {energias[n].luz}</p>
                 <p>Sombra: {energias[n].sombra}</p>
