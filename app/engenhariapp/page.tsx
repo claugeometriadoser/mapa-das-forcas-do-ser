@@ -4,68 +4,59 @@ import { useState } from "react";
 import { calculateMap } from "@/utils/jiugong";
 
 const energias: any = {
-  1: { nome: "Água", tipo: "ativa", verbo: "sentir antes de agir", sombra: "se perde no fluxo", missao: "confiar no timing" },
-  2: { nome: "Terra", tipo: "estrutural", verbo: "sustentar e absorver", sombra: "assume peso demais", missao: "colocar limites" },
-  3: { nome: "Trovão", tipo: "ativa", verbo: "agir rápido e ajustar depois", sombra: "se precipita", missao: "transformar impulso em direção" },
-  4: { nome: "Vento", tipo: "relacional", verbo: "ajustar antes de se posicionar", sombra: "se dispersa", missao: "se posicionar com clareza" },
-  5: { nome: "Centro", tipo: "relacional", verbo: "buscar equilíbrio", sombra: "fica neutra demais", missao: "escolher direção" },
-  6: { nome: "Céu", tipo: "estrutural", verbo: "saber o que precisa ser feito", sombra: "trava na execução", missao: "agir com consistência" },
-  7: { nome: "Lago", tipo: "relacional", verbo: "buscar leveza", sombra: "evita profundidade", missao: "sustentar o desconforto" },
-  8: { nome: "Montanha", tipo: "estrutural", verbo: "conter e segurar movimento", sombra: "bloqueia avanço", missao: "liberar no tempo certo" },
-  9: { nome: "Fogo", tipo: "ativa", verbo: "expandir e se expor", sombra: "exagera intensidade", missao: "direcionar energia" }
+  1: { nome: "Água", tipo: "ativa", arquetipo: "A Sensitiva", luz: "percepção e adaptação", sombra: "se perde no fluxo", missao: "confiar no timing", pratica: "sentir antes de agir" },
+  2: { nome: "Terra", tipo: "estrutural", arquetipo: "A Sustentadora", luz: "suporte e cuidado", sombra: "assume peso demais", missao: "colocar limites", pratica: "absorver e sustentar" },
+  3: { nome: "Trovão", tipo: "ativa", arquetipo: "A Iniciadora", luz: "ação e impulso", sombra: "se precipita", missao: "sustentar o que começa", pratica: "agir rápido e ajustar depois" },
+  4: { nome: "Vento", tipo: "relacional", arquetipo: "A Influenciadora", luz: "comunicação e influência", sombra: "se dispersa", missao: "se posicionar com clareza", pratica: "ajustar antes de se posicionar" },
+  5: { nome: "Centro", tipo: "relacional", arquetipo: "A Equilibradora", luz: "visão sistêmica", sombra: "fica neutra demais", missao: "escolher direção", pratica: "buscar equilíbrio constante" },
+  6: { nome: "Céu", tipo: "estrutural", arquetipo: "A Estrategista", luz: "direção e visão", sombra: "trava na execução", missao: "agir com consistência", pratica: "saber o que precisa ser feito" },
+  7: { nome: "Lago", tipo: "relacional", arquetipo: "A Comunicadora", luz: "leveza e troca", sombra: "evita profundidade", missao: "sustentar o desconforto", pratica: "buscar leveza e evitar conflito" },
+  8: { nome: "Montanha", tipo: "estrutural", arquetipo: "A Guardiã", luz: "limite e estrutura", sombra: "bloqueia avanço", missao: "liberar no tempo certo", pratica: "conter e segurar movimento" },
+  9: { nome: "Fogo", tipo: "ativa", arquetipo: "A Visionária", luz: "expansão e visibilidade", sombra: "exagera intensidade", missao: "direcionar energia", pratica: "se expor e expandir" }
 };
 
-function leituraPremium(e: number, ex: number, ext: number) {
+function leitura(e: number, ex: number, ext: number) {
   const E = energias[e];
   const X = energias[ex];
   const OUT = energias[ext];
 
-  let texto = "";
+  let t = "";
 
-  // 🔥 FRASE DE RECONHECIMENTO (INTELIGENTE)
+  // 🔥 comportamento (base)
+  t += `Por dentro, você tende a ${E.pratica}.\n`;
+  t += `Na prática, você tende a ${X.pratica}.\n`;
+  t += `O ambiente tende a ${OUT.pratica}.\n\n`;
+
+  // 🔥 tensão dinâmica
   if (X.tipo === "ativa" && OUT.tipo === "estrutural") {
-    texto += "Você faz.\nMas parece que nada anda.\n\n";
-  } else if (X.tipo === "estrutural" && OUT.tipo === "ativa") {
-    texto += "Você tenta organizar.\nMas a vida não espera.\n\n";
-  } else if (E.tipo !== X.tipo) {
-    texto += "Você sabe.\nMas não age na mesma direção.\n\n";
-  } else {
-    texto += "Você está fazendo.\nMas não está avançando.\n\n";
+    t += "Você acelera.\nMas encontra contenção.\n\n";
   }
 
-  // 🔥 COMPORTAMENTO REAL
-  texto += `Por dentro, você tende a ${E.verbo}.\n`;
-  texto += `Na prática, você tende a ${X.verbo}.\n`;
-  texto += `O ambiente tende a conter e limitar movimento.\n\n`;
-
-  // 🔥 TENSÃO
-  if (X.tipo === "ativa" && OUT.tipo === "estrutural") {
-    texto += "Você acelera.\nMas encontra resistência.\n\n";
+  if (X.tipo === "estrutural" && OUT.tipo === "ativa") {
+    t += "Você tenta manter controle.\nMas a vida pede movimento.\n\n";
   }
 
   if (E.tipo !== X.tipo) {
-    texto += "Existe um descompasso entre o que você sustenta e o que você executa.\n\n";
+    t += "Existe um descompasso entre o que você sustenta e o que você executa.\n\n";
   }
 
-  // 🔥 INTERPRETAÇÃO EMOCIONAL REAL
-  texto += "Isso cria um padrão silencioso:\n\n";
-  texto += "Você começa com clareza.\n";
-  texto += "Mas não sustenta o tempo necessário.\n\n";
-  texto += "Então tenta ajustar no caminho.\n";
-  texto += "Depois força.\n\n";
-  texto += "E quanto mais força,\nmenos flui.\n\n";
+  // 🔥 interpretação
+  t += "Isso cria um padrão:\n\n";
+  t += "Você começa dentro de uma lógica.\n";
+  t += "Mas precisa ajustar no meio do caminho.\n\n";
+  t += "Então força.\n";
+  t += "E quanto mais força,\nmenos flui.\n\n";
 
-  // 🔥 FECHAMENTO
-  texto += "O desgaste não está no quanto você faz.\n";
-  texto += "Está em como você está tentando fazer.";
+  t += "O desgaste não está no quanto você faz.\n";
+  t += "Mas em como você está tentando fazer.";
 
-  return texto;
+  return t;
 }
 
 export default function Page() {
   const [data, setData] = useState("");
   const [sexo, setSexo] = useState("");
-  const [resultado, setResultado] = useState<any>(null);
+  const [res, setRes] = useState<any>(null);
 
   function gerar() {
     if (!data || !sexo) return;
@@ -76,21 +67,20 @@ export default function Page() {
     const ex = map.expression.number;
     const ext = map.personal.number;
 
-    setResultado({
+    setRes({
       e,
       ex,
       ext,
-      texto: leituraPremium(e, ex, ext)
+      texto: leitura(e, ex, ext)
     });
   }
 
   return (
-    <div style={{ padding: 24, maxWidth: 520, margin: "0 auto" }}>
-      
-      {/* CAPA */}
-      {!resultado && (
-        <div style={{ textAlign: "center", marginTop: 60 }}>
-          <h1 style={{ fontSize: 28, fontWeight: 600 }}>
+    <div style={{ maxWidth: 420, margin: "0 auto", padding: 24 }}>
+
+      {!res && (
+        <div style={{ textAlign: "center", marginTop: 80 }}>
+          <h1 style={{ fontSize: 26, lineHeight: 1.2 }}>
             ENGENHARIA
             <br />
             DOS PADRÕES PESSOAIS
@@ -99,89 +89,79 @@ export default function Page() {
           <p style={{ marginTop: 12, opacity: 0.6 }}>
             O problema não é esforço.
             <br />
-            É como sua energia está sendo aplicada.
+            É como sua energia está sendo distribuída.
           </p>
 
           <button
-            onClick={() => setResultado({})}
-            style={{
-              marginTop: 24,
-              padding: "14px 24px",
-              borderRadius: 12,
-              background: "#000",
-              color: "#fff",
-              fontWeight: 600
-            }}
+            onClick={() => setRes({})}
+            style={{ marginTop: 24, padding: "12px 20px", background: "#000", color: "#fff", borderRadius: 10 }}
           >
             Começar
           </button>
         </div>
       )}
 
-      {/* FORM */}
-      {resultado && !resultado.texto && (
+      {res && !res.texto && (
         <div style={{ marginTop: 40 }}>
-          <input
-            type="date"
-            onChange={(e) => setData(e.target.value)}
-            style={{ width: "100%", padding: 12, marginBottom: 12 }}
-          />
+          <input type="date" onChange={(e) => setData(e.target.value)} style={{ width: "100%", marginBottom: 12, padding: 12 }} />
 
-          <select
-            onChange={(e) => setSexo(e.target.value)}
-            style={{ width: "100%", padding: 12, marginBottom: 12 }}
-          >
+          <select onChange={(e) => setSexo(e.target.value)} style={{ width: "100%", padding: 12 }}>
             <option>Sexo</option>
             <option value="female">Feminino</option>
             <option value="male">Masculino</option>
           </select>
 
-          <button
-            onClick={gerar}
-            style={{
-              width: "100%",
-              padding: 16,
-              background: "#000",
-              color: "#fff",
-              borderRadius: 12
-            }}
-          >
+          <button onClick={gerar} style={{ width: "100%", marginTop: 16, padding: 14, background: "#000", color: "#fff", borderRadius: 10 }}>
             Ver minha engenharia
           </button>
         </div>
       )}
 
-      {/* RESULTADO */}
-      {resultado?.texto && (
+      {res?.texto && (
         <div style={{ marginTop: 40 }}>
-          <h3>Essência {resultado.e}</h3>
-          <h3>Expressão {resultado.ex}</h3>
-          <h3>Externa {resultado.ext}</h3>
 
-          <div
-            style={{
-              marginTop: 20,
-              padding: 20,
-              borderRadius: 12,
-              background: "#eee",
-              whiteSpace: "pre-line"
-            }}
-          >
-            {resultado.texto}
+          {/* 🔝 RESUMO */}
+          {[res.e, res.ex, res.ext].map((n, i) => {
+            const labels = ["Essência", "Expressão", "Externa"];
+            const en = energias[n];
+
+            return (
+              <div key={i} style={{ marginBottom: 12 }}>
+                <strong>{labels[i]}: {n} — {en.nome}</strong>
+                <div style={{ fontSize: 13, opacity: 0.6 }}>{en.arquetipo}</div>
+              </div>
+            );
+          })}
+
+          {/* 🧠 LUZ / SOMBRA / MISSÃO */}
+          <div style={{ marginTop: 20 }}>
+            {[res.e, res.ex, res.ext].map((n, i) => {
+              const en = energias[n];
+              const labels = ["Essência", "Expressão", "Externa"];
+
+              return (
+                <div key={i} style={{ marginBottom: 14 }}>
+                  <strong>{labels[i]} — {en.nome}</strong>
+                  <div style={{ fontSize: 14 }}>
+                    Luz: {en.luz} <br />
+                    Sombra: {en.sombra} <br />
+                    Missão: {en.missao}
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
-          <button
-            style={{
-              marginTop: 20,
-              width: "100%",
-              padding: 16,
-              background: "#000",
-              color: "#fff",
-              borderRadius: 12
-            }}
-          >
-            Quero aprofundar essa engenharia na minha vida
+          {/* 👁️ COMPORTAMENTO + LEITURA */}
+          <div style={{ marginTop: 20, padding: 18, background: "#eee", borderRadius: 12, whiteSpace: "pre-line" }}>
+            {res.texto}
+          </div>
+
+          {/* 🎯 CTA */}
+          <button style={{ marginTop: 20, width: "100%", padding: 16, background: "#000", color: "#fff", borderRadius: 12 }}>
+            Quero entender onde estou me forçando sem perceber
           </button>
+
         </div>
       )}
     </div>
