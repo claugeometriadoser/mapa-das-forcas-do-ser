@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { calculateMap } from "@/utils/jiugong";
 
-/* 🔷 BASE COMPLETA */
+/* 🔷 BASE */
 const energias: any = {
   1: { nome: "Água", arquetipo: "A Adaptadora", comportamento: "tende a sentir antes de agir" },
   2: { nome: "Terra", arquetipo: "A Sustentadora", comportamento: "tende a sustentar mais do que deveria" },
@@ -29,56 +29,42 @@ function impacto(e: number, ex: number, ext: number) {
   const tex = tipo(ex);
   const text = tipo(ext);
 
-  if (te === "estrutural" && tex === "ativa")
+  if (te === "estrutural" && tex === "ativa") {
     return "Você sabe o que precisa fazer — mas não sustenta o tempo necessário para isso acontecer.";
+  }
 
-  if (te === "ativa" && text === "estrutural")
-    return "Você tenta avançar — mas o momento exige contenção.";
+  if (te === "ativa" && text === "estrutural") {
+    return "Você tenta avançar — mas o momento não abre espaço.";
+  }
 
   return "Existe um padrão aqui que explica por que você faz muito e ainda assim sente que não sai do lugar.";
 }
 
-/* 🔥 LEITURA UNIVERSAL */
-function gerarLeitura(e: number, ex: number, ext: number) {
-  const ess = energias[e];
-  const exp = energias[ex];
-  const externa = energias[ext];
+/* 🔥 LEITURA (SEM REPETIÇÃO) */
+function gerarLeitura() {
+  return `Você funciona com uma lógica interna clara.
 
-  const te = tipo(e);
-  const tex = tipo(ex);
-  const text = tipo(ext);
+Mas se move de forma diferente na prática.
 
-  let t = "";
+E o ambiente responde em outro ritmo.
 
-  /* comportamento */
-  t += `Por dentro, você ${ess.comportamento}.\n`;
-  t += `Na prática, você ${exp.comportamento}.\n`;
-  t += `E o ambiente tende a ${externa.comportamento}.\n\n`;
+Isso cria um padrão:
 
-  /* conflito interno */
-  if (e !== ex) {
-    t += `Existe um desencontro entre o que você sustenta e a forma como você age.\n\n`;
-  }
+Você tenta fazer acontecer.
+Mas encontra resistência.
 
-  /* pressão externa */
-  if (te !== text) {
-    t += `O momento não favorece o seu modo natural de funcionamento.\n\n`;
-  }
+Então força.
 
-  /* compensação */
-  if (text === "estrutural" && tex === "ativa") {
-    t += `Você tende a acelerar para tentar fazer as coisas acontecerem.\n`;
-    t += `Mas encontra resistência.\n\n`;
-  }
+E quanto mais força,
+menos flui.
 
-  /* fechamento */
-  t += `O desgaste não vem da falta de capacidade.\n`;
-  t += `Vem da forma como sua energia está sendo aplicada.`;
+O desgaste não está no quanto você faz.
 
-  return t;
+Mas em como está tentando fazer.`;
 }
 
 export default function Page() {
+
   const [step, setStep] = useState(0);
   const [data, setData] = useState("");
   const [sexo, setSexo] = useState("");
@@ -118,54 +104,115 @@ export default function Page() {
         width: "100%"
       }}>
 
-        {/* CAPA */}
+        {/* 🔥 CAPA */}
         {step === 0 && (
           <div style={{ textAlign: "center" }}>
-            <h1 style={{ marginBottom: 20 }}>
-              ENGENHARIA <br /> DOS PADRÕES PESSOAIS
+
+            <h1 style={{
+              fontSize: 32,
+              fontWeight: 700,
+              lineHeight: 1.2,
+              marginBottom: 16
+            }}>
+              ENGENHARIA <br />
+              <span style={{ fontWeight: 400 }}>
+                DOS PADRÕES PESSOAIS
+              </span>
             </h1>
 
-            <button onClick={() => setStep(1)}>
+            <p style={{
+              fontSize: 15,
+              color: "#666",
+              marginBottom: 28,
+              lineHeight: 1.5
+            }}>
+              O problema não é esforço.
+              <br />
+              É como sua energia está distribuída.
+            </p>
+
+            <button
+              onClick={() => setStep(1)}
+              style={{
+                width: "100%",
+                padding: 18,
+                borderRadius: 14,
+                background: "black",
+                color: "white",
+                fontWeight: 600,
+                fontSize: 16,
+                border: "none",
+                cursor: "pointer"
+              }}
+            >
               Começar
             </button>
+
           </div>
         )}
 
-        {/* FORM */}
+        {/* 🔥 FORM */}
         {step === 1 && (
           <>
             <input
               type="date"
               value={data}
               onChange={(e) => setData(e.target.value)}
-              style={{ width: "100%", marginBottom: 12 }}
+              style={{
+                width: "100%",
+                marginBottom: 12,
+                padding: 14,
+                borderRadius: 10,
+                border: "1px solid #ddd"
+              }}
             />
 
             <select
               value={sexo}
               onChange={(e) => setSexo(e.target.value)}
-              style={{ width: "100%", marginBottom: 12 }}
+              style={{
+                width: "100%",
+                marginBottom: 12,
+                padding: 14,
+                borderRadius: 10,
+                border: "1px solid #ddd"
+              }}
             >
               <option value="">Sexo</option>
               <option value="feminino">Feminino</option>
               <option value="masculino">Masculino</option>
             </select>
 
-            <button onClick={calcular}>
+            <button
+              onClick={calcular}
+              style={{
+                width: "100%",
+                padding: 16,
+                borderRadius: 14,
+                background: "black",
+                color: "white",
+                border: "none",
+                fontWeight: 600
+              }}
+            >
               Ver minha engenharia
             </button>
           </>
         )}
 
-        {/* RESULTADO */}
+        {/* 🔥 RESULTADO */}
         {step === 2 && res && (
           <>
             {/* impacto */}
-            <div style={{ fontWeight: 700, marginBottom: 20 }}>
+            <div style={{
+              fontWeight: 700,
+              fontSize: 18,
+              marginBottom: 20
+            }}>
               {impacto(res.e, res.ex, res.ext)}
             </div>
 
-            {/* mapa */}
+            {/* resumo */}
             <div style={{
               display: "grid",
               gridTemplateColumns: "1fr 1fr 1fr",
@@ -175,10 +222,10 @@ export default function Page() {
               {[{l:"Essência",v:res.e},{l:"Expressão",v:res.ex},{l:"Externa",v:res.ext}]
               .map((i,k)=>(
                 <div key={k}>
-                  <div>{i.l}</div>
-                  <div style={{fontSize:28}}>{i.v}</div>
+                  <div style={{ fontSize: 13 }}>{i.l}</div>
+                  <div style={{ fontSize: 28, fontWeight: 700 }}>{i.v}</div>
                   <div>{energias[i.v].nome}</div>
-                  <div style={{fontSize:12}}>
+                  <div style={{ fontSize: 12, color: "#666" }}>
                     ({energias[i.v].arquetipo})
                   </div>
                 </div>
@@ -186,7 +233,10 @@ export default function Page() {
             </div>
 
             {/* comportamento */}
-            <div style={{ marginBottom: 20 }}>
+            <div style={{
+              marginBottom: 20,
+              lineHeight: 1.6
+            }}>
               <p>Por dentro, você {energias[res.e].comportamento}.</p>
               <p>Na prática, você {energias[res.ex].comportamento}.</p>
               <p>O ambiente tende a {energias[res.ext].comportamento}.</p>
@@ -199,17 +249,28 @@ export default function Page() {
               borderRadius: 12,
               whiteSpace: "pre-line"
             }}>
-              {gerarLeitura(res.e, res.ex, res.ext)}
+              {gerarLeitura()}
             </div>
 
             {/* CTA */}
             <a
               href="https://wa.me/5511987545477"
               target="_blank"
-              style={{ display: "block", marginTop: 20 }}
+              style={{
+                display: "block",
+                marginTop: 24,
+                background: "black",
+                color: "white",
+                padding: 18,
+                borderRadius: 14,
+                textAlign: "center",
+                fontWeight: 600,
+                textDecoration: "none"
+              }}
             >
-              Quero aprofundar essa engenharia na minha vida
+              Quero entender meu padrão com clareza
             </a>
+
           </>
         )}
 
