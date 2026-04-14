@@ -23,65 +23,107 @@ function nome(n: number) {
   }[n];
 }
 
-function caracteristicas(n: number) {
-  return {
-    1: "Fluxo, adaptação e sensibilidade ao ambiente.",
-    2: "Nutrir, sustentar, cuidar.",
-    3: "Impulso, início e ação.",
-    4: "Influência e estratégia.",
-    5: "Equilíbrio e eixo.",
-    6: "Direção e comando.",
-    7: "Troca e expressão.",
-    8: "Limite e contenção.",
-    9: "Expansão e visibilidade.",
-  }[n];
-}
-
-function desc(n: number) {
-  return {
-    1: "fluxo",
-    2: "sustentação",
-    3: "movimento",
-    4: "influência",
-    5: "equilíbrio",
-    6: "direção",
-    7: "expressão",
-    8: "contenção",
-    9: "expansão",
-  }[n];
-}
-
 function tipo(n: number) {
   if ([1, 3, 9].includes(n)) return "ativa";
   if ([2, 6, 8].includes(n)) return "estrutural";
   return "relacional";
 }
 
+function leituraEnergia(n: number) {
+  return {
+    1: {
+      luz: "capacidade de se adaptar e fluir com o que a vida traz",
+      sombra: "evitar confronto e se perder no ambiente",
+      missao: "aprender a se posicionar sem perder a sensibilidade",
+    },
+    2: {
+      luz: "nutrir, sustentar e dar suporte",
+      sombra: "se sobrecarregar cuidando de tudo",
+      missao: "sustentar sem se anular",
+    },
+    3: {
+      luz: "iniciar movimentos e agir",
+      sombra: "agir por impulso sem direção",
+      missao: "canalizar ação com consciência",
+    },
+    4: {
+      luz: "influenciar e construir com estratégia",
+      sombra: "controlar ou manipular",
+      missao: "usar influência com clareza",
+    },
+    5: {
+      luz: "organizar e equilibrar",
+      sombra: "paralisar tentando controlar tudo",
+      missao: "agir mesmo sem garantia",
+    },
+    6: {
+      luz: "direcionar e liderar",
+      sombra: "controlar tudo rigidamente",
+      missao: "liderar com flexibilidade",
+    },
+    7: {
+      luz: "expressar e conectar",
+      sombra: "buscar validação externa",
+      missao: "se expressar com verdade",
+    },
+    8: {
+      luz: "criar limites e estabilidade",
+      sombra: "se fechar e resistir",
+      missao: "sustentar sem bloquear",
+    },
+    9: {
+      luz: "expandir e dar visibilidade",
+      sombra: "exagerar ou se perder na intensidade",
+      missao: "expandir com direção",
+    },
+  }[n];
+}
+
 function gerarLeitura(e: number, ex: number, ext: number) {
+  const le = leituraEnergia(e);
+  const lx = leituraEnergia(ex);
+  const lxt = leituraEnergia(ext);
+
   let texto = "";
 
-  texto += `Por dentro, você funciona com ${desc(e)}.\n`;
-  texto += `Na prática, você se move com ${desc(ex)}.\n`;
-  texto += `E o momento traz um cenário de ${desc(ext)}.\n\n`;
+  // ESSÊNCIA
+  texto += `ESSÊNCIA — ${nome(e)}\n`;
+  texto += `Luz: ${le.luz}.\n`;
+  texto += `Sombra: ${le.sombra}.\n`;
+  texto += `Missão: ${le.missao}.\n\n`;
+
+  // EXPRESSÃO
+  texto += `EXPRESSÃO — ${nome(ex)}\n`;
+  texto += `Luz: ${lx.luz}.\n`;
+  texto += `Sombra: ${lx.sombra}.\n`;
+  texto += `Missão: ${lx.missao}.\n\n`;
+
+  // EXTERNA
+  texto += `ENERGIA EXTERNA — ${nome(ext)}\n`;
+  texto += `Luz: ${lxt.luz}.\n`;
+  texto += `Sombra: ${lxt.sombra}.\n`;
+  texto += `Missão: ${lxt.missao}.\n\n`;
+
+  // INTEGRAÇÃO
+  texto += `INTEGRAÇÃO\n`;
 
   const tipoE = tipo(e);
   const tipoExt = tipo(ext);
 
   if (tipoE === "ativa" && tipoExt === "estrutural") {
     texto += `Você tenta avançar, mas o momento pede contenção.\n`;
-    texto += `Quanto mais força movimento, mais encontra bloqueio.\n\n`;
   }
 
   if (tipoE === "estrutural" && tipoExt === "ativa") {
-    texto += `Você busca estabilidade, mas a vida exige movimento.\n\n`;
+    texto += `Você busca estabilidade, mas a vida exige movimento.\n`;
   }
 
   if (e !== ex) {
-    texto += `Existe uma diferença entre o que sustenta e como você age.\n\n`;
+    texto += `Existe um desalinhamento entre o que te sustenta e como você age.\n`;
   }
 
-  texto += `O desgaste não vem do quanto você faz.\n`;
-  texto += `Vem de como sua energia está sendo aplicada.`;
+  texto += `\nO desgaste não vem da falta de capacidade.\n`;
+  texto += `Vem da forma como suas energias estão sendo aplicadas.`;
 
   return texto;
 }
@@ -232,17 +274,6 @@ export default function Page() {
               Como suas energias estão organizadas
             </h2>
 
-            <div style={{ marginBottom: 20 }}>
-              <p><strong>Essência — {nome(resultado.essencia)}</strong><br />
-              {caracteristicas(resultado.essencia)}</p>
-
-              <p><strong>Expressão — {nome(resultado.expressao)}</strong><br />
-              {caracteristicas(resultado.expressao)}</p>
-
-              <p><strong>Energia Externa — {nome(resultado.externa)}</strong><br />
-              {caracteristicas(resultado.externa)}</p>
-            </div>
-
             <div style={{
               background: "#f1f1f1",
               padding: 20,
@@ -272,7 +303,7 @@ export default function Page() {
                 textDecoration: "none"
               }}
             >
-              Quero entender esse padrão na minha vida
+              Quero aprofundar essa engenharia na minha vida
             </a>
           </>
         )}
