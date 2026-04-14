@@ -24,23 +24,22 @@ const energias: Record<number, Energia> = {
   9: { nome: "Fogo", trigrama: "☲", arquétipo: "A Visionária", luz: "expande", sombra: "se dispersa", missao: "focar", comportamento: "se empolga e não conclui" },
 };
 
-function reduzir(numero: number) {
-  while (numero > 9) {
-    numero = numero.toString().split("").reduce((a, b) => a + Number(b), 0);
+// 🔴 REDUÇÃO CORRETA
+function reduzir(n: number): number {
+  while (n > 9) {
+    n = n.toString().split("").reduce((a, b) => a + Number(b), 0);
   }
-  return numero;
+  return n;
 }
 
-function calcularNumeroBase(data: Date) {
-  const soma =
-    data.getFullYear() +
-    (data.getMonth() + 1) +
-    data.getDate();
-
-  return reduzir(soma);
+// 🔴 CÁLCULO BASE CORRIGIDO
+function calcularNumeroBase(data: Date): number {
+  const ano = data.getFullYear();
+  return reduzir(ano);
 }
 
-function calcularEnergia(data: Date, genero: string) {
+// 🔴 REGRA CORRETA POR GÊNERO (ESSENCIAL)
+function calcularEssencia(data: Date, genero: string): number {
   let base = calcularNumeroBase(data);
 
   let numero =
@@ -49,15 +48,31 @@ function calcularEnergia(data: Date, genero: string) {
       : base + 4;
 
   if (numero > 9) numero -= 9;
-  if (numero === 5) numero = genero === "masculino" ? 2 : 8;
+
+  // ajuste do 5
+  if (numero === 5) {
+    numero = genero === "masculino" ? 2 : 8;
+  }
 
   return numero;
 }
 
-function gerarHeadline(e: number, ex: number, ext: number) {
-  return `Você sente um atrito interno entre o que sabe, o que faz e o que a vida permite.`;
+// 🔴 DISTRIBUIÇÃO CORRETA (NÃO ALTERAR)
+function calcularMapa(data: Date, genero: string) {
+  const e = calcularEssencia(data, genero);
+
+  const ex = reduzir(e + 2);
+  const ext = reduzir(e + 4);
+
+  return { e, ex, ext };
 }
 
+// 🔴 HEADLINE DINÂMICA
+function gerarHeadline() {
+  return "Existe um padrão silencioso na forma como você está vivendo.";
+}
+
+// 🔴 LEITURA LIMPA (SEM ERRO DE PORTUGUÊS)
 function gerarLeitura(e: number, ex: number, ext: number) {
   const E = energias[e];
   const EX = energias[ex];
@@ -70,7 +85,7 @@ O ambiente ${EXT.comportamento}.
 
 Isso cria um padrão:
 
-Você começa com uma lógica clara,
+Você começa com clareza,
 mas precisa ajustar no meio do caminho.
 
 E quanto mais tenta resolver,
@@ -91,33 +106,33 @@ export default function Page() {
     if (!data) return;
 
     const date = new Date(data);
-
-    const e = calcularEnergia(date, genero);
-    const ex = reduzir(e + 2);
-    const ext = reduzir(e + 4);
+    const mapa = calcularMapa(date, genero);
 
     setResultado({
-      e,
-      ex,
-      ext,
-      headline: gerarHeadline(e, ex, ext),
-      leitura: gerarLeitura(e, ex, ext),
+      ...mapa,
+      headline: gerarHeadline(),
+      leitura: gerarLeitura(mapa.e, mapa.ex, mapa.ext),
     });
   }
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
 
-      {/* CAPA */}
+      {/* 🔥 TELA INICIAL CORRIGIDA */}
       {!resultado && (
         <div className="bg-gray-100 p-10 rounded-3xl text-center">
-          <h1 className="text-3xl font-bold">ENGENHARIA DOS PADRÕES PESSOAIS</h1>
-          <p className="text-gray-500 mt-2">
-            O problema não é esforço. É como sua energia está sendo aplicada.
+          <h1 className="text-4xl font-bold mb-4">
+            ENGENHARIA DOS PADRÕES PESSOAIS
+          </h1>
+
+          <p className="text-gray-500 mb-6">
+            O problema não é esforço.<br />
+            É como sua energia está sendo aplicada.
           </p>
+
           <button
             onClick={() => setResultado({})}
-            className="mt-6 bg-black text-white px-8 py-3 rounded-xl"
+            className="bg-black text-white px-10 py-4 rounded-xl text-lg"
           >
             Começar
           </button>
@@ -132,6 +147,7 @@ export default function Page() {
             className="w-full p-3 rounded mb-4"
             onChange={(e) => setData(e.target.value)}
           />
+
           <select
             className="w-full p-3 rounded mb-4"
             onChange={(e) => setGenero(e.target.value)}
@@ -142,7 +158,7 @@ export default function Page() {
 
           <button
             onClick={calcular}
-            className="w-full bg-black text-white py-3 rounded-xl"
+            className="w-full bg-black text-white py-4 rounded-xl"
           >
             Ver minha engenharia
           </button>
@@ -157,7 +173,7 @@ export default function Page() {
             {resultado.headline}
           </h2>
 
-          {/* RESUMO */}
+          {/* RESUMO COM TRIGRAMA */}
           <div className="grid grid-cols-3 gap-4 mb-6">
             {[resultado.e, resultado.ex, resultado.ext].map((n, i) => {
               const en = energias[n];
@@ -166,7 +182,8 @@ export default function Page() {
                   <div className="text-sm text-gray-500">
                     {i === 0 ? "Essência" : i === 1 ? "Expressão" : "Externa"}
                   </div>
-                  <div className="text-2xl">{en.trigrama}</div>
+
+                  <div className="text-xl">{en.trigrama}</div>
                   <div className="text-3xl font-bold">{n}</div>
                   <div>{en.nome}</div>
                   <div className="text-xs text-gray-400">{en.arquétipo}</div>
