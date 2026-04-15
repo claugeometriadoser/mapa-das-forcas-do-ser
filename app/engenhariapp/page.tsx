@@ -24,7 +24,7 @@ const energias: Record<number, Energia> = {
   9: { nome: "Fogo", trigrama: "☲", arquétipo: "A Visionária", luz: "expande", sombra: "se dispersa", missao: "focar", comportamento: "se empolga e não conclui" },
 };
 
-// 🔴 REDUÇÃO CORRETA
+// 🔴 REDUÇÃO
 function reduzir(n: number): number {
   while (n > 9) {
     n = n.toString().split("").reduce((a, b) => a + Number(b), 0);
@@ -32,22 +32,32 @@ function reduzir(n: number): number {
   return n;
 }
 
-// 🔴 CÁLCULO BASE CORRIGIDO
-function calcularNumeroBase(data: Date): number {
-  const ano = data.getFullYear();
-  return reduzir(ano);
+// 🔴 CORREÇÃO IMPORTANTE: evitar erro de timezone
+function parseDate(input: string): Date {
+  const [year, month, day] = input.split("-").map(Number);
+  return new Date(year, month - 1, day);
 }
 
-// 🔴 REGRA CORRETA POR GÊNERO (ESSENCIAL)
+// 🔴 CÁLCULO CORRETO (BASE LO SHU)
+function calcularNumeroBase(ano: number): number {
+  const ultimos2 = ano % 100;
+  return reduzir(ultimos2);
+}
+
+// 🔴 REGRA CORRETA DE GÊNERO
 function calcularEssencia(data: Date, genero: string): number {
-  let base = calcularNumeroBase(data);
+  const ano = data.getFullYear();
+  const base = calcularNumeroBase(ano);
 
-  let numero =
-    genero === "masculino"
-      ? 11 - base
-      : base + 4;
+  let numero;
 
-  if (numero > 9) numero -= 9;
+  if (genero === "masculino") {
+    numero = 10 - base;
+  } else {
+    numero = base + 5;
+  }
+
+  numero = reduzir(numero);
 
   // ajuste do 5
   if (numero === 5) {
@@ -57,22 +67,21 @@ function calcularEssencia(data: Date, genero: string): number {
   return numero;
 }
 
-// 🔴 DISTRIBUIÇÃO CORRETA (NÃO ALTERAR)
+// 🔴 DISTRIBUIÇÃO (NÃO ALTERAR)
 function calcularMapa(data: Date, genero: string) {
   const e = calcularEssencia(data, genero);
-
   const ex = reduzir(e + 2);
   const ext = reduzir(e + 4);
 
   return { e, ex, ext };
 }
 
-// 🔴 HEADLINE DINÂMICA
+// 🔴 HEADLINE
 function gerarHeadline() {
   return "Existe um padrão silencioso na forma como você está vivendo.";
 }
 
-// 🔴 LEITURA LIMPA (SEM ERRO DE PORTUGUÊS)
+// 🔴 LEITURA
 function gerarLeitura(e: number, ex: number, ext: number) {
   const E = energias[e];
   const EX = energias[ex];
@@ -101,11 +110,12 @@ export default function Page() {
   const [data, setData] = useState("");
   const [genero, setGenero] = useState("feminino");
   const [resultado, setResultado] = useState<any>(null);
+  const [started, setStarted] = useState(false);
 
   function calcular() {
     if (!data) return;
 
-    const date = new Date(data);
+    const date = parseDate(data);
     const mapa = calcularMapa(date, genero);
 
     setResultado({
@@ -118,8 +128,8 @@ export default function Page() {
   return (
     <div className="p-6 max-w-4xl mx-auto">
 
-      {/* 🔥 TELA INICIAL CORRIGIDA */}
-      {!resultado && (
+      {/* 🔥 CAPA EXATA */}
+      {!started && (
         <div className="bg-gray-100 p-10 rounded-3xl text-center">
           <h1 className="text-4xl font-bold mb-4">
             ENGENHARIA DOS PADRÕES PESSOAIS
@@ -131,8 +141,8 @@ export default function Page() {
           </p>
 
           <button
-            onClick={() => setResultado({})}
-            className="bg-black text-white px-10 py-4 rounded-xl text-lg"
+            onClick={() => setStarted(true)}
+            className="w-full bg-black text-white py-4 rounded-xl"
           >
             Começar
           </button>
@@ -140,7 +150,7 @@ export default function Page() {
       )}
 
       {/* FORM */}
-      {resultado && !resultado.e && (
+      {started && !resultado && (
         <div className="bg-gray-100 p-6 rounded-2xl mt-6">
           <input
             type="date"
@@ -166,14 +176,14 @@ export default function Page() {
       )}
 
       {/* RESULTADO */}
-      {resultado?.e && (
+      {resultado && (
         <div className="mt-6">
 
           <h2 className="text-xl font-semibold mb-4">
             {resultado.headline}
           </h2>
 
-          {/* RESUMO COM TRIGRAMA */}
+          {/* RESUMO */}
           <div className="grid grid-cols-3 gap-4 mb-6">
             {[resultado.e, resultado.ex, resultado.ext].map((n, i) => {
               const en = energias[n];
@@ -211,7 +221,6 @@ export default function Page() {
             {resultado.leitura}
           </div>
 
-          {/* CTA */}
           <button className="w-full bg-black text-white py-4 rounded-xl">
             Quero entender meu padrão com clareza
           </button>
