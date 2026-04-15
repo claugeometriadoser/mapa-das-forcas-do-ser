@@ -22,9 +22,9 @@ function parseDate(input: string): Date {
 
 function gerarLeitura(e: number, ex: number, ext: number) {
   return `
-Por dentro, você tende a ${energias[e].comportamento}.
-Na prática, você tende a ${energias[ex].comportamento}.
-O ambiente tende a ${energias[ext].comportamento}.
+Por dentro, você ${energias[e].comportamento}.
+Na prática, você ${energias[ex].comportamento}.
+O ambiente ${energias[ext].comportamento}.
 
 Isso cria um padrão:
 
@@ -61,7 +61,6 @@ export default function Page() {
     });
   }
 
-  /* TELA INICIAL */
   if (step === 0) {
     return (
       <div className="h-screen flex items-center justify-center bg-[#f5f5f5]">
@@ -86,7 +85,6 @@ export default function Page() {
     );
   }
 
-  /* TELA INPUT */
   if (!res) {
     return (
       <div className="h-screen flex items-center justify-center bg-[#f5f5f5]">
@@ -118,7 +116,6 @@ export default function Page() {
     );
   }
 
-  /* RESULTADO */
   return (
     <div className="p-6 bg-[#f5f5f5] min-h-screen">
 
