@@ -157,9 +157,14 @@ export default function Page() {
         {res.texto}
       </div>
 
-      <button className="mt-6 w-full bg-black text-white py-4 rounded-xl">
+      {/* ✅ CTA CORRIGIDO COM LINK */}
+      <a
+        href="https://wa.me/SEUNUMEROAQUI"
+        target="_blank"
+        className="block mt-6 w-full bg-black text-white py-4 rounded-xl text-center"
+      >
         Quero entender meu padrão com clareza
-      </button>
+      </a>
 
     </div>
   );
