@@ -1,192 +1,227 @@
 "use client";
 
 import { useState } from "react";
+import { calculateMap } from "@/utils/jiugong";
 
-type Energia = {
-  nome: string;
-  trigrama: string;
-  arquétipo: string;
-  luz: string;
-  sombra: string;
-  missao: string;
-  comportamento: string;
+const energias: any = {
+  1: { nome: "Água", arquetipo: "A Adaptadora", luz: "flui e se ajusta", sombra: "evita confronto", missao: "confiar no fluxo com direção", comportamento: "tende a se adaptar demais e evitar confronto" },
+  2: { nome: "Terra", arquetipo: "A Sustentadora", luz: "cuida e suporta", sombra: "se sobrecarrega", missao: "nutrir sem se anular", comportamento: "tende a assumir responsabilidades demais" },
+  3: { nome: "Trovão", arquetipo: "A Iniciadora", luz: "age e inicia", sombra: "se precipita", missao: "sustentar o que começa", comportamento: "tende a agir rápido e ajustar depois" },
+  4: { nome: "Vento", arquetipo: "A Influenciadora", luz: "comunica e influencia", sombra: "se dispersa", missao: "alinhar comunicação com intenção", comportamento: "tende a ajustar antes de se posicionar" },
+  5: { nome: "Centro", arquetipo: "A Integradora", luz: "equilibra", sombra: "se perde na dúvida", missao: "agir com clareza interna", comportamento: "tende a analisar demais antes de agir" },
+  6: { nome: "Céu", arquetipo: "A Estrategista", luz: "direciona e lidera", sombra: "trava na execução", missao: "agir com consistência", comportamento: "tende a saber o que precisa, mas não sustenta execução" },
+  7: { nome: "Lago", arquetipo: "A Comunicadora", luz: "expressa e conecta", sombra: "busca aprovação", missao: "se expressar com verdade", comportamento: "tende a agradar antes de se posicionar" },
+  8: { nome: "Montanha", arquetipo: "A Guardiã", luz: "estrutura e protege", sombra: "bloqueia avanço", missao: "liberar no tempo certo", comportamento: "tende a conter e evitar movimento" },
+  9: { nome: "Fogo", arquetipo: "A Visionária", luz: "expande e ilumina", sombra: "se dispersa", missao: "focar para realizar", comportamento: "tende a se empolgar e não concluir" },
 };
 
-const energias: Record<number, Energia> = {
-  1: { nome: "Água", trigrama: "☵", arquétipo: "A Sensível", luz: "profundidade", sombra: "medo", missao: "confiar", comportamento: "se retrai diante de pressão" },
-  2: { nome: "Terra", trigrama: "☷", arquétipo: "A Sustentadora", luz: "apoia", sombra: "se sobrecarrega", missao: "se priorizar", comportamento: "assume mais do que deveria" },
-  3: { nome: "Trovão", trigrama: "☳", arquétipo: "A Iniciadora", luz: "começa", sombra: "se precipita", missao: "sustentar", comportamento: "age rápido e depois ajusta" },
-  4: { nome: "Vento", trigrama: "☴", arquétipo: "A Influenciadora", luz: "comunica", sombra: "se dispersa", missao: "direcionar", comportamento: "ajusta antes de se posicionar" },
-  5: { nome: "Centro", trigrama: "✚", arquétipo: "A Integradora", luz: "equilibra", sombra: "se perde", missao: "organizar", comportamento: "oscila entre controle e caos" },
-  6: { nome: "Céu", trigrama: "☰", arquétipo: "A Estrategista", luz: "direciona", sombra: "trava", missao: "executar", comportamento: "sabe o que fazer, mas trava na execução" },
-  7: { nome: "Lago", trigrama: "☱", arquétipo: "A Comunicadora", luz: "expressa", sombra: "busca aprovação", missao: "ser verdadeira", comportamento: "agrada antes de se posicionar" },
-  8: { nome: "Montanha", trigrama: "☶", arquétipo: "A Guardiã", luz: "sustenta", sombra: "bloqueia", missao: "liberar", comportamento: "contém e segura movimento" },
-  9: { nome: "Fogo", trigrama: "☲", arquétipo: "A Visionária", luz: "expande", sombra: "se dispersa", missao: "focar", comportamento: "se empolga e não conclui" },
-};
-
-// ✅ REDUÇÃO
-function reduzir(n: number): number {
-  while (n > 9) {
-    n = n.toString().split("").reduce((a, b) => a + Number(b), 0);
-  }
-  return n;
-}
-
-// ✅ PARSE DATE (SEM TIMEZONE BUG)
+// ✅ CORREÇÃO DO DATE (ESSENCIAL)
 function parseDate(input: string): Date {
   const [year, month, day] = input.split("-").map(Number);
   return new Date(year, month - 1, day);
 }
 
-// ✅ BASE CORRETA (ÚLTIMOS 2 DÍGITOS DO ANO)
-function calcularBaseAno(data: Date): number {
-  const ano = data.getFullYear();
-  const ultimos = ano % 100;
-  return reduzir(ultimos);
+function tipo(n: number) {
+  if ([1,3,9].includes(n)) return "ativa";
+  if ([2,6,8].includes(n)) return "estrutural";
+  return "relacional";
 }
 
-// ✅ ESSÊNCIA (VERSÃO CORRETA FINAL)
-function calcularEssencia(data: Date, genero: string): number {
-  const base = calcularBaseAno(data);
+function gerarHeadline(e: number, ex: number, ext: number) {
+  const tE = tipo(e);
+  const tExt = tipo(ext);
 
-  let numero =
-    genero === "masculino"
-      ? 10 - base
-      : base + 5;
-
-  numero = reduzir(numero);
-
-  if (numero === 5) {
-    numero = genero === "masculino" ? 2 : 8;
+  if (tE === "ativa" && tExt === "estrutural") {
+    return "Você tenta avançar — mas algo sempre trava.";
   }
 
-  return numero;
+  if (tE === "estrutural" && tExt === "ativa") {
+    return "Você tenta manter controle — mas a vida pede movimento.";
+  }
+
+  if (e === ex) {
+    return "Você faz — mas repete o mesmo padrão.";
+  }
+
+  if (ex === ext) {
+    return "Você se move — mas não sente que está no controle.";
+  }
+
+  return "Existe um padrão silencioso na forma como você está vivendo.";
 }
 
-// ✅ DISTRIBUIÇÃO ORIGINAL (A SUA)
-function calcularMapa(data: Date, genero: string) {
-  const e = calcularEssencia(data, genero);
-  const ex = reduzir(e + 2);
-  const ext = reduzir(e + 4);
-
-  return { e, ex, ext };
-}
-
-// ✅ LEITURA (SEM ERRO DE PORTUGUÊS)
 function gerarLeitura(e: number, ex: number, ext: number) {
+  const ess = energias[e];
+  const exp = energias[ex];
+  const amb = energias[ext];
+
   return `
-Por dentro, você ${energias[e].comportamento}.
-Na prática, você ${energias[ex].comportamento}.
-O ambiente ${energias[ext].comportamento}.
+Por dentro, você ${ess.comportamento}.
+Na prática, você ${exp.comportamento}.
+E o ambiente ${amb.comportamento}.
 
 Isso cria um padrão:
 
-Você começa com clareza,
-mas precisa ajustar no caminho.
+Você começa com intenção.
+Mas ajusta no caminho.
 
 E quanto mais tenta resolver,
-mais esforço precisa fazer.
+mais força precisa fazer.
 
 O desgaste não está no quanto você faz.
 
-Mas em como você está tentando fazer.
+Está em como está tentando fazer.
 `;
 }
 
 export default function Page() {
   const [data, setData] = useState("");
-  const [genero, setGenero] = useState("feminino");
-  const [started, setStarted] = useState(false);
-  const [resultado, setResultado] = useState<any>(null);
+  const [sexo, setSexo] = useState("");
+  const [step, setStep] = useState(0);
+  const [res, setRes]: any = useState(null);
 
   function calcular() {
-    if (!data) return;
+    if (!data || !sexo) return;
 
-    const date = parseDate(data);
-    const mapa = calcularMapa(date, genero);
+    // ✅ AQUI ESTÁ A CORREÇÃO REAL
+    const map = calculateMap(parseDate(data), sexo);
 
-    setResultado({
-      ...mapa,
-      leitura: gerarLeitura(mapa.e, mapa.ex, mapa.ext),
+    const e = map.essential.number;
+    const ex = map.expression.number;
+    const ext = map.personal.number;
+
+    setRes({
+      e,
+      ex,
+      ext,
+      texto: gerarLeitura(e, ex, ext),
+      headline: gerarHeadline(e, ex, ext)
     });
   }
 
-  return (
-    <div className="p-6 max-w-4xl mx-auto">
-
-      {/* CAPA */}
-      {!started && (
-        <div className="bg-gray-100 p-10 rounded-3xl text-center">
-          <h1 className="text-4xl font-bold mb-4">
-            ENGENHARIA DOS PADRÕES PESSOAIS
+  /* TELA INICIAL */
+  if (step === 0) {
+    return (
+      <div style={{
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center"
+      }}>
+        <div>
+          <h1 style={{ fontSize: 32 }}>
+            ENGENHARIA<br />DOS PADRÕES PESSOAIS
           </h1>
-          <p className="text-gray-500 mb-6">
+
+          <p style={{ marginTop: 16, opacity: 0.6 }}>
             O problema não é esforço.<br />
             É como sua energia está sendo aplicada.
           </p>
 
           <button
-            onClick={() => setStarted(true)}
-            className="w-full bg-black text-white py-4 rounded-xl"
+            onClick={() => setStep(1)}
+            style={{
+              marginTop: 30,
+              padding: "16px 40px",
+              background: "#000",
+              color: "#fff",
+              borderRadius: 14
+            }}
           >
             Começar
           </button>
         </div>
-      )}
+      </div>
+    );
+  }
 
-      {/* FORM */}
-      {started && !resultado && (
-        <div className="bg-gray-100 p-6 rounded-2xl mt-6">
-          <input
-            type="date"
-            className="w-full p-3 rounded mb-4"
-            onChange={(e) => setData(e.target.value)}
-          />
+  /* INPUT */
+  if (!res) {
+    return (
+      <div style={{ padding: 24 }}>
+        <input type="date" onChange={(e) => setData(e.target.value)} />
 
-          <select
-            className="w-full p-3 rounded mb-4"
-            onChange={(e) => setGenero(e.target.value)}
-          >
-            <option value="feminino">Feminino</option>
-            <option value="masculino">Masculino</option>
-          </select>
+        <select onChange={(e) => setSexo(e.target.value)}>
+          <option>Sexo</option>
+          <option value="masculino">Masculino</option>
+          <option value="feminino">Feminino</option>
+        </select>
 
-          <button
-            onClick={calcular}
-            className="w-full bg-black text-white py-4 rounded-xl"
-          >
-            Ver minha engenharia
-          </button>
-        </div>
-      )}
+        <button onClick={calcular}>
+          Ver minha engenharia
+        </button>
+      </div>
+    );
+  }
 
-      {/* RESULTADO */}
-      {resultado && (
-        <div className="mt-6">
+  /* RESULTADO */
+  return (
+    <div style={{ padding: 24 }}>
 
-          <div className="grid grid-cols-3 gap-4 mb-6">
-            {[resultado.e, resultado.ex, resultado.ext].map((n, i) => {
-              const en = energias[n];
-              return (
-                <div key={i} className="bg-gray-100 p-4 rounded-xl text-center">
-                  <div className="text-sm text-gray-500">
-                    {i === 0 ? "Essência" : i === 1 ? "Expressão" : "Externa"}
-                  </div>
-                  <div className="text-xl">{en.trigrama}</div>
-                  <div className="text-3xl font-bold">{n}</div>
-                  <div>{en.nome}</div>
-                  <div className="text-xs text-gray-400">{en.arquétipo}</div>
-                </div>
-              );
-            })}
-          </div>
+      <h2 style={{ marginBottom: 24 }}>
+        {res.headline}
+      </h2>
 
-          <div className="bg-gray-100 p-5 rounded-xl whitespace-pre-line mb-6">
-            {resultado.leitura}
-          </div>
+      <div style={{ display: "flex", gap: 10 }}>
+        {[res.e, res.ex, res.ext].map((n, i) => {
+          const en = energias[n];
+          const labels = ["Essência", "Expressão", "Externa"];
 
-        </div>
-      )}
+          return (
+            <div key={i} style={{
+              flex: 1,
+              background: "#f5f5f5",
+              padding: 14,
+              borderRadius: 12,
+              textAlign: "center"
+            }}>
+              <div>{labels[i]}</div>
+              <strong>{n}</strong>
+              <div>{en.nome}</div>
+              <small>{en.arquetipo}</small>
+            </div>
+          );
+        })}
+      </div>
+
+      <div style={{ marginTop: 30 }}>
+        {[res.e, res.ex, res.ext].map((n, i) => {
+          const en = energias[n];
+          const labels = ["Essência", "Expressão", "Externa"];
+
+          return (
+            <div key={i} style={{ marginBottom: 18 }}>
+              <strong>{labels[i]} — {en.nome}</strong><br />
+              Luz: {en.luz}<br />
+              Sombra: {en.sombra}<br />
+              Missão: {en.missao}
+            </div>
+          );
+        })}
+      </div>
+
+      <div style={{
+        marginTop: 20,
+        padding: 20,
+        background: "#eee",
+        borderRadius: 14,
+        whiteSpace: "pre-line"
+      }}>
+        {res.texto}
+      </div>
+
+      <button style={{
+        marginTop: 30,
+        width: "100%",
+        padding: 16,
+        background: "#000",
+        color: "#fff",
+        borderRadius: 14
+      }}>
+        Quero entender meu padrão com clareza
+      </button>
+
     </div>
   );
 }
