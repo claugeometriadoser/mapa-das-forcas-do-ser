@@ -24,7 +24,7 @@ const energias: Record<number, Energia> = {
   9: { nome: "Fogo", trigrama: "☲", arquétipo: "A Visionária", luz: "expande", sombra: "se dispersa", missao: "focar", comportamento: "se empolga e não conclui" },
 };
 
-// 🔴 redução (mantida)
+// ✅ REDUÇÃO
 function reduzir(n: number): number {
   while (n > 9) {
     n = n.toString().split("").reduce((a, b) => a + Number(b), 0);
@@ -32,38 +32,38 @@ function reduzir(n: number): number {
   return n;
 }
 
-// 🔴 CORREÇÃO DO DATE (não altera cálculo, só evita erro)
+// ✅ PARSE DATE (SEM TIMEZONE BUG)
 function parseDate(input: string): Date {
   const [year, month, day] = input.split("-").map(Number);
   return new Date(year, month - 1, day);
 }
 
-// 🔴 SUA LÓGICA ORIGINAL (RESTAURADA)
-function calcularNumeroBase(data: Date): number {
-  const soma =
-    data.getFullYear() +
-    (data.getMonth() + 1) +
-    data.getDate();
-
-  return reduzir(soma);
+// ✅ BASE CORRETA (ÚLTIMOS 2 DÍGITOS DO ANO)
+function calcularBaseAno(data: Date): number {
+  const ano = data.getFullYear();
+  const ultimos = ano % 100;
+  return reduzir(ultimos);
 }
 
-// 🔴 AJUSTE MÍNIMO DO MASCULINO (sem mudar sua base)
+// ✅ ESSÊNCIA (VERSÃO CORRETA FINAL)
 function calcularEssencia(data: Date, genero: string): number {
-  let base = calcularNumeroBase(data);
+  const base = calcularBaseAno(data);
 
   let numero =
     genero === "masculino"
-      ? 11 - base
-      : base;
+      ? 10 - base
+      : base + 5;
 
-  if (numero <= 0) numero += 9;
-  if (numero > 9) numero -= 9;
+  numero = reduzir(numero);
+
+  if (numero === 5) {
+    numero = genero === "masculino" ? 2 : 8;
+  }
 
   return numero;
 }
 
-// 🔴 distribuição (igual ao que funcionava)
+// ✅ DISTRIBUIÇÃO ORIGINAL (A SUA)
 function calcularMapa(data: Date, genero: string) {
   const e = calcularEssencia(data, genero);
   const ex = reduzir(e + 2);
@@ -72,24 +72,17 @@ function calcularMapa(data: Date, genero: string) {
   return { e, ex, ext };
 }
 
-function gerarHeadline() {
-  return "Existe um padrão silencioso na forma como você está vivendo.";
-}
-
+// ✅ LEITURA (SEM ERRO DE PORTUGUÊS)
 function gerarLeitura(e: number, ex: number, ext: number) {
-  const E = energias[e];
-  const EX = energias[ex];
-  const EXT = energias[ext];
-
   return `
-Por dentro, você ${E.comportamento}.
-Na prática, você ${EX.comportamento}.
-O ambiente ${EXT.comportamento}.
+Por dentro, você ${energias[e].comportamento}.
+Na prática, você ${energias[ex].comportamento}.
+O ambiente ${energias[ext].comportamento}.
 
 Isso cria um padrão:
 
-Você começa com uma lógica clara,
-mas precisa ajustar no meio do caminho.
+Você começa com clareza,
+mas precisa ajustar no caminho.
 
 E quanto mais tenta resolver,
 mais esforço precisa fazer.
@@ -114,7 +107,6 @@ export default function Page() {
 
     setResultado({
       ...mapa,
-      headline: gerarHeadline(),
       leitura: gerarLeitura(mapa.e, mapa.ex, mapa.ext),
     });
   }
@@ -122,13 +114,12 @@ export default function Page() {
   return (
     <div className="p-6 max-w-4xl mx-auto">
 
-      {/* 🔥 TELA INICIAL (EXATA) */}
+      {/* CAPA */}
       {!started && (
         <div className="bg-gray-100 p-10 rounded-3xl text-center">
           <h1 className="text-4xl font-bold mb-4">
             ENGENHARIA DOS PADRÕES PESSOAIS
           </h1>
-
           <p className="text-gray-500 mb-6">
             O problema não é esforço.<br />
             É como sua energia está sendo aplicada.
@@ -173,10 +164,6 @@ export default function Page() {
       {resultado && (
         <div className="mt-6">
 
-          <h2 className="text-xl font-semibold mb-4">
-            {resultado.headline}
-          </h2>
-
           <div className="grid grid-cols-3 gap-4 mb-6">
             {[resultado.e, resultado.ex, resultado.ext].map((n, i) => {
               const en = energias[n];
@@ -194,26 +181,9 @@ export default function Page() {
             })}
           </div>
 
-          <div className="grid grid-cols-3 gap-4 mb-6 text-sm">
-            {[resultado.e, resultado.ex, resultado.ext].map((n, i) => {
-              const en = energias[n];
-              return (
-                <div key={i}>
-                  <div><b>Luz:</b> {en.luz}</div>
-                  <div><b>Sombra:</b> {en.sombra}</div>
-                  <div><b>Missão:</b> {en.missao}</div>
-                </div>
-              );
-            })}
-          </div>
-
           <div className="bg-gray-100 p-5 rounded-xl whitespace-pre-line mb-6">
             {resultado.leitura}
           </div>
-
-          <button className="w-full bg-black text-white py-4 rounded-xl">
-            Quero entender meu padrão com clareza
-          </button>
 
         </div>
       )}
