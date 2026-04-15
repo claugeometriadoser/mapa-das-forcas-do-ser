@@ -157,9 +157,9 @@ export default function Page() {
         {res.texto}
       </div>
 
-      {/* ✅ CTA CORRIGIDO COM LINK */}
+      {/* ✅ CTA CORRIGIDO COM TELEFONE + TEXTO */}
       <a
-        href="https://wa.me/SEUNUMEROAQUI"
+        href="https://wa.me/5511987545477?text=Quero%20entender%20o%20meu%20padr%C3%A3o%20com%20clareza"
         target="_blank"
         className="block mt-6 w-full bg-black text-white py-4 rounded-xl text-center"
       >
