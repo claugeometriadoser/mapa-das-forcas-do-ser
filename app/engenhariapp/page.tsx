@@ -24,7 +24,7 @@ const energias: Record<number, Energia> = {
   9: { nome: "Fogo", trigrama: "☲", arquétipo: "A Visionária", luz: "expande", sombra: "se dispersa", missao: "focar", comportamento: "se empolga e não conclui" },
 };
 
-// 🔴 REDUÇÃO
+// 🔴 redução (mantida)
 function reduzir(n: number): number {
   while (n > 9) {
     n = n.toString().split("").reduce((a, b) => a + Number(b), 0);
@@ -32,42 +32,38 @@ function reduzir(n: number): number {
   return n;
 }
 
-// 🔴 CORREÇÃO IMPORTANTE: evitar erro de timezone
+// 🔴 CORREÇÃO DO DATE (não altera cálculo, só evita erro)
 function parseDate(input: string): Date {
   const [year, month, day] = input.split("-").map(Number);
   return new Date(year, month - 1, day);
 }
 
-// 🔴 CÁLCULO CORRETO (BASE LO SHU)
-function calcularNumeroBase(ano: number): number {
-  const ultimos2 = ano % 100;
-  return reduzir(ultimos2);
+// 🔴 SUA LÓGICA ORIGINAL (RESTAURADA)
+function calcularNumeroBase(data: Date): number {
+  const soma =
+    data.getFullYear() +
+    (data.getMonth() + 1) +
+    data.getDate();
+
+  return reduzir(soma);
 }
 
-// 🔴 REGRA CORRETA DE GÊNERO
+// 🔴 AJUSTE MÍNIMO DO MASCULINO (sem mudar sua base)
 function calcularEssencia(data: Date, genero: string): number {
-  const ano = data.getFullYear();
-  const base = calcularNumeroBase(ano);
+  let base = calcularNumeroBase(data);
 
-  let numero;
+  let numero =
+    genero === "masculino"
+      ? 11 - base
+      : base;
 
-  if (genero === "masculino") {
-    numero = 10 - base;
-  } else {
-    numero = base + 5;
-  }
-
-  numero = reduzir(numero);
-
-  // ajuste do 5
-  if (numero === 5) {
-    numero = genero === "masculino" ? 2 : 8;
-  }
+  if (numero <= 0) numero += 9;
+  if (numero > 9) numero -= 9;
 
   return numero;
 }
 
-// 🔴 DISTRIBUIÇÃO (NÃO ALTERAR)
+// 🔴 distribuição (igual ao que funcionava)
 function calcularMapa(data: Date, genero: string) {
   const e = calcularEssencia(data, genero);
   const ex = reduzir(e + 2);
@@ -76,12 +72,10 @@ function calcularMapa(data: Date, genero: string) {
   return { e, ex, ext };
 }
 
-// 🔴 HEADLINE
 function gerarHeadline() {
   return "Existe um padrão silencioso na forma como você está vivendo.";
 }
 
-// 🔴 LEITURA
 function gerarLeitura(e: number, ex: number, ext: number) {
   const E = energias[e];
   const EX = energias[ex];
@@ -94,7 +88,7 @@ O ambiente ${EXT.comportamento}.
 
 Isso cria um padrão:
 
-Você começa com clareza,
+Você começa com uma lógica clara,
 mas precisa ajustar no meio do caminho.
 
 E quanto mais tenta resolver,
@@ -109,8 +103,8 @@ Mas em como você está tentando fazer.
 export default function Page() {
   const [data, setData] = useState("");
   const [genero, setGenero] = useState("feminino");
-  const [resultado, setResultado] = useState<any>(null);
   const [started, setStarted] = useState(false);
+  const [resultado, setResultado] = useState<any>(null);
 
   function calcular() {
     if (!data) return;
@@ -128,7 +122,7 @@ export default function Page() {
   return (
     <div className="p-6 max-w-4xl mx-auto">
 
-      {/* 🔥 CAPA EXATA */}
+      {/* 🔥 TELA INICIAL (EXATA) */}
       {!started && (
         <div className="bg-gray-100 p-10 rounded-3xl text-center">
           <h1 className="text-4xl font-bold mb-4">
@@ -183,7 +177,6 @@ export default function Page() {
             {resultado.headline}
           </h2>
 
-          {/* RESUMO */}
           <div className="grid grid-cols-3 gap-4 mb-6">
             {[resultado.e, resultado.ex, resultado.ext].map((n, i) => {
               const en = energias[n];
@@ -192,7 +185,6 @@ export default function Page() {
                   <div className="text-sm text-gray-500">
                     {i === 0 ? "Essência" : i === 1 ? "Expressão" : "Externa"}
                   </div>
-
                   <div className="text-xl">{en.trigrama}</div>
                   <div className="text-3xl font-bold">{n}</div>
                   <div>{en.nome}</div>
@@ -202,7 +194,6 @@ export default function Page() {
             })}
           </div>
 
-          {/* LUZ SOMBRA MISSÃO */}
           <div className="grid grid-cols-3 gap-4 mb-6 text-sm">
             {[resultado.e, resultado.ex, resultado.ext].map((n, i) => {
               const en = energias[n];
@@ -216,7 +207,6 @@ export default function Page() {
             })}
           </div>
 
-          {/* LEITURA */}
           <div className="bg-gray-100 p-5 rounded-xl whitespace-pre-line mb-6">
             {resultado.leitura}
           </div>
