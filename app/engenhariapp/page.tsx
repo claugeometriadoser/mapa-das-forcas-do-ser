@@ -56,6 +56,58 @@ function parseDate(input: string): Date {
   return new Date(y, m - 1, d);
 }
 
+// 🔥 HEADLINE DINÂMICA
+function gerarHeadline(e: number, ex: number, ext: number) {
+
+  if (e === ex && ex === ext) {
+    return "Você repete o mesmo padrão — mesmo quando tenta fazer diferente.";
+  }
+
+  if (e === 6) {
+    return "Você sabe o que precisa fazer — mas algo trava na execução.";
+  }
+
+  if (ex === 3) {
+    return "Você começa rápido — mas não sustenta o ritmo.";
+  }
+
+  if (ext === 8) {
+    return "Você tenta avançar — mas o ambiente te segura.";
+  }
+
+  if (e === 7) {
+    return "Você sente muito — mas se ajusta demais antes de agir.";
+  }
+
+  if (ex === 9) {
+    return "Você se empolga — mas perde consistência no caminho.";
+  }
+
+  return "Você faz — mas sente que não sai do lugar.";
+}
+
+// 🔥 PRIMEIRA FRASE DINÂMICA
+function gerarAbertura(e: number, ex: number, ext: number) {
+
+  if (e === 6 && ex === 3) {
+    return "Você sabe o que precisa ser feito. Mas não sustenta o tempo necessário para isso acontecer.";
+  }
+
+  if (e === 7 && ex === 1) {
+    return "Você sente o que precisa fazer. Mas se retrai quando precisa agir.";
+  }
+
+  if (e === 8 && ex === 8) {
+    return "Você segura mais do que deveria. E isso trava o movimento.";
+  }
+
+  if (ex === 9) {
+    return "Você começa com intensidade. Mas não sustenta até o fim.";
+  }
+
+  return "Você faz. Mas sente que algo não avança como deveria.";
+}
+
 export default function Page() {
 
   const [step, setStep] = useState(0);
@@ -134,7 +186,7 @@ export default function Page() {
       <div className="w-full max-w-xl space-y-6">
 
         <h2 className="text-xl font-semibold leading-snug">
-          Você faz, mas sente que não sai do lugar.
+          {gerarHeadline(res.e, res.ex, res.ext)}
         </h2>
 
         <div className="grid grid-cols-3 gap-4">
@@ -159,10 +211,7 @@ export default function Page() {
 
         <div className="bg-white p-6 rounded-xl text-sm leading-relaxed space-y-4">
 
-          <p>
-            Você sabe o que precisa ser feito.
-            Mas não sustenta o tempo necessário para isso acontecer.
-          </p>
+          <p>{gerarAbertura(res.e, res.ex, res.ext)}</p>
 
           <p>
             Por dentro, você {comportamento[res.e]}.
@@ -187,11 +236,10 @@ export default function Page() {
             Mas em como você está tentando fazer.
           </p>
 
-          {/* 🔥 AGORA SIM CORRETO */}
           <p className="text-sm font-bold uppercase">
-            Ver o padrão traz clareza.<br />
-            Mas não muda o resultado.<br />
-            O que muda é como você age a partir disso.
+            VER O PADRÃO TRAZ CLAREZA.<br />
+            MAS NÃO MUDA O RESULTADO.<br />
+            O QUE MUDA É COMO VOCÊ AGE A PARTIR DISSO.
           </p>
 
         </div>
