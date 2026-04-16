@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { calculateMap } from "@/utils/jiugong";
 
+// 🔺 DADOS VISUAIS (NÃO ALTERA CÁLCULO)
 const arquétipos: any = {
   1: "A Profunda",
   2: "A Sustentadora",
@@ -51,49 +52,12 @@ const comportamento: any = {
   9: "tende a se empolgar e não concluir",
 };
 
-function gerarDiagnostico(e: number, ex: number, ext: number) {
-
-  let nomePadrao = "Desalinhamento entre intenção e ação";
-
-  if (e === ex && ex === ext) nomePadrao = "Repetição automática de padrão";
-  else if (e === ext) nomePadrao = "Clareza interna com bloqueio externo";
-  else if (ex === ext) nomePadrao = "Movimento sem direção clara";
-
-  return {
-    nomePadrao,
-    leitura: `
-Você ${comportamento[e]}.
-Mas quando precisa agir, ${comportamento[ex]}.
-E o ambiente ${comportamento[ext]}.
-
-Isso não parece um problema isolado.
-Parece um padrão.
-`,
-
-    sombra: `
-Você começa com intenção.
-Mas não sustenta o suficiente para ver resultado.
-
-E quando percebe,
-já está ajustando de novo.
-`,
-
-    loop: `
-começa → ajusta → força → cansa → recomeça
-
-E com o tempo,
-isso vira sua forma de funcionar.
-`,
-  };
-}
-
 function parseDate(input: string): Date {
   const [y, m, d] = input.split("-").map(Number);
   return new Date(y, m - 1, d);
 }
 
 export default function Page() {
-
   const [step, setStep] = useState(0);
   const [data, setData] = useState("");
   const [sexo, setSexo] = useState("");
@@ -106,12 +70,10 @@ export default function Page() {
     const ex = map.expression.number;
     const ext = map.personal.number;
 
-    const diagnostico = gerarDiagnostico(e, ex, ext);
-
-    setRes({ e, ex, ext, diagnostico });
+    setRes({ e, ex, ext });
   }
 
-  // 🔹 TELA INICIAL (NÃO MEXI)
+  // 🔹 TELA INICIAL
   if (step === 0) {
     return (
       <div className="h-screen flex items-center justify-center bg-[#f5f5f5]">
@@ -136,7 +98,7 @@ export default function Page() {
     );
   }
 
-  // 🔹 INPUT (NÃO MEXI)
+  // 🔹 INPUT
   if (!res) {
     return (
       <div className="h-screen flex items-center justify-center bg-[#f5f5f5]">
@@ -168,68 +130,82 @@ export default function Page() {
     );
   }
 
-  // 🔥 RESULTADO AJUSTADO
+  // 🔥 RESULTADO PREMIUM
   return (
-    <div className="p-6 bg-[#f5f5f5] min-h-screen space-y-6">
+    <div className="min-h-screen bg-[#f5f5f5] px-6 py-8 flex justify-center">
+      
+      <div className="w-full max-w-xl space-y-8">
 
-      <h2 className="text-xl font-semibold">
-        Seu padrão dominante: {res.diagnostico.nomePadrao}
-      </h2>
+        <h2 className="text-xl font-semibold leading-snug">
+          Você faz, mas sente que não sai do lugar.
+        </h2>
 
-      {/* 🔥 TOPO COM AS 3 ENERGIAS (VOLTOU) */}
-      <div className="grid grid-cols-3 gap-4">
+        {/* 🔺 ENERGIAS */}
+        <div className="grid grid-cols-3 gap-4">
 
-        {[res.e, res.ex, res.ext].map((n: number, i: number) => (
-          <div key={i} className="bg-gray-200 p-4 rounded-xl text-center">
+          {[res.e, res.ex, res.ext].map((n: number, i: number) => (
+            <div key={i} className="bg-white rounded-xl p-4 text-center shadow-sm">
 
-            <div className="text-sm text-gray-500">
-              {i === 0 ? "Essência" : i === 1 ? "Expressão" : "Externa"}
+              <div className="text-xs text-gray-500">
+                {i === 0 ? "Essência" : i === 1 ? "Expressão" : "Externa"}
+              </div>
+
+              <div className="text-lg">{trigramas[n]}</div>
+              <div className="text-2xl font-semibold">{n}</div>
+              <div className="text-sm">{nomes[n]}</div>
+
+              <div className="text-xs text-gray-400">
+                {arquétipos[n]}
+              </div>
+
             </div>
+          ))}
 
-            <div className="text-xl">{trigramas[n]}</div>
+        </div>
 
-            <div className="text-2xl font-bold">{n}</div>
+        {/* 🔥 LEITURA */}
+        <div className="space-y-6 text-[15px] leading-relaxed">
 
-            <div className="text-sm">{nomes[n]}</div>
+          <p>Você sabe o que precisa ser feito.</p>
+          <p>Mas não sustenta o tempo necessário para isso acontecer.</p>
+          <p>E quando percebe, já está fazendo de outro jeito.</p>
 
-            <div className="text-xs text-gray-500">
-              {arquétipos[n]}
-            </div>
+          <div className="border-t pt-4">
+            <p>Por dentro, você {comportamento[res.e]}.</p>
+            <p>Na prática, você {comportamento[res.ex]}.</p>
+            <p>E o ambiente {comportamento[res.ext]}.</p>
           </div>
-        ))}
+
+          <div className="border-t pt-4">
+            <p>Isso não te trava de uma vez.</p>
+            <p>Te desgasta aos poucos.</p>
+            <p>Porque você continua fazendo — sem avançar de verdade.</p>
+          </div>
+
+          <div className="border-t pt-4">
+            <p>E aí você entra num ciclo:</p>
+            <p className="font-medium mt-2">
+              começa → ajusta → força → cansa → recomeça
+            </p>
+          </div>
+
+          <div className="border-t pt-4 text-gray-600">
+            <p>Ver o padrão traz clareza.</p>
+            <p>Mas não muda o resultado.</p>
+            <p>O que muda é como você age a partir disso.</p>
+          </div>
+
+        </div>
+
+        <a
+          href="https://wa.me/5511987545477?text=Quero%20entender%20meu%20padr%C3%A3o%20com%20clareza"
+          target="_blank"
+          className="block w-full bg-black text-white py-4 rounded-xl text-center"
+        >
+          👉 Quero entender meu padrão com clareza
+        </a>
 
       </div>
-
-      {/* 🔥 BLOCO ÚNICO (SEM QUEBRA EXCESSIVA) */}
-      <div className="bg-gray-200 p-6 rounded-xl whitespace-pre-line leading-relaxed">
-
-        {res.diagnostico.leitura}
-
-        {"\n"}
-        {res.diagnostico.sombra}
-
-        {"\n"}
-        Isso cria um padrão:
-
-        {"\n"}
-        {res.diagnostico.loop}
-
-        {"\n\n"}
-        Ver o padrão traz clareza.
-        Mas não muda o resultado.
-
-        O que muda é como você age a partir disso.
-
-      </div>
-
-      {/* CTA */}
-      <a
-        href="https://wa.me/5511987545477?text=Quero%20entender%20meu%20padr%C3%A3o%20com%20clareza"
-        target="_blank"
-        className="block w-full bg-black text-white py-4 rounded-xl text-center"
-      >
-        👉 Quero entender meu padrão com clareza
-      </a>
 
     </div>
   );
