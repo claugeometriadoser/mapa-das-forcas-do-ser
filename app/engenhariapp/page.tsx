@@ -61,7 +61,7 @@ export default function Page() {
   const [step, setStep] = useState(0);
   const [data, setData] = useState("");
   const [sexo, setSexo] = useState("");
-  const [res, setRes]: any = useState(null);
+  const [res]: any = useState(null);
 
   function calcular() {
     const map = calculateMap(parseDate(data), sexo);
@@ -73,7 +73,6 @@ export default function Page() {
     setRes({ e, ex, ext });
   }
 
-  // 🔹 TELA INICIAL
   if (step === 0) {
     return (
       <div className="h-screen flex items-center justify-center bg-[#f5f5f5]">
@@ -98,7 +97,6 @@ export default function Page() {
     );
   }
 
-  // 🔹 INPUT
   if (!res) {
     return (
       <div className="h-screen flex items-center justify-center bg-[#f5f5f5]">
@@ -130,7 +128,6 @@ export default function Page() {
     );
   }
 
-  // 🔥 RESULTADO
   return (
     <div className="min-h-screen bg-[#f5f5f5] px-6 py-8 flex justify-center">
       
@@ -140,9 +137,7 @@ export default function Page() {
           Você faz, mas sente que não sai do lugar.
         </h2>
 
-        {/* 🔹 ENERGIAS */}
         <div className="grid grid-cols-3 gap-4">
-
           {[res.e, res.ex, res.ext].map((n: number, i: number) => (
             <div key={i} className="bg-white rounded-xl p-4 text-center shadow-sm">
 
@@ -160,10 +155,8 @@ export default function Page() {
 
             </div>
           ))}
-
         </div>
 
-        {/* 🔥 LEITURA RESTAURADA */}
         <div className="bg-white p-6 rounded-xl text-sm leading-relaxed space-y-4">
 
           <p>
@@ -177,9 +170,7 @@ export default function Page() {
             E o ambiente {comportamento[res.ext]}.
           </p>
 
-          <p>
-            Isso cria um padrão silencioso:
-          </p>
+          <p>Isso cria um padrão silencioso:</p>
 
           <p>
             Você começa com intenção.<br />
@@ -196,7 +187,8 @@ export default function Page() {
             Mas em como você está tentando fazer.
           </p>
 
-          <p className="text-gray-500 text-xs pt-4">
+          {/* 🔥 AJUSTE AQUI */}
+          <p className="font-semibold">
             Ver o padrão traz clareza.<br />
             Mas não muda o resultado.<br />
             O que muda é como você age a partir disso.
@@ -204,7 +196,6 @@ export default function Page() {
 
         </div>
 
-        {/* 🔥 CTA */}
         <a
           href={`https://wa.me/5511987545477?text=${encodeURIComponent("Quero entender meu padrão com clareza")}`}
           target="_blank"
