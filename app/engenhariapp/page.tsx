@@ -61,7 +61,7 @@ export default function Page() {
   const [step, setStep] = useState(0);
   const [data, setData] = useState("");
   const [sexo, setSexo] = useState("");
-  const [res]: any = useState(null);
+  const [res, setRes]: any = useState(null);
 
   function calcular() {
     const map = calculateMap(parseDate(data), sexo);
@@ -187,8 +187,8 @@ export default function Page() {
             Mas em como você está tentando fazer.
           </p>
 
-          {/* 🔥 AJUSTE AQUI */}
-          <p className="font-semibold">
+          {/* 🔥 AGORA SIM CORRETO */}
+          <p className="text-sm font-bold uppercase">
             Ver o padrão traz clareza.<br />
             Mas não muda o resultado.<br />
             O que muda é como você age a partir disso.
