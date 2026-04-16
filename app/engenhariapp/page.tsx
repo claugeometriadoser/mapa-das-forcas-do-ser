@@ -131,35 +131,16 @@ export default function Page() {
   }
 
   // 🔥 RESULTADO
-  const mensagem = `
-Meu padrão na Engenharia dos Padrões Pessoais:
-
-Essência: ${res.e} — ${nomes[res.e]} (${arquétipos[res.e]})
-Expressão: ${res.ex} — ${nomes[res.ex]} (${arquétipos[res.ex]})
-Externa: ${res.ext} — ${nomes[res.ext]} (${arquétipos[res.ext]})
-
-Leitura:
-
-Você sabe o que precisa ser feito.
-Mas não sustenta o tempo necessário para isso acontecer.
-E quando percebe, já está fazendo de outro jeito.
-
-Por dentro, você ${comportamento[res.e]}.
-Na prática, você ${comportamento[res.ex]}.
-E o ambiente ${comportamento[res.ext]}.
-
-Quero entender meu padrão com clareza.
-`;
-
   return (
     <div className="min-h-screen bg-[#f5f5f5] px-6 py-8 flex justify-center">
       
-      <div className="w-full max-w-xl space-y-8">
+      <div className="w-full max-w-xl space-y-6">
 
         <h2 className="text-xl font-semibold leading-snug">
           Você faz, mas sente que não sai do lugar.
         </h2>
 
+        {/* 🔹 ENERGIAS */}
         <div className="grid grid-cols-3 gap-4">
 
           {[res.e, res.ex, res.ext].map((n: number, i: number) => (
@@ -182,8 +163,50 @@ Quero entender meu padrão com clareza.
 
         </div>
 
+        {/* 🔥 LEITURA RESTAURADA */}
+        <div className="bg-white p-6 rounded-xl text-sm leading-relaxed space-y-4">
+
+          <p>
+            Você sabe o que precisa ser feito.
+            Mas não sustenta o tempo necessário para isso acontecer.
+          </p>
+
+          <p>
+            Por dentro, você {comportamento[res.e]}.
+            Na prática, você {comportamento[res.ex]}.
+            E o ambiente {comportamento[res.ext]}.
+          </p>
+
+          <p>
+            Isso cria um padrão silencioso:
+          </p>
+
+          <p>
+            Você começa com intenção.<br />
+            Mas ajusta no meio do caminho.
+          </p>
+
+          <p>
+            E quanto mais tenta resolver,<br />
+            mais esforço precisa fazer.
+          </p>
+
+          <p>
+            O desgaste não está no quanto você faz.<br />
+            Mas em como você está tentando fazer.
+          </p>
+
+          <p className="text-gray-500 text-xs pt-4">
+            Ver o padrão traz clareza.<br />
+            Mas não muda o resultado.<br />
+            O que muda é como você age a partir disso.
+          </p>
+
+        </div>
+
+        {/* 🔥 CTA */}
         <a
-          href={`https://wa.me/5511987545477?text=${encodeURIComponent(mensagem)}`}
+          href={`https://wa.me/5511987545477?text=${encodeURIComponent("Quero entender meu padrão com clareza")}`}
           target="_blank"
           className="block w-full bg-black text-white py-4 rounded-xl text-center"
         >
