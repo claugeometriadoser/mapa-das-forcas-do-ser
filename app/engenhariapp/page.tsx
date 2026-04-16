@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { calculateMap } from "@/utils/jiugong";
 
-// 🔺 DADOS VISUAIS (NÃO ALTERA CÁLCULO)
 const arquétipos: any = {
   1: "A Profunda",
   2: "A Sustentadora",
@@ -58,6 +57,7 @@ function parseDate(input: string): Date {
 }
 
 export default function Page() {
+
   const [step, setStep] = useState(0);
   const [data, setData] = useState("");
   const [sexo, setSexo] = useState("");
@@ -130,7 +130,27 @@ export default function Page() {
     );
   }
 
-  // 🔥 RESULTADO PREMIUM
+  // 🔥 RESULTADO
+  const mensagem = `
+Meu padrão na Engenharia dos Padrões Pessoais:
+
+Essência: ${res.e} — ${nomes[res.e]} (${arquétipos[res.e]})
+Expressão: ${res.ex} — ${nomes[res.ex]} (${arquétipos[res.ex]})
+Externa: ${res.ext} — ${nomes[res.ext]} (${arquétipos[res.ext]})
+
+Leitura:
+
+Você sabe o que precisa ser feito.
+Mas não sustenta o tempo necessário para isso acontecer.
+E quando percebe, já está fazendo de outro jeito.
+
+Por dentro, você ${comportamento[res.e]}.
+Na prática, você ${comportamento[res.ex]}.
+E o ambiente ${comportamento[res.ext]}.
+
+Quero entender meu padrão com clareza.
+`;
+
   return (
     <div className="min-h-screen bg-[#f5f5f5] px-6 py-8 flex justify-center">
       
@@ -140,7 +160,6 @@ export default function Page() {
           Você faz, mas sente que não sai do lugar.
         </h2>
 
-        {/* 🔺 ENERGIAS */}
         <div className="grid grid-cols-3 gap-4">
 
           {[res.e, res.ex, res.ext].map((n: number, i: number) => (
@@ -163,42 +182,8 @@ export default function Page() {
 
         </div>
 
-        {/* 🔥 LEITURA */}
-        <div className="space-y-6 text-[15px] leading-relaxed">
-
-          <p>Você sabe o que precisa ser feito.</p>
-          <p>Mas não sustenta o tempo necessário para isso acontecer.</p>
-          <p>E quando percebe, já está fazendo de outro jeito.</p>
-
-          <div className="border-t pt-4">
-            <p>Por dentro, você {comportamento[res.e]}.</p>
-            <p>Na prática, você {comportamento[res.ex]}.</p>
-            <p>E o ambiente {comportamento[res.ext]}.</p>
-          </div>
-
-          <div className="border-t pt-4">
-            <p>Isso não te trava de uma vez.</p>
-            <p>Te desgasta aos poucos.</p>
-            <p>Porque você continua fazendo — sem avançar de verdade.</p>
-          </div>
-
-          <div className="border-t pt-4">
-            <p>E aí você entra num ciclo:</p>
-            <p className="font-medium mt-2">
-              começa → ajusta → força → cansa → recomeça
-            </p>
-          </div>
-
-          <div className="border-t pt-4 text-gray-600">
-            <p>Ver o padrão traz clareza.</p>
-            <p>Mas não muda o resultado.</p>
-            <p>O que muda é como você age a partir disso.</p>
-          </div>
-
-        </div>
-
         <a
-          href="https://wa.me/5511987545477?text=Quero%20entender%20meu%20padr%C3%A3o%20com%20clareza"
+          href={`https://wa.me/5511987545477?text=${encodeURIComponent(mensagem)}`}
           target="_blank"
           className="block w-full bg-black text-white py-4 rounded-xl text-center"
         >
