@@ -56,7 +56,6 @@ function parseDate(input: string): Date {
   return new Date(y, m - 1, d);
 }
 
-// 🔥 HEADLINE DINÂMICA
 function gerarHeadline(e: number, ex: number, ext: number) {
 
   if (e === ex && ex === ext) {
@@ -86,7 +85,6 @@ function gerarHeadline(e: number, ex: number, ext: number) {
   return "Você faz — mas sente que não sai do lugar.";
 }
 
-// 🔥 PRIMEIRA FRASE DINÂMICA
 function gerarAbertura(e: number, ex: number, ext: number) {
 
   if (e === 6 && ex === 3) {
@@ -216,7 +214,7 @@ export default function Page() {
           <p>
             Por dentro, você {comportamento[res.e]}.
             Na prática, você {comportamento[res.ex]}.
-            E o ambiente {comportamento[res.ext]}.
+            E no ambiente, você {comportamento[res.ext]}.
           </p>
 
           <p>Isso cria um padrão silencioso:</p>
