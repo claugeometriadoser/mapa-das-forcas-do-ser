@@ -152,6 +152,11 @@ export default function Page() {
       <div className="h-screen flex items-center justify-center bg-[#f5f5f5]">
         <div className="bg-white p-8 rounded-2xl w-[90%] max-w-md space-y-4">
 
+          {/* 🔥 TÍTULO INSERIDO AQUI */}
+          <h2 className="text-lg font-semibold text-center">
+            Insira sua data de nascimento e o seu sexo
+          </h2>
+
           <input
             type="date"
             onChange={(e) => setData(e.target.value)}
