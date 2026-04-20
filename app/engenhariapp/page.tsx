@@ -40,15 +40,15 @@ const nomes: any = {
 };
 
 const comportamento: any = {
-  1: "tende a se retrair diante de pressão",
-  2: "tende a assumir mais do que deveria",
-  3: "tende a agir rápido e ajustar depois",
-  4: "tende a ajustar antes de se posicionar",
-  5: "tende a analisar demais antes de agir",
-  6: "tende a saber o que precisa, mas não sustenta execução",
-  7: "tende a agradar antes de se posicionar",
-  8: "tende a conter e evitar movimento",
-  9: "tende a se empolgar e não concluir",
+  1: "se retrair diante de pressão",
+  2: "assumir mais do que deveria",
+  3: "agir rápido e ajustar depois",
+  4: "ajustar antes de se posicionar",
+  5: "analisar demais antes de agir",
+  6: "saber o que precisa, mas não sustentar execução",
+  7: "agradar antes de se posicionar",
+  8: "conter e evitar movimento",
+  9: "se empolgar e não concluir",
 };
 
 function parseDate(input: string): Date {
@@ -56,54 +56,31 @@ function parseDate(input: string): Date {
   return new Date(y, m - 1, d);
 }
 
-function gerarHeadline(e: number, ex: number, ext: number) {
+// 🔥 ABERTURA DINÂMICA (PADRÃO OCULTO)
+function gerarPadraoOculto(e: number, ex: number, ext: number) {
 
-  if (e === ex && ex === ext) {
-    return "Você repete o mesmo padrão — mesmo quando tenta fazer diferente.";
+  if (e === 6 && ex === 3 && ext === 8) {
+    return `Você sabe o que precisa ser feito.
+Mas não sustenta o tempo necessário para isso acontecer.`;
   }
 
-  if (e === 6) {
-    return "Você sabe o que precisa fazer — mas algo trava na execução.";
-  }
-
-  if (ex === 3) {
-    return "Você começa rápido — mas não sustenta o ritmo.";
-  }
-
-  if (ext === 8) {
-    return "Você tenta avançar — mas o ambiente te segura.";
-  }
-
-  if (e === 7) {
-    return "Você sente muito — mas se ajusta demais antes de agir.";
-  }
-
-  if (ex === 9) {
-    return "Você se empolga — mas perde consistência no caminho.";
-  }
-
-  return "Você faz — mas sente que não sai do lugar.";
-}
-
-function gerarAbertura(e: number, ex: number, ext: number) {
-
-  if (e === 6 && ex === 3) {
-    return "Você sabe o que precisa ser feito. Mas não sustenta o tempo necessário para isso acontecer.";
-  }
-
-  if (e === 7 && ex === 1) {
-    return "Você sente o que precisa fazer. Mas se retrai quando precisa agir.";
+  if (e === 7 && ex === 1 && ext === 2) {
+    return `Você sente o que precisa fazer.
+Mas se retrai quando precisa agir.`;
   }
 
   if (e === 8 && ex === 8) {
-    return "Você segura mais do que deveria. E isso trava o movimento.";
+    return `Você segura mais do que deveria.
+E isso está travando o seu movimento.`;
   }
 
   if (ex === 9) {
-    return "Você começa com intensidade. Mas não sustenta até o fim.";
+    return `Você começa com intensidade.
+Mas não sustenta até o fim.`;
   }
 
-  return "Você faz. Mas sente que algo não avança como deveria.";
+  return `Você faz.
+Mas algo não se sustenta no processo.`;
 }
 
 export default function Page() {
@@ -152,7 +129,6 @@ export default function Page() {
       <div className="h-screen flex items-center justify-center bg-[#f5f5f5]">
         <div className="bg-white p-8 rounded-2xl w-[90%] max-w-md space-y-4">
 
-          {/* 🔥 TÍTULO INSERIDO AQUI */}
           <h2 className="text-lg font-semibold text-center">
             Insira sua data de nascimento e o seu sexo
           </h2>
@@ -188,65 +164,71 @@ export default function Page() {
       
       <div className="w-full max-w-xl space-y-6">
 
+        {/* 🔥 PADRÃO OCULTO */}
         <h2 className="text-xl font-semibold leading-snug">
-          {gerarHeadline(res.e, res.ex, res.ext)}
+          O seu <b>PADRÃO OCULTO</b> é:
         </h2>
 
-        <div className="grid grid-cols-3 gap-4">
-          {[res.e, res.ex, res.ext].map((n: number, i: number) => (
-            <div key={i} className="bg-white rounded-xl p-4 text-center shadow-sm">
+        <p className="text-lg font-semibold leading-snug whitespace-pre-line">
+          {gerarPadraoOculto(res.e, res.ex, res.ext)}
+        </p>
 
-              <div className="text-xs text-gray-500">
-                {i === 0 ? "Essência" : i === 1 ? "Expressão" : "Externa"}
-              </div>
+        {/* 🔥 BLOCO DAS ENERGIAS */}
+        <div className="border rounded-xl p-4 bg-white space-y-2">
 
-              <div className="text-lg">{trigramas[n]}</div>
-              <div className="text-2xl font-semibold">{n}</div>
-              <div className="text-sm">{nomes[n]}</div>
+          <p>
+            Em <b>ESSÊNCIA</b> você é <b>{arquétipos[res.e]}</b> porque sua energia é {trigramas[res.e]} {res.e} {nomes[res.e]}
+          </p>
 
-              <div className="text-xs text-gray-400">
-                {arquétipos[n]}
-              </div>
+          <p>
+            Na <b>EXPRESSÃO</b> você é <b>{arquétipos[res.ex]}</b> porque sua energia é {trigramas[res.ex]} {res.ex} {nomes[res.ex]}
+          </p>
 
-            </div>
-          ))}
+          <p>
+            No <b>AMBIENTE EXTERNO</b> você é <b>{arquétipos[res.ext]}</b> porque sua energia é {trigramas[res.ext]} {res.ext} {nomes[res.ext]}
+          </p>
+
         </div>
 
+        {/* 🔥 LEITURA */}
         <div className="bg-white p-6 rounded-xl text-sm leading-relaxed space-y-4">
 
-          <p>{gerarAbertura(res.e, res.ex, res.ext)}</p>
-
           <p>
-            Por dentro, você {comportamento[res.e]}.
-            Na prática, você {comportamento[res.ex]}.
-            E no ambiente, você {comportamento[res.ext]}.
-          </p>
-
-          <p>Isso cria um padrão silencioso:</p>
-
-          <p>
-            Você começa com intenção.<br />
-            Mas ajusta no meio do caminho.
+            O que você pode não estar percebendo:
           </p>
 
           <p>
-            E quanto mais tenta resolver,<br />
-            mais esforço precisa fazer.
+            Você começa com intenção, mas ajusta no meio do caminho.<br />
+            Quanto mais tenta resolver, mais esforço precisa fazer.
+          </p>
+
+          <p>
+            E sem perceber, você entra num ciclo:<br />
+            <i>começa → ajusta → força → cansa → recomeça</i>
+          </p>
+
+          <p>
+            E com o tempo, isso vira a sua forma de funcionar.
           </p>
 
           <p>
             O desgaste não está no quanto você faz.<br />
-            Mas em como você está tentando fazer.
+            Mas em <b>COMO</b> você está tentando fazer.
           </p>
 
-          <p className="text-sm font-bold uppercase">
+          <p className="font-bold uppercase">
             VER O PADRÃO TRAZ CLAREZA.<br />
             MAS NÃO MUDA O RESULTADO.<br />
             O QUE MUDA É COMO VOCÊ AGE A PARTIR DISSO.
           </p>
 
+          <p>
+            Quer saber o como? Clica no botão aí embaixo agora.
+          </p>
+
         </div>
 
+        {/* CTA */}
         <a
           href={`https://wa.me/5511987545477?text=${encodeURIComponent("Quero entender meu padrão com clareza")}`}
           target="_blank"
