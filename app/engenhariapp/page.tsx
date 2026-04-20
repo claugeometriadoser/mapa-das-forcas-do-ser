@@ -56,31 +56,46 @@ function parseDate(input: string): Date {
   return new Date(y, m - 1, d);
 }
 
-// 🔥 ABERTURA DINÂMICA (PADRÃO OCULTO)
+// 🔥 NOVA LEITURA COMBINATÓRIA (729)
 function gerarPadraoOculto(e: number, ex: number, ext: number) {
 
-  if (e === 6 && ex === 3 && ext === 8) {
-    return `Você sabe o que precisa ser feito.
-Mas não sustenta o tempo necessário para isso acontecer.`;
-  }
+  const essencial = {
+    1: "Você pensa antes de agir, mas tende a travar no excesso de análise.",
+    2: "Você sustenta e cuida, mas acaba assumindo mais do que deveria.",
+    3: "Você inicia com energia, mas nem sempre sustenta o ritmo.",
+    4: "Você analisa bem, mas pode se perder na dúvida.",
+    5: "Você tenta manter controle, mas perde o centro com facilidade.",
+    6: "Você sabe o que precisa ser feito, mas exige demais de si.",
+    7: "Você se expressa com facilidade, mas evita conflitos importantes.",
+    8: "Você sustenta e segura, mas isso pode travar o movimento.",
+    9: "Você expande e enxerga longe, mas se dispersa no excesso."
+  };
 
-  if (e === 7 && ex === 1 && ext === 2) {
-    return `Você sente o que precisa fazer.
-Mas se retrai quando precisa agir.`;
-  }
+  const expressao = {
+    1: "Na prática, você tende a se retrair diante da ação.",
+    2: "Na prática, você assume mais do que deveria.",
+    3: "Na prática, você começa rápido e se empolga.",
+    4: "Na prática, você revisa demais antes de agir.",
+    5: "Na prática, você oscila entre controle e desorganização.",
+    6: "Na prática, você entra em ação com pressão interna.",
+    7: "Na prática, você busca aprovação antes de se posicionar.",
+    8: "Na prática, você segura e posterga decisões.",
+    9: "Na prática, você se expõe e depois perde consistência."
+  };
 
-  if (e === 8 && ex === 8) {
-    return `Você segura mais do que deveria.
-E isso está travando o seu movimento.`;
-  }
+  const ambiente = {
+    1: "No ambiente, você tende a se retrair diante da pressão.",
+    2: "No ambiente, você absorve demandas dos outros.",
+    3: "No ambiente, tudo pede velocidade e reação.",
+    4: "No ambiente, há excesso de análise e pouca decisão.",
+    5: "No ambiente, tudo muda o tempo inteiro.",
+    6: "No ambiente, há cobrança e exigência por resultado.",
+    7: "No ambiente, você tende a agradar antes de se posicionar.",
+    8: "No ambiente, há contenção e dificuldade de avanço.",
+    9: "No ambiente, há intensidade e exposição constante."
+  };
 
-  if (ex === 9) {
-    return `Você começa com intensidade.
-Mas não sustenta até o fim.`;
-  }
-
-  return `Você faz.
-Mas algo não se sustenta no processo.`;
+  return `${essencial[e]} ${expressao[ex]} ${ambiente[ext]}`;
 }
 
 export default function Page() {
@@ -164,7 +179,6 @@ export default function Page() {
       
       <div className="w-full max-w-xl space-y-6">
 
-        {/* 🔥 PADRÃO OCULTO */}
         <h2 className="text-xl font-semibold leading-snug">
           O seu <b>PADRÃO OCULTO</b> é:
         </h2>
@@ -173,7 +187,6 @@ export default function Page() {
           {gerarPadraoOculto(res.e, res.ex, res.ext)}
         </p>
 
-        {/* 🔥 BLOCO DAS ENERGIAS */}
         <div className="border rounded-xl p-4 bg-white space-y-2">
 
           <p>
@@ -190,12 +203,9 @@ export default function Page() {
 
         </div>
 
-        {/* 🔥 LEITURA */}
         <div className="bg-white p-6 rounded-xl text-sm leading-relaxed space-y-4">
 
-          <p>
-            O que você pode não estar percebendo:
-          </p>
+          <p>O que você pode não estar percebendo:</p>
 
           <p>
             Você começa com intenção, mas ajusta no meio do caminho.<br />
@@ -207,9 +217,7 @@ export default function Page() {
             <i>começa → ajusta → força → cansa → recomeça</i>
           </p>
 
-          <p>
-            E com o tempo, isso vira a sua forma de funcionar.
-          </p>
+          <p>E com o tempo, isso vira a sua forma de funcionar.</p>
 
           <p>
             O desgaste não está no quanto você faz.<br />
@@ -222,13 +230,10 @@ export default function Page() {
             O que muda é como você AGE a partir disso.
           </p>
 
-          <p>
-            Quer saber o como? Clica no botão aí embaixo agora.
-          </p>
+          <p>Quer saber o como? Clica no botão aí embaixo agora.</p>
 
         </div>
 
-        {/* CTA */}
         <a
           href={`https://wa.me/5511987545477?text=${encodeURIComponent("Quero entender meu padrão com clareza")}`}
           target="_blank"
