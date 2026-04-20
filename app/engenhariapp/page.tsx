@@ -1,244 +1,200 @@
 "use client";
 
 import { useState } from "react";
-import { calculateMap } from "@/utils/jiugong";
+import { calculateMap } from "./calculateMap";
 
-const arquétipos: any = {
-  1: "A Profunda",
-  2: "A Sustentadora",
-  3: "A Iniciadora",
-  4: "A Estrategista",
-  5: "A Integradora",
-  6: "A Estrategista",
-  7: "A Comunicadora",
-  8: "A Guardiã",
-  9: "A Visionária",
-};
-
-const trigramas: any = {
-  1: "☵",
-  2: "☷",
-  3: "☳",
-  4: "☴",
-  5: "☯️",
-  6: "☰",
-  7: "☱",
-  8: "☶",
-  9: "☲",
-};
-
-const nomes: any = {
-  1: "Água",
-  2: "Terra",
-  3: "Trovão",
-  4: "Vento",
-  5: "Centro",
-  6: "Céu",
-  7: "Lago",
-  8: "Montanha",
-  9: "Fogo",
-};
-
-const comportamento: any = {
-  1: "se retrair diante de pressão",
-  2: "assumir mais do que deveria",
-  3: "agir rápido e ajustar depois",
-  4: "ajustar antes de se posicionar",
-  5: "analisar demais antes de agir",
-  6: "saber o que precisa, mas não sustentar execução",
-  7: "agradar antes de se posicionar",
-  8: "conter e evitar movimento",
-  9: "se empolgar e não concluir",
-};
-
-function parseDate(input: string): Date {
-  const [y, m, d] = input.split("-").map(Number);
-  return new Date(y, m - 1, d);
-}
-
-// 🔥 ABERTURA DINÂMICA (PADRÃO OCULTO)
-function gerarPadraoOculto(e: number, ex: number, ext: number) {
-
-  if (e === 6 && ex === 3 && ext === 8) {
-    return `Você sabe o que precisa ser feito.
-Mas não sustenta o tempo necessário para isso acontecer.`;
+function getCycle(e: number) {
+  switch (e) {
+    case 1:
+      return "pensa → evita → adia → acumula → trava → recomeça";
+    case 2:
+      return "cuida → cede → se sobrecarrega → se anula → cansa → recomeça";
+    case 3:
+      return "começa → acelera → se empolga → dispersa → abandona → recomeça";
+    case 4:
+      return "analisa → ajusta → duvida → se perde → trava → recomeça";
+    case 5:
+      return "tenta controlar → perde o centro → oscila → sobrecarrega → colapsa → recomeça";
+    case 6:
+      return "define → começa → ajusta → força → cansa → recomeça";
+    case 7:
+      return "percebe → adapta → cede → se desconecta → frustra → recomeça";
+    case 8:
+      return "segura → evita → resiste → acumula → trava → recomeça";
+    case 9:
+      return "começa → expande → se empolga → se dispersa → esgota → recomeça";
+    default:
+      return "começa → ajusta → força → cansa → recomeça";
   }
-
-  if (e === 7 && ex === 1 && ext === 2) {
-    return `Você sente o que precisa fazer.
-Mas se retrai quando precisa agir.`;
-  }
-
-  if (e === 8 && ex === 8) {
-    return `Você segura mais do que deveria.
-E isso está travando o seu movimento.`;
-  }
-
-  if (ex === 9) {
-    return `Você começa com intensidade.
-Mas não sustenta até o fim.`;
-  }
-
-  return `Você faz.
-Mas algo não se sustenta no processo.`;
 }
 
 export default function Page() {
-
   const [step, setStep] = useState(0);
   const [data, setData] = useState("");
   const [sexo, setSexo] = useState("");
-  const [res, setRes]: any = useState(null);
+  const [map, setMap] = useState<any>(null);
 
-  function calcular() {
-    const map = calculateMap(parseDate(data), sexo);
+  function handleSubmit() {
+    if (!data || !sexo) return;
 
-    const e = map.essential.number;
-    const ex = map.expression.number;
-    const ext = map.personal.number;
+    const [d, m, y] = data.split("/");
+    const date = new Date(`${y}-${m}-${d}`);
 
-    setRes({ e, ex, ext });
+    const result = calculateMap(date, sexo);
+    setMap(result);
+    setStep(2);
+  }
+
+  function getWhatsAppLink() {
+    if (!map) return "#";
+
+    const texto = encodeURIComponent(
+      `Quero entender meu padrão com clareza.
+
+Essência: ${map.essential.number} ${map.essential.name}
+Expressão: ${map.expression.number} ${map.expression.name}
+Externa: ${map.personal.number} ${map.personal.name}`
+    );
+
+    return `https://wa.me/5511987545477?text=${texto}`;
   }
 
   if (step === 0) {
     return (
-      <div className="h-screen flex items-center justify-center bg-[#f5f5f5]">
-        <div className="bg-white p-10 rounded-2xl text-center w-[90%] max-w-md">
-          <h1 className="text-2xl font-bold">
-            ENGENHARIA<br />DOS PADRÕES PESSOAIS
+      <main className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="bg-white p-10 rounded-2xl shadow-md text-center max-w-xl w-full">
+          <h1 className="text-3xl font-bold mb-4">
+            ENGENHARIA DOS PADRÕES PESSOAIS
           </h1>
-
-          <p className="text-gray-500 mt-4">
-            O problema não é esforço.<br />
+          <p className="text-gray-500 mb-6">
+            O problema não é esforço.
+            <br />
             É como sua energia está sendo aplicada.
           </p>
-
           <button
             onClick={() => setStep(1)}
-            className="mt-6 w-full bg-black text-white py-4 rounded-xl"
+            className="bg-black text-white px-6 py-3 rounded-xl w-full"
           >
             Começar
           </button>
         </div>
-      </div>
+      </main>
     );
   }
 
-  if (!res) {
+  if (step === 1) {
     return (
-      <div className="h-screen flex items-center justify-center bg-[#f5f5f5]">
-        <div className="bg-white p-8 rounded-2xl w-[90%] max-w-md space-y-4">
-
-          <h2 className="text-lg font-semibold text-center">
+      <main className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="bg-white p-10 rounded-2xl shadow-md w-full max-w-xl">
+          <h2 className="text-xl font-semibold mb-6">
             Insira sua data de nascimento e o seu sexo
           </h2>
 
           <input
-            type="date"
+            placeholder="dd/mm/aaaa"
+            value={data}
             onChange={(e) => setData(e.target.value)}
-            className="w-full border p-4 rounded-xl"
+            className="border p-3 rounded mb-4 w-full"
           />
 
           <select
+            value={sexo}
             onChange={(e) => setSexo(e.target.value)}
-            className="w-full border p-4 rounded-xl"
+            className="border p-3 rounded mb-4 w-full"
           >
-            <option>Sexo</option>
+            <option value="">Sexo</option>
             <option value="masculino">Masculino</option>
             <option value="feminino">Feminino</option>
           </select>
 
           <button
-            onClick={calcular}
-            className="w-full bg-black text-white py-4 rounded-xl"
+            onClick={handleSubmit}
+            className="bg-black text-white px-6 py-3 rounded-xl w-full"
           >
             Ver minha engenharia
           </button>
         </div>
-      </div>
+      </main>
     );
   }
 
+  if (!map) return null;
+
+  const e = map.essential;
+  const ex = map.expression;
+  const p = map.personal;
+
   return (
-    <div className="min-h-screen bg-[#f5f5f5] px-6 py-8 flex justify-center">
-      
-      <div className="w-full max-w-xl space-y-6">
+    <main className="min-h-screen bg-gray-100 p-6">
+      <h1 className="text-2xl font-bold mb-6">
+        Você sabe o que precisa ser feito — mas algo trava na execução.
+      </h1>
 
-        {/* 🔥 PADRÃO OCULTO */}
-        <h2 className="text-xl font-semibold leading-snug">
-          O seu <b>PADRÃO OCULTO</b> é:
-        </h2>
-
-        <p className="text-lg font-semibold leading-snug whitespace-pre-line">
-          {gerarPadraoOculto(res.e, res.ex, res.ext)}
-        </p>
-
-        {/* 🔥 BLOCO DAS ENERGIAS */}
-        <div className="border rounded-xl p-4 bg-white space-y-2">
-
-          <p>
-            Em <b>ESSÊNCIA</b> você é <b>{arquétipos[res.e]}</b> porque sua energia é {trigramas[res.e]} {res.e} {nomes[res.e]}
-          </p>
-
-          <p>
-            Na <b>EXPRESSÃO</b> você é <b>{arquétipos[res.ex]}</b> porque sua energia é {trigramas[res.ex]} {res.ex} {nomes[res.ex]}
-          </p>
-
-          <p>
-            No <b>AMBIENTE EXTERNO</b> você é <b>{arquétipos[res.ext]}</b> porque sua energia é {trigramas[res.ext]} {res.ext} {nomes[res.ext]}
-          </p>
-
-        </div>
-
-        {/* 🔥 LEITURA */}
-        <div className="bg-white p-6 rounded-xl text-sm leading-relaxed space-y-4">
-
-          <p>
-            O que você pode não estar percebendo:
-          </p>
-
-          <p>
-            Você começa com intenção, mas ajusta no meio do caminho.<br />
-            Quanto mais tenta resolver, mais esforço precisa fazer.
-          </p>
-
-          <p>
-            E sem perceber, você entra num ciclo:<br />
-            <i>começa → ajusta → força → cansa → recomeça</i>
-          </p>
-
-          <p>
-            E com o tempo, isso vira a sua forma de funcionar.
-          </p>
-
-          <p>
-            O desgaste não está no quanto você faz.<br />
-            Mas em <b>COMO</b> você está tentando fazer.
-          </p>
-
-          <p className="font-bold uppercase">
-            VER O PADRÃO TRAZ CLAREZA.<br />
-            MAS NÃO MUDA O RESULTADO.<br />
-            O QUE MUDA É COMO VOCÊ AGE A PARTIR DISSO.
-          </p>
-
-          <p>
-            Quer saber o como? Clica no botão aí embaixo agora.
-          </p>
-
-        </div>
-
-        {/* CTA */}
-        <a
-          href={`https://wa.me/5511987545477?text=${encodeURIComponent("Quero entender meu padrão com clareza")}`}
-          target="_blank"
-          className="block w-full bg-black text-white py-4 rounded-xl text-center"
-        >
-          👉 Quero entender meu padrão com clareza
-        </a>
-
+      {/* CARDS */}
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        {[e, ex, p].map((item, i) => (
+          <div
+            key={i}
+            className="bg-white p-4 rounded-xl shadow text-center"
+          >
+            <div className="text-sm text-gray-500 mb-1">
+              {i === 0 ? "Essência" : i === 1 ? "Expressão" : "Externa"}
+            </div>
+            <div className="text-xl">{item.trigram}</div>
+            <div className="text-2xl font-bold">{item.number}</div>
+            <div>{item.name.split(" ")[0]}</div>
+          </div>
+        ))}
       </div>
 
-    </div>
+      {/* LEITURA */}
+      <div className="bg-white p-6 rounded-xl shadow mb-6">
+        <p className="mb-4">
+          Você sabe o que precisa ser feito. Mas não sustenta o tempo necessário
+          para isso acontecer.
+        </p>
+
+        <p className="mb-4">
+          Por dentro, você tende a saber o que precisa, mas não sustenta execução.
+          Na prática, você tende a agir rápido e ajustar depois. E no ambiente,
+          você tende a conter e evitar movimento.
+        </p>
+
+        <p className="mb-2">Isso cria um padrão silencioso:</p>
+
+        <p>Você começa com intenção.</p>
+        <p>Mas ajusta no meio do caminho.</p>
+
+        <p className="mt-4">
+          E quanto mais tenta resolver,
+          <br />
+          mais esforço precisa fazer.
+        </p>
+
+        <p className="mt-4">
+          O desgaste não está no quanto você faz.
+          <br />
+          Mas em como você está tentando fazer.
+        </p>
+
+        <p className="mt-4 italic">{getCycle(e.number)}</p>
+
+        <p className="mt-6 text-base">
+          Ver o <strong className="uppercase">padrão</strong> traz{" "}
+          <strong className="uppercase">clareza</strong>.<br />
+          Mas não muda o{" "}
+          <strong className="uppercase">resultado</strong>.<br />
+          O que muda é como você{" "}
+          <strong className="uppercase">age</strong> a partir disso.
+        </p>
+      </div>
+
+      {/* CTA */}
+      <a href={getWhatsAppLink()} target="_blank">
+        <button className="bg-black text-white px-6 py-4 rounded-xl w-full">
+          👉 Quero entender meu padrão com clareza
+        </button>
+      </a>
+    </main>
   );
 }
