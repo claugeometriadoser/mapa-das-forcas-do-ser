@@ -39,36 +39,41 @@ const nomes: any = {
   9: "Fogo",
 };
 
-const comportamento: any = {
-  1: "se retrair diante de pressão",
-  2: "assumir mais do que deveria",
-  3: "agir rápido e ajustar depois",
-  4: "ajustar antes de se posicionar",
-  5: "analisar demais antes de agir",
-  6: "saber o que precisa, mas não sustentar execução",
-  7: "agradar antes de se posicionar",
-  8: "conter e evitar movimento",
-  9: "se empolgar e não concluir",
-};
-
 function parseDate(input: string): Date {
   const [y, m, d] = input.split("-").map(Number);
   return new Date(y, m - 1, d);
 }
 
-// 🔥 NOVA LEITURA COMBINATÓRIA (729)
-function gerarPadraoOculto(e: number, ex: number, ext: number) {
+// 🔥 CICLO VARIÁVEL (base Essência)
+function getCycle(e: number) {
+  const ciclos: Record<number, string> = {
+    1: "pensa → evita → adia → acumula → trava → recomeça",
+    2: "cuida → cede → assume demais → se sobrecarrega → cansa → recomeça",
+    3: "começa → acelera → se empolga → dispersa → abandona → recomeça",
+    4: "analisa → revisa → duvida → se perde → trava → recomeça",
+    5: "tenta controlar → perde o centro → oscila → sobrecarrega → colapsa → recomeça",
+    6: "define → começa → ajusta → força → cansa → recomeça",
+    7: "percebe → se adapta → evita conflito → se anula → acumula → recomeça",
+    8: "segura → posterga → acumula → trava → paralisa → recomeça",
+    9: "expande → se empolga → assume demais → dispersa → perde foco → recomeça",
+  };
 
-  const essencial: Record<number, string> = {
-    1: "Você pensa antes de agir, mas tende a travar no excesso de análise.",
-    2: "Você sustenta e cuida, mas acaba assumindo mais do que deveria.",
-    3: "Você inicia com energia, mas nem sempre sustenta o ritmo.",
-    4: "Você analisa bem, mas pode se perder na dúvida.",
-    5: "Você tenta manter controle, mas perde o centro com facilidade.",
-    6: "Você sabe o que precisa ser feito, mas exige demais de si.",
-    7: "Você se expressa com facilidade, mas evita conflitos importantes.",
-    8: "Você sustenta e segura, mas isso pode travar o movimento.",
-    9: "Você expande e enxerga longe, mas se dispersa no excesso."
+  return ciclos[e];
+}
+
+// 🔥 LEITURA DINÂMICA (corrige o problema principal)
+function gerarLeituraDetalhada(e: number, ex: number, ext: number) {
+
+  const baseEssencia: Record<number, string> = {
+    1: "Você pensa antes de agir, mas isso vira adiamento.",
+    2: "Você sustenta tudo, mas se sobrecarrega.",
+    3: "Você começa rápido, mas perde consistência.",
+    4: "Você analisa demais e trava.",
+    5: "Você tenta controlar tudo e perde o centro.",
+    6: "Você sabe o que precisa, mas exige demais de si.",
+    7: "Você evita conflito e se adapta demais.",
+    8: "Você segura demais e trava o fluxo.",
+    9: "Você expande, mas se dispersa."
   };
 
   const expressao: Record<number, string> = {
@@ -95,7 +100,23 @@ function gerarPadraoOculto(e: number, ex: number, ext: number) {
     9: "No ambiente, há intensidade e exposição constante."
   };
 
-  return `${essencial[e]} ${expressao[ex]} ${ambiente[ext]}`;
+  return `
+${baseEssencia[e]}
+
+${expressao[ex]}
+
+${ambiente[ext]}
+
+Sem perceber, você entra num ciclo:
+${getCycle(e)}
+
+E com o tempo, isso vira sua forma de funcionar.
+`;
+}
+
+// 🔥 TOPO MAIS PRECISO
+function gerarPadraoOculto(e: number, ex: number, ext: number) {
+  return `${gerarLeituraDetalhada(e, ex, ext).split("\n")[0]}`;
 }
 
 export default function Page() {
@@ -207,27 +228,19 @@ export default function Page() {
 
           <p>O que você pode não estar percebendo:</p>
 
-          <p>
-            Você começa com intenção, mas ajusta no meio do caminho.<br />
-            Quanto mais tenta resolver, mais esforço precisa fazer.
+          <p className="whitespace-pre-line">
+            {gerarLeituraDetalhada(res.e, res.ex, res.ext)}
           </p>
-
-          <p>
-            E sem perceber, você entra num ciclo:<br />
-            <i>começa → ajusta → força → cansa → recomeça</i>
-          </p>
-
-          <p>E com o tempo, isso vira a sua forma de funcionar.</p>
 
           <p>
             O desgaste não está no quanto você faz.<br />
             Mas em <b>COMO</b> você está tentando fazer.
           </p>
 
-          <p className="font-bold uppercase">
-            Ver o PADRÃO traz clareza.<br />
-            Mas não muda o RESULTADO.<br />
-            O que muda é como você AGE a partir disso.
+          <p>
+            Ver o <b>PADRÃO</b> traz <b>CLAREZA</b>.<br/>
+            Mas não muda o <b>RESULTADO</b>.<br/>
+            O que muda é como você <b>AGE</b> a partir disso.
           </p>
 
           <p>Quer saber o como? Clica no botão aí embaixo agora.</p>
