@@ -217,9 +217,9 @@ export default function Page() {
           </p>
 
           <p className="font-bold uppercase">
-            VER O PADRÃO TRAZ CLAREZA.<br />
-            MAS NÃO MUDA O RESULTADO.<br />
-            O QUE MUDA É COMO VOCÊ AGE A PARTIR DISSO.
+            Ver o PADRÃO traz clareza.<br />
+            Mas não muda o RESULTADO.<br />
+            O que muda é como você AGE a partir disso.
           </p>
 
           <p>
