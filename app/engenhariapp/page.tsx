@@ -98,8 +98,7 @@ function gerarLeituraDetalhada(e: number, ex: number, ext: number) {
     9: "No ambiente, há intensidade e exposição constante."
   };
 
-  return `
-${baseEssencia[e]}
+  return `${baseEssencia[e]}
 
 ${expressao[ex]}
 
@@ -108,11 +107,9 @@ ${ambiente[ext]}
 Sem perceber, você entra num ciclo:
 ${getCycle(e)}
 
-E com o tempo, isso vira sua forma de funcionar.
-`;
+E com o tempo, isso vira sua forma de funcionar.`;
 }
 
-// ✅ CORREÇÃO AQUI (única alteração feita)
 function gerarPadraoOculto(e: number, ex: number, ext: number) {
   return gerarLeituraDetalhada(e, ex, ext)
     .split("\n")
