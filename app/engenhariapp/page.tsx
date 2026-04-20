@@ -44,7 +44,6 @@ function parseDate(input: string): Date {
   return new Date(y, m - 1, d);
 }
 
-// 🔥 CICLO VARIÁVEL (base Essência)
 function getCycle(e: number) {
   const ciclos: Record<number, string> = {
     1: "pensa → evita → adia → acumula → trava → recomeça",
@@ -61,7 +60,6 @@ function getCycle(e: number) {
   return ciclos[e];
 }
 
-// 🔥 LEITURA DINÂMICA (corrige o problema principal)
 function gerarLeituraDetalhada(e: number, ex: number, ext: number) {
 
   const baseEssencia: Record<number, string> = {
@@ -114,9 +112,11 @@ E com o tempo, isso vira sua forma de funcionar.
 `;
 }
 
-// 🔥 TOPO MAIS PRECISO
+// ✅ CORREÇÃO AQUI (única alteração feita)
 function gerarPadraoOculto(e: number, ex: number, ext: number) {
-  return `${gerarLeituraDetalhada(e, ex, ext).split("\n")[0]}`;
+  return gerarLeituraDetalhada(e, ex, ext)
+    .split("\n")
+    .find(linha => linha.trim() !== "") || "";
 }
 
 export default function Page() {
