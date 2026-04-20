@@ -59,7 +59,7 @@ function parseDate(input: string): Date {
 // 🔥 NOVA LEITURA COMBINATÓRIA (729)
 function gerarPadraoOculto(e: number, ex: number, ext: number) {
 
-  const essencial = {
+  const essencial: Record<number, string> = {
     1: "Você pensa antes de agir, mas tende a travar no excesso de análise.",
     2: "Você sustenta e cuida, mas acaba assumindo mais do que deveria.",
     3: "Você inicia com energia, mas nem sempre sustenta o ritmo.",
@@ -71,7 +71,7 @@ function gerarPadraoOculto(e: number, ex: number, ext: number) {
     9: "Você expande e enxerga longe, mas se dispersa no excesso."
   };
 
-  const expressao = {
+  const expressao: Record<number, string> = {
     1: "Na prática, você tende a se retrair diante da ação.",
     2: "Na prática, você assume mais do que deveria.",
     3: "Na prática, você começa rápido e se empolga.",
@@ -83,7 +83,7 @@ function gerarPadraoOculto(e: number, ex: number, ext: number) {
     9: "Na prática, você se expõe e depois perde consistência."
   };
 
-  const ambiente = {
+  const ambiente: Record<number, string> = {
     1: "No ambiente, você tende a se retrair diante da pressão.",
     2: "No ambiente, você absorve demandas dos outros.",
     3: "No ambiente, tudo pede velocidade e reação.",
