@@ -116,6 +116,24 @@ function gerarPadraoOculto(e: number, ex: number, ext: number) {
     .find(linha => linha.trim() !== "") || "";
 }
 
+// 🔥 NOVA FUNÇÃO (única adição)
+function montarMensagem(e: number, ex: number, ext: number) {
+  const texto =
+`Quero entender meu padrão com clareza
+
+PADRÃO OCULTO:
+${gerarPadraoOculto(e, ex, ext)}
+
+LEITURA:
+${gerarLeituraDetalhada(e, ex, ext)}
+
+ESSÊNCIA: ${e} ${nomes[e]} - ${arquétipos[e]}
+EXPRESSÃO: ${ex} ${nomes[ex]} - ${arquétipos[ex]}
+AMBIENTE: ${ext} ${nomes[ext]} - ${arquétipos[ext]}`;
+
+  return texto.replace(/\n{3,}/g, "\n\n").trim();
+}
+
 export default function Page() {
 
   const [step, setStep] = useState(0);
@@ -245,7 +263,7 @@ export default function Page() {
         </div>
 
         <a
-          href={`https://wa.me/5511987545477?text=${encodeURIComponent("Quero entender meu padrão com clareza")}`}
+          href={`https://wa.me/5511987545477?text=${encodeURIComponent(montarMensagem(res.e, res.ex, res.ext))}`}
           target="_blank"
           className="block w-full bg-black text-white py-4 rounded-xl text-center"
         >
